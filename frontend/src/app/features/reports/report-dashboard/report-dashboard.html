@@ -1,0 +1,97 @@
+<div class="container">
+
+    <div class="header">
+
+        <h2>Reports & Analytics</h2>
+
+        <div class="actions">
+
+            <button class="pdf-btn"
+                (click)="exportPDF()">
+
+                Export PDF
+
+            </button>
+
+            <button class="excel-btn"
+                (click)="exportExcel()">
+
+                Export Excel
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="cards">
+
+        <div class="card blue">
+            <h3>Total Reports</h3>
+            <h1>{{summary.totalReports}}</h1>
+        </div>
+
+        <div class="card green">
+            <h3>Total Vendors</h3>
+            <h1>{{summary.totalVendors}}</h1>
+        </div>
+
+        <div class="card orange">
+            <h3>Purchase Orders</h3>
+            <h1>{{summary.purchaseOrders}}</h1>
+        </div>
+
+        <div class="card purple">
+            <h3>Active Contracts</h3>
+            <h1>{{summary.activeContracts}}</h1>
+        </div>
+
+        <div class="card red">
+            <h3>High Risk Vendors</h3>
+            <h1>{{summary.highRiskVendors}}</h1>
+        </div>
+
+        <div class="card cyan">
+            <h3>Average Reliability</h3>
+            <h1>{{summary.averageReliability}}%</h1>
+        </div>
+
+    </div>
+
+    <div class="table-card">
+
+        <h3>Recent Reports</h3>
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Report Name</th>
+                    <th>Category</th>
+                    <th>Generated On</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngFor="let report of recentReports">
+
+                    <td>{{report.name}}</td>
+
+                    <td>{{report.type}}</td>
+
+                    <td>{{report.date}}</td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

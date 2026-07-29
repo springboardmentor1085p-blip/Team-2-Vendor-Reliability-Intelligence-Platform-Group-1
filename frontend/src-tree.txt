@@ -1,0 +1,130 @@
+src
+├── app
+│   ├── app.config.ts
+│   ├── app.html
+│   ├── app.routes.ts
+│   ├── app.scss
+│   ├── app.spec.ts
+│   ├── app.ts
+│   ├── core
+│   │   ├── guards
+│   │   │   ├── auth-guard.spec.ts
+│   │   │   └── auth-guard.ts
+│   │   ├── interceptors
+│   │   │   ├── auth-interceptor.spec.ts
+│   │   │   └── auth-interceptor.ts
+│   │   ├── models
+│   │   │   ├── contract.model.ts
+│   │   │   ├── login-request.model.ts
+│   │   │   ├── login-response.model.ts
+│   │   │   ├── purchase-order.model.ts
+│   │   │   └── vendor.model.ts
+│   │   └── services
+│   │       ├── auth.spec.ts
+│   │       ├── auth.ts
+│   │       ├── purchase-order.ts
+│   │       ├── vendor.spec.ts
+│   │       └── vendor.ts
+│   ├── features
+│   │   ├── auth
+│   │   │   └── login
+│   │   │       ├── login.html
+│   │   │       ├── login.scss
+│   │   │       └── login.ts
+│   │   ├── communication
+│   │   │   ├── communication-details
+│   │   │   │   ├── communication-details.html
+│   │   │   │   ├── communication-details.scss
+│   │   │   │   └── communication-details.ts
+│   │   │   ├── communication-form
+│   │   │   │   ├── communication-form.html
+│   │   │   │   ├── communication-form.scss
+│   │   │   │   └── communication-form.ts
+│   │   │   └── communication-list
+│   │   │       ├── communication-list.html
+│   │   │       ├── communication-list.scss
+│   │   │       └── communication-list.ts
+│   │   ├── contracts
+│   │   │   ├── contract-details
+│   │   │   │   ├── contract-details.html
+│   │   │   │   ├── contract-details.scss
+│   │   │   │   ├── contract-details.spec.ts
+│   │   │   │   └── contract-details.ts
+│   │   │   ├── contract-form
+│   │   │   │   ├── contract-form.html
+│   │   │   │   ├── contract-form.scss
+│   │   │   │   ├── contract-form.spec.ts
+│   │   │   │   └── contract-form.ts
+│   │   │   └── contract-list
+│   │   │       ├── contract-list.html
+│   │   │       ├── contract-list.scss
+│   │   │       ├── contract-list.spec.ts
+│   │   │       └── contract-list.ts
+│   │   ├── dashboard
+│   │   │   └── dashboard
+│   │   │       ├── dashboard.html
+│   │   │       ├── dashboard.scss
+│   │   │       └── dashboard.ts
+│   │   ├── procurement
+│   │   │   ├── purchase-order-details
+│   │   │   │   ├── purchase-order-details.html
+│   │   │   │   ├── purchase-order-details.scss
+│   │   │   │   ├── purchase-order-details.spec.ts
+│   │   │   │   └── purchase-order-details.ts
+│   │   │   ├── purchase-order-form
+│   │   │   │   ├── purchase-order-form.html
+│   │   │   │   ├── purchase-order-form.scss
+│   │   │   │   ├── purchase-order-form.spec.ts
+│   │   │   │   └── purchase-order-form.ts
+│   │   │   └── purchase-order-list
+│   │   │       ├── purchase-order-list.html
+│   │   │       ├── purchase-order-list.scss
+│   │   │       ├── purchase-order-list.spec.ts
+│   │   │       └── purchase-order-list.ts
+│   │   ├── risk
+│   │   │   ├── risk-dashboard
+│   │   │   │   ├── risk-dashboard.html
+│   │   │   │   ├── risk-dashboard.scss
+│   │   │   │   └── risk-dashboard.ts
+│   │   │   ├── risk-details
+│   │   │   │   ├── risk-details.html
+│   │   │   │   ├── risk-details.scss
+│   │   │   │   └── risk-details.ts
+│   │   │   └── risk-list
+│   │   │       ├── risk-list.html
+│   │   │       ├── risk-list.scss
+│   │   │       └── risk-list.ts
+│   │   └── vendors
+│   │       ├── pending-vendors
+│   │       │   ├── pending-vendors.html
+│   │       │   ├── pending-vendors.scss
+│   │       │   ├── pending-vendors.spec.ts
+│   │       │   └── pending-vendors.ts
+│   │       ├── vendor-form
+│   │       │   ├── vendor-form.html
+│   │       │   ├── vendor-form.scss
+│   │       │   ├── vendor-form.spec.ts
+│   │       │   └── vendor-form.ts
+│   │       └── vendor-list
+│   │           ├── vendor-list.html
+│   │           ├── vendor-list.scss
+│   │           ├── vendor-list.spec.ts
+│   │           └── vendor-list.ts
+│   └── layouts
+│       ├── header
+│       │   ├── header.html
+│       │   ├── header.scss
+│       │   └── header.ts
+│       ├── main-layout
+│       │   ├── main-layout.html
+│       │   ├── main-layout.scss
+│       │   └── main-layout.ts
+│       └── sidebar
+│           ├── sidebar.html
+│           ├── sidebar.scss
+│           └── sidebar.ts
+├── index.html
+├── main.ts
+└── styles.scss
+
+36 directories, 92 files

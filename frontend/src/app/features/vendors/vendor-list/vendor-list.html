@@ -1,0 +1,60 @@
+<div class="vendor-container">
+
+    <div class="toolbar">
+
+        <h2>Vendor Management</h2>
+
+        <button (click)="addVendor()">
+            + Add Vendor
+        </button>
+
+    </div>
+
+    <table>
+
+        <thead>
+
+            <tr>
+                <th>ID</th>
+                <th>Vendor</th>
+                <th>Company</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr *ngFor="let vendor of vendors">
+
+                <td>{{vendor.id}}</td>
+                <td>{{vendor.vendor_name}}</td>
+                <td>{{vendor.company_name}}</td>
+                <td>{{vendor.email}}</td>
+                <td>{{vendor.phone}}</td>
+                <td>{{vendor.category}}</td>
+                <td>{{vendor.status}}</td>
+
+                <td>
+
+                    <button (click)="editVendor(vendor.id!)">
+                        Edit
+                    </button>
+
+                    <button (click)="deleteVendor(vendor.id!)">
+                        Delete
+                    </button>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>

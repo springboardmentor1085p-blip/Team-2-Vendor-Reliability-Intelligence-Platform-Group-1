@@ -1,0 +1,73 @@
+<div class="vendor-form">
+
+    <h2>
+        {{ isEdit ? 'Edit Vendor' : 'Add Vendor' }}
+    </h2>
+
+    <label>Vendor Name</label>
+    <input
+        type="text"
+        [(ngModel)]="vendor.vendor_name">
+
+    <label>Company Name</label>
+    <input
+        type="text"
+        [(ngModel)]="vendor.company_name">
+
+    <label>Email</label>
+    <input
+        type="email"
+        [(ngModel)]="vendor.email">
+
+    <label>Phone</label>
+    <input
+        type="text"
+        [(ngModel)]="vendor.phone">
+
+    <label>Address</label>
+    <textarea
+        rows="3"
+        [(ngModel)]="vendor.address">
+    </textarea>
+
+    <label>Category</label>
+
+    <select [(ngModel)]="vendor.category">
+
+        <option value="">
+            Select Category
+        </option>
+
+        <option>
+            Raw Material Suppliers
+        </option>
+
+        <option>
+            Equipment Vendors
+        </option>
+
+        <option>
+            IT Vendors
+        </option>
+
+        <option>
+            Service Providers
+        </option>
+
+        <option>
+            Logistics Partners
+        </option>
+
+        <option>
+            Maintenance Vendors
+        </option>
+
+    </select>
+
+    <br><br>
+
+    <button (click)="saveVendor()">
+        {{ isEdit ? 'Update Vendor' : 'Save Vendor' }}
+    </button>
+
+</div>

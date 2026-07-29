@@ -1,0 +1,121 @@
+<div class="container mt-4">
+
+  <h2>Create Procurement</h2>
+
+  <form [formGroup]="procurementForm"
+        (ngSubmit)="onSubmit()">
+
+    <div class="mb-3">
+      <label class="form-label">Request Number</label>
+      <input
+        class="form-control"
+        type="text"
+        formControlName="request_number">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Title</label>
+      <input
+        class="form-control"
+        type="text"
+        formControlName="title">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Description</label>
+      <textarea
+        class="form-control"
+        rows="3"
+        formControlName="description"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Vendor ID</label>
+      <input
+        class="form-control"
+        type="number"
+        formControlName="vendor_id">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Requested By</label>
+      <input
+        class="form-control"
+        type="text"
+        formControlName="requested_by">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Approved By</label>
+      <input
+        class="form-control"
+        type="text"
+        formControlName="approved_by">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Request Date</label>
+      <input
+        class="form-control"
+        type="date"
+        formControlName="request_date">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Expected Delivery</label>
+      <input
+        class="form-control"
+        type="date"
+        formControlName="expected_delivery">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Total Amount</label>
+      <input
+        class="form-control"
+        type="number"
+        formControlName="total_amount">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Status</label>
+
+      <select
+        class="form-select"
+        formControlName="status">
+
+        <option value="Pending">Pending</option>
+        <option value="Approved">Approved</option>
+        <option value="Rejected">Rejected</option>
+
+      </select>
+
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Invoice Number</label>
+      <input
+        class="form-control"
+        type="text"
+        formControlName="invoice_number">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Remarks</label>
+      <textarea
+        class="form-control"
+        rows="3"
+        formControlName="remarks"></textarea>
+    </div>
+
+    <button
+      type="submit"
+      class="btn btn-primary">
+
+      Save Procurement
+
+    </button>
+
+  </form>
+
+</div>

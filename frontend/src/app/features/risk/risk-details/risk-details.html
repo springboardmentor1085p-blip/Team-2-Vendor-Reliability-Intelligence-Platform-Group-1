@@ -1,0 +1,86 @@
+<div class="container">
+
+    <h2>Risk Details</h2>
+
+    <div class="card">
+
+        <div class="row">
+            <span class="label">Vendor</span>
+            <span>{{risk.vendor}}</span>
+        </div>
+
+        <div class="row">
+            <span class="label">Category</span>
+            <span>{{risk.category}}</span>
+        </div>
+
+        <div class="row">
+            <span class="label">Risk Level</span>
+
+            <span
+                [ngClass]="{
+
+                'high':risk.level==='High',
+
+                'medium':risk.level==='Medium',
+
+                'low':risk.level==='Low'
+
+            }">
+
+                {{risk.level}}
+
+            </span>
+
+        </div>
+
+        <div class="row">
+            <span class="label">Risk Score</span>
+            <span>{{risk.score}}</span>
+        </div>
+
+        <div class="row">
+            <span class="label">Identified Date</span>
+            <span>{{risk.identifiedDate}}</span>
+        </div>
+
+        <div class="row">
+            <span class="label">Status</span>
+            <span>{{risk.status}}</span>
+        </div>
+
+        <div class="description">
+
+            <h3>Description</h3>
+
+            <p>{{risk.description}}</p>
+
+        </div>
+
+        <div class="description">
+
+            <h3>Mitigation Plan</h3>
+
+            <p>{{risk.mitigationPlan}}</p>
+
+        </div>
+
+    </div>
+
+    <div class="timeline">
+
+        <h3>Activity Timeline</h3>
+
+        <div
+            class="timeline-item"
+            *ngFor="let item of activities">
+
+            <h4>{{item.date}}</h4>
+
+            <p>{{item.action}}</p>
+
+        </div>
+
+    </div>
+
+</div>

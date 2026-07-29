@@ -1,0 +1,83 @@
+.container{
+
+    max-width:750px;
+    margin:30px auto;
+    background:#fff;
+    padding:30px;
+    border-radius:12px;
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
+
+}
+
+h2{
+
+    color:#1976d2;
+    margin-bottom:25px;
+
+}
+
+.form{
+
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+
+}
+
+label{
+
+    font-weight:600;
+
+}
+
+input,
+select{
+
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    font-size:15px;
+
+}
+
+.buttons{
+
+    display:flex;
+    gap:15px;
+    margin-top:20px;
+
+}
+
+.save-btn{
+
+    background:#1976d2;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:6px;
+    cursor:pointer;
+
+}
+
+.reset-btn{
+
+    background:#757575;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:6px;
+    cursor:pointer;
+
+}
+
+.save-btn:hover{
+
+    background:#1565c0;
+
+}
+
+.reset-btn:hover{
+
+    background:#616161;
+
+}

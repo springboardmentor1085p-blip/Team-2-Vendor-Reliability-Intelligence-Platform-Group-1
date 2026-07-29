@@ -1,0 +1,74 @@
+<div class="container mt-4">
+
+  <h2>Create Communication</h2>
+
+  <form [formGroup]="communicationForm"
+        (ngSubmit)="onSubmit()">
+
+    <div class="mb-3">
+      <label class="form-label">Vendor ID</label>
+      <input
+        class="form-control"
+        type="number"
+        formControlName="vendor_id">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Subject</label>
+      <input
+        class="form-control"
+        type="text"
+        formControlName="subject">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Message</label>
+      <textarea
+        class="form-control"
+        rows="5"
+        formControlName="message"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Communication Type</label>
+      <select
+        class="form-select"
+        formControlName="communication_type">
+
+        <option value="Email">Email</option>
+        <option value="Phone">Phone</option>
+        <option value="Meeting">Meeting</option>
+
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Status</label>
+      <select
+        class="form-select"
+        formControlName="status">
+
+        <option value="Sent">Sent</option>
+        <option value="Pending">Pending</option>
+        <option value="Completed">Completed</option>
+
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Communication Date</label>
+      <input
+        class="form-control"
+        type="date"
+        formControlName="communication_date">
+    </div>
+
+    <button
+      type="submit"
+      class="btn btn-primary">
+      Save Communication
+    </button>
+
+  </form>
+
+</div>

@@ -1,0 +1,60 @@
+<div class="container mt-4">
+
+<h2>Purchase Orders</h2>
+
+<table class="table table-bordered table-striped">
+
+<thead>
+
+<tr>
+
+<th>ID</th>
+<th>PO Number</th>
+<th>Procurement</th>
+<th>Vendor</th>
+<th>Total</th>
+<th>Status</th>
+<th>Payment</th>
+<th>Actions</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr *ngFor="let po of purchaseOrders">
+
+<td>{{po.id}}</td>
+
+<td>{{po.po_number}}</td>
+
+<td>{{po.procurement_id}}</td>
+
+<td>{{po.vendor_id}}</td>
+
+<td>{{po.total_amount}}</td>
+
+<td>{{po.status}}</td>
+
+<td>{{po.payment_status}}</td>
+
+<td>
+
+<button
+class="btn btn-danger btn-sm"
+(click)="delete(po.id!)">
+
+Delete
+
+</button>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>

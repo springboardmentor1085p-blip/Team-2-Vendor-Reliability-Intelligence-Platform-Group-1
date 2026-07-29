@@ -1,0 +1,83 @@
+<div class="container mt-4">
+
+  <h2>Create Contract</h2>
+
+  <form [formGroup]="contractForm"
+        (ngSubmit)="onSubmit()">
+
+    <div class="mb-3">
+      <label class="form-label">Contract Number</label>
+      <input
+        class="form-control"
+        type="text"
+        formControlName="contract_number">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Vendor ID</label>
+      <input
+        class="form-control"
+        type="number"
+        formControlName="vendor_id">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Contract Title</label>
+      <input
+        class="form-control"
+        type="text"
+        formControlName="contract_title">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Start Date</label>
+      <input
+        class="form-control"
+        type="date"
+        formControlName="start_date">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">End Date</label>
+      <input
+        class="form-control"
+        type="date"
+        formControlName="end_date">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Contract Value</label>
+      <input
+        class="form-control"
+        type="number"
+        formControlName="contract_value">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Status</label>
+      <select
+        class="form-select"
+        formControlName="status">
+        <option value="Active">Active</option>
+        <option value="Expired">Expired</option>
+        <option value="Terminated">Terminated</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Terms & Conditions</label>
+      <textarea
+        class="form-control"
+        rows="4"
+        formControlName="terms_conditions"></textarea>
+    </div>
+
+    <button
+      type="submit"
+      class="btn btn-primary">
+      Save Contract
+    </button>
+
+  </form>
+
+</div>

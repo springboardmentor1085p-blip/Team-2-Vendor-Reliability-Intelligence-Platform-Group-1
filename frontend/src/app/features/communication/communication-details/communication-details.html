@@ -1,0 +1,54 @@
+<div class="container mt-4">
+
+  <h2>Communication Details</h2>
+
+  <div *ngIf="communication; else noData">
+
+    <table class="table table-bordered">
+
+      <tr>
+        <th>ID</th>
+        <td>{{ communication.id }}</td>
+      </tr>
+
+      <tr>
+        <th>Vendor ID</th>
+        <td>{{ communication.vendor_id }}</td>
+      </tr>
+
+      <tr>
+        <th>Subject</th>
+        <td>{{ communication.subject }}</td>
+      </tr>
+
+      <tr>
+        <th>Message</th>
+        <td>{{ communication.message }}</td>
+      </tr>
+
+      <tr>
+        <th>Communication Type</th>
+        <td>{{ communication.communication_type }}</td>
+      </tr>
+
+      <tr>
+        <th>Status</th>
+        <td>{{ communication.status }}</td>
+      </tr>
+
+      <tr>
+        <th>Communication Date</th>
+        <td>{{ communication.communication_date }}</td>
+      </tr>
+
+    </table>
+
+  </div>
+
+  <ng-template #noData>
+    <div class="alert alert-warning">
+      No communication details available.
+    </div>
+  </ng-template>
+
+</div>

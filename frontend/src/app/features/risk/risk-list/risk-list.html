@@ -1,0 +1,91 @@
+<div class="container">
+
+    <div class="toolbar">
+
+        <h2>Vendor Risk List</h2>
+
+        <button
+            class="add-btn"
+            (click)="addRisk()">
+
+            + Add Risk
+
+        </button>
+
+    </div>
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Vendor</th>
+                <th>Category</th>
+                <th>Risk Level</th>
+                <th>Score</th>
+                <th>Status</th>
+                <th>Actions</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr *ngFor="let risk of risks">
+
+                <td>{{risk.vendor}}</td>
+
+                <td>{{risk.category}}</td>
+
+                <td>
+
+                    <span
+                        [ngClass]="{
+
+                        'high':risk.level==='High',
+
+                        'medium':risk.level==='Medium',
+
+                        'low':risk.level==='Low'
+
+                    }">
+
+                        {{risk.level}}
+
+                    </span>
+
+                </td>
+
+                <td>{{risk.score}}</td>
+
+                <td>{{risk.status}}</td>
+
+                <td>
+
+                    <button
+                        class="edit-btn"
+                        (click)="editRisk(risk.id)">
+
+                        Edit
+
+                    </button>
+
+                    <button
+                        class="delete-btn"
+                        (click)="deleteRisk(risk.id)">
+
+                        Delete
+
+                    </button>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>

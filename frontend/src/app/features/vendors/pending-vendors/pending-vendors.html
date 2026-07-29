@@ -1,0 +1,68 @@
+<div class="container">
+
+    <h2>Pending Vendor Approvals</h2>
+
+    <div
+        class="empty"
+        *ngIf="!loading && vendors.length===0">
+
+        No Pending Vendors
+
+    </div>
+
+    <table *ngIf="vendors.length>0">
+
+        <thead>
+
+            <tr>
+
+                <th>ID</th>
+                <th>Vendor</th>
+                <th>Company</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Category</th>
+                <th>Actions</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr *ngFor="let vendor of vendors">
+
+                <td>{{vendor.id}}</td>
+                <td>{{vendor.vendor_name}}</td>
+                <td>{{vendor.company_name}}</td>
+                <td>{{vendor.email}}</td>
+                <td>{{vendor.phone}}</td>
+                <td>{{vendor.category}}</td>
+
+                <td>
+
+                    <button
+                        class="approve"
+                        (click)="approveVendor(vendor.id!)">
+
+                        Approve
+
+                    </button>
+
+                    <button
+                        class="reject"
+                        (click)="rejectVendor(vendor.id!)">
+
+                        Reject
+
+                    </button>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>

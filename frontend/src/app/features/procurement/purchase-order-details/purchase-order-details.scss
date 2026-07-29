@@ -1,0 +1,62 @@
+.container{
+
+    max-width:800px;
+    margin:30px auto;
+
+}
+
+h2{
+
+    margin-bottom:25px;
+    color:#1976d2;
+
+}
+
+.details-card{
+
+    background:#fff;
+    border-radius:12px;
+    padding:30px;
+    box-shadow:0 3px 10px rgba(0,0,0,.1);
+
+}
+
+.row{
+
+    display:flex;
+    justify-content:space-between;
+    padding:15px 0;
+    border-bottom:1px solid #eee;
+
+}
+
+.row:last-child{
+
+    border-bottom:none;
+
+}
+
+span{
+
+    color:#666;
+    font-weight:500;
+
+}
+
+strong{
+
+    color:#222;
+
+}
+
+.approved{
+
+    color:#2e7d32;
+
+}
+
+.pending{
+
+    color:#ff9800;
+
+}

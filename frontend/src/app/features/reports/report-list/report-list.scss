@@ -1,0 +1,87 @@
+.container{
+
+    padding:20px;
+
+}
+
+.toolbar{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+
+}
+
+input{
+
+    width:250px;
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:6px;
+
+}
+
+table{
+
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+
+}
+
+th{
+
+    background:#1976d2;
+    color:white;
+
+}
+
+th,
+td{
+
+    padding:14px;
+    text-align:left;
+    border-bottom:1px solid #ddd;
+
+}
+
+.download-btn{
+
+    background:#2e7d32;
+    color:white;
+    border:none;
+    padding:8px 14px;
+    border-radius:5px;
+    margin-right:8px;
+    cursor:pointer;
+
+}
+
+.delete-btn{
+
+    background:#d32f2f;
+    color:white;
+    border:none;
+    padding:8px 14px;
+    border-radius:5px;
+    cursor:pointer;
+
+}
+
+.completed{
+
+    color:#2e7d32;
+    font-weight:bold;
+
+}
+
+.pending{
+
+    color:#fb8c00;
+    font-weight:bold;
+
+}

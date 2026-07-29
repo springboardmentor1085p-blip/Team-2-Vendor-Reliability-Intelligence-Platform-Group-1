@@ -1,0 +1,68 @@
+.container{
+
+    padding:20px;
+
+}
+
+h2{
+
+    margin-bottom:20px;
+
+}
+
+table{
+
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+
+}
+
+th{
+
+    background:#1976d2;
+    color:white;
+
+}
+
+th,
+td{
+
+    padding:12px;
+    border:1px solid #ddd;
+    text-align:left;
+
+}
+
+.approve{
+
+    background:#2e7d32;
+    color:white;
+    border:none;
+    padding:8px 14px;
+    border-radius:4px;
+    cursor:pointer;
+    margin-right:8px;
+
+}
+
+.reject{
+
+    background:#d32f2f;
+    color:white;
+    border:none;
+    padding:8px 14px;
+    border-radius:4px;
+    cursor:pointer;
+
+}
+
+.empty{
+
+    padding:30px;
+    background:#fafafa;
+    border:1px dashed #bbb;
+    text-align:center;
+    color:#666;
+
+}

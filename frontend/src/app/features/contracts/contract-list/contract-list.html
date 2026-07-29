@@ -1,0 +1,52 @@
+<div class="container mt-4">
+
+  <h2>Contract List</h2>
+
+  <table class="table table-bordered table-striped">
+
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Contract No</th>
+        <th>Vendor ID</th>
+        <th>Title</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Value</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      <tr *ngFor="let contract of contracts">
+
+        <td>{{ contract.id }}</td>
+        <td>{{ contract.contract_number }}</td>
+        <td>{{ contract.vendor_id }}</td>
+        <td>{{ contract.contract_title }}</td>
+        <td>{{ contract.start_date }}</td>
+        <td>{{ contract.end_date }}</td>
+        <td>{{ contract.contract_value }}</td>
+        <td>{{ contract.status }}</td>
+
+        <td>
+
+          <button
+            class="btn btn-danger btn-sm"
+            (click)="deleteContract(contract.id!)">
+
+            Delete
+
+          </button>
+
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>

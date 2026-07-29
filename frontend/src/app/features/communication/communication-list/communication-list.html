@@ -1,0 +1,48 @@
+<div class="container mt-4">
+
+  <h2>Communication List</h2>
+
+  <table class="table table-bordered table-striped">
+
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Vendor ID</th>
+        <th>Subject</th>
+        <th>Type</th>
+        <th>Status</th>
+        <th>Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      <tr *ngFor="let communication of communications">
+
+        <td>{{ communication.id }}</td>
+        <td>{{ communication.vendor_id }}</td>
+        <td>{{ communication.subject }}</td>
+        <td>{{ communication.communication_type }}</td>
+        <td>{{ communication.status }}</td>
+        <td>{{ communication.communication_date }}</td>
+
+        <td>
+
+          <button
+            class="btn btn-danger btn-sm"
+            (click)="deleteCommunication(communication.id!)">
+
+            Delete
+
+          </button>
+
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>

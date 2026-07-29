@@ -1,0 +1,78 @@
+<div class="container">
+
+    <div class="header">
+
+        <h2>Notifications</h2>
+
+        <span class="badge">
+
+            {{notifications.length}}
+
+        </span>
+
+    </div>
+
+    <div
+        class="notification-card"
+        *ngFor="let notification of notifications">
+
+        <div class="left">
+
+            <h3>
+
+                {{notification.title}}
+
+                <span
+                    *ngIf="!notification.read"
+                    class="new">
+
+                    NEW
+
+                </span>
+
+            </h3>
+
+            <p>{{notification.message}}</p>
+
+            <small>{{notification.time}}</small>
+
+        </div>
+
+        <div class="right">
+
+            <span
+                [ngClass]="{
+
+                'high':notification.priority==='High',
+
+                'medium':notification.priority==='Medium',
+
+                'low':notification.priority==='Low'
+
+            }">
+
+                {{notification.priority}}
+
+            </span>
+
+            <button
+                class="read-btn"
+                (click)="markAsRead(notification)">
+
+                Mark Read
+
+            </button>
+
+            <button
+                class="delete-btn"
+                (click)="deleteNotification(notification.id)">
+
+                Delete
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

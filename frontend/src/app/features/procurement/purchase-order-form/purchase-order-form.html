@@ -1,0 +1,90 @@
+<div class="container">
+
+    <h2>Create Purchase Order</h2>
+
+    <div class="form">
+
+        <label>Purchase Order Number</label>
+
+        <input
+            type="text"
+            [(ngModel)]="purchaseOrder.poNumber">
+
+        <label>Vendor</label>
+
+        <select
+            [(ngModel)]="purchaseOrder.vendor">
+
+            <option value="">Select Vendor</option>
+
+            <option>ABC Technologies</option>
+            <option>XYZ Solutions</option>
+            <option>Tech Systems</option>
+
+        </select>
+
+        <label>Item Name</label>
+
+        <input
+            type="text"
+            [(ngModel)]="purchaseOrder.item">
+
+        <label>Quantity</label>
+
+        <input
+            type="number"
+            [(ngModel)]="purchaseOrder.quantity">
+
+        <label>Unit Price</label>
+
+        <input
+            type="number"
+            [(ngModel)]="purchaseOrder.unitPrice">
+
+        <label>Order Date</label>
+
+        <input
+            type="date"
+            [(ngModel)]="purchaseOrder.orderDate">
+
+        <label>Expected Delivery</label>
+
+        <input
+            type="date"
+            [(ngModel)]="purchaseOrder.expectedDelivery">
+
+        <label>Status</label>
+
+        <select
+            [(ngModel)]="purchaseOrder.status">
+
+            <option>Pending</option>
+            <option>Approved</option>
+            <option>Delivered</option>
+            <option>Cancelled</option>
+
+        </select>
+
+        <div class="buttons">
+
+            <button
+                class="save-btn"
+                (click)="savePurchaseOrder()">
+
+                Save
+
+            </button>
+
+            <button
+                class="reset-btn"
+                (click)="resetForm()">
+
+                Reset
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
