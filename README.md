@@ -1,1 +1,0 @@
-# Team-2-Vendor-Reliability-Intelligence-Platform-Group-1
