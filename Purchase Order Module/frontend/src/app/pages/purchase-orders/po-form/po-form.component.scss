@@ -1,0 +1,146 @@
+.po-form-page {
+  max-width: 860px;
+}
+
+/* ── Step body wrapper ─────────────────────────────────── */
+.step-body {
+  background: #fff;
+  border-radius: 0 0 12px 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+
+/* ── Shared form row ───────────────────────────────────── */
+.form-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+
+  mat-form-field { flex: 1; min-width: 180px; }
+  .flex-2        { flex: 2; }
+}
+
+.full-field {
+  width: 100%;
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* ── Line item card ────────────────────────────────────── */
+.item-card {
+  border: 1px solid #e8eaf6;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 14px;
+  background: #fafbff;
+}
+
+.item-card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+/* ── Subtotal bar ──────────────────────────────────────── */
+.subtotal-bar {
+  background: #e8eaf6;
+  border-radius: 8px;
+  padding: 10px 16px;
+  margin-top: 12px;
+  font-size: 14px;
+  color: #3949ab;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Totals box ────────────────────────────────────────── */
+.totals-box {
+  background: #f8f9ff;
+  border: 1px solid #c5cae9;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+
+.t-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #546e7a;
+  margin-bottom: 6px;
+}
+
+.t-total {
+  font-size: 16px;
+  color: #1a237e;
+  strong { font-size: 22px; font-weight: 700; }
+}
+
+/* ── Review card ───────────────────────────────────────── */
+.review-card {
+  background: #e8f5e9;
+  border: 1px solid #a5d6a7;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.r-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: #546e7a;
+}
+
+.r-value {
+  font-size: 14px;
+  color: #1a1a2e;
+  font-weight: 500;
+}
+
+/* ── PO hint ───────────────────────────────────────────── */
+.po-id-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #e3f2fd;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #0277bd;
+
+  .material-icons { font-size: 18px; }
+  code {
+    font-weight: 700;
+    background: #bbdefb;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+}
+
+/* ── Step action buttons ───────────────────────────────── */
+.step-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  align-items: center;
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+}
+
+.submit-btn {
+  height: 46px;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}

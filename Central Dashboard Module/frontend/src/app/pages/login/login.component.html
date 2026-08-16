@@ -1,0 +1,140 @@
+<div class="login-shell">
+
+  <!-- ── Left branding panel ───────────────────────────────────────────── -->
+  <div class="login-brand-panel">
+    <!-- Decorative orbs are ::before / ::after in CSS -->
+    <div style="position:relative;z-index:1">
+
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:48px">
+        <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#6366f1,#06b6d4);
+                    display:flex;align-items:center;justify-content:center;">
+          <mat-icon style="color:#fff;font-size:24px;width:24px;height:24px">verified_user</mat-icon>
+        </div>
+        <div>
+          <div style="font-size:1.1rem;font-weight:800;color:#fff;letter-spacing:-.01em">VRIP</div>
+          <div style="font-size:.68rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em">Intelligence Platform</div>
+        </div>
+      </div>
+
+      <h1 style="font-size:2.2rem;font-weight:800;color:#fff;line-height:1.15;letter-spacing:-.03em;margin-bottom:16px">
+        Procurement<br/>Intelligence<br/><span style="color:#818cf8">at your fingertips.</span>
+      </h1>
+
+      <p style="font-size:.9rem;color:rgba(255,255,255,.55);line-height:1.7;margin-bottom:40px;max-width:340px">
+        Centralised vendor analytics, real-time procurement monitoring,
+        and supply-chain risk management in a single platform.
+      </p>
+
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div *ngFor="let f of features" style="display:flex;align-items:center;gap:12px">
+          <div style="width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.07);
+                      display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <mat-icon style="font-size:16px;width:16px;height:16px;color:#818cf8">{{ f.icon }}</mat-icon>
+          </div>
+          <span style="font-size:.83rem;color:rgba(255,255,255,.7)">{{ f.text }}</span>
+        </div>
+      </div>
+
+      <!-- Stats row -->
+      <div style="display:flex;gap:32px;margin-top:48px;padding-top:32px;border-top:1px solid rgba(255,255,255,.08)">
+        <div *ngFor="let s of stats">
+          <div style="font-size:1.4rem;font-weight:800;color:#fff">{{ s.value }}</div>
+          <div style="font-size:.72rem;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em">{{ s.label }}</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Right form panel ───────────────────────────────────────────────── -->
+  <div class="login-form-panel">
+    <div class="login-card">
+
+      <!-- Header -->
+      <div style="margin-bottom:32px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <div style="width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,#4f46e5,#06b6d4);
+                      display:flex;align-items:center;justify-content:center;">
+            <mat-icon style="color:#fff;font-size:18px;width:18px;height:18px">lock_open</mat-icon>
+          </div>
+          <h2 style="font-size:1.25rem;font-weight:800;color:#0f172a;letter-spacing:-.02em">Sign In</h2>
+        </div>
+        <p style="font-size:.82rem;color:#64748b">Welcome back. Enter your credentials to continue.</p>
+      </div>
+
+      <!-- Error alert -->
+      <div *ngIf="errorMsg" style="background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;
+           padding:10px 14px;margin-bottom:20px;display:flex;align-items:center;gap:8px">
+        <mat-icon style="color:#dc2626;font-size:16px;width:16px;height:16px">error_outline</mat-icon>
+        <span style="font-size:.8rem;color:#991b1b">{{ errorMsg }}</span>
+      </div>
+
+      <!-- Form -->
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+        <!-- Email -->
+        <div style="margin-bottom:18px">
+          <label style="font-size:.75rem;font-weight:700;color:#374151;letter-spacing:.04em;
+                         text-transform:uppercase;display:block;margin-bottom:6px">
+            Email Address
+          </label>
+          <div class="input-wrap" [class.input-error]="isInvalid('email')">
+            <mat-icon class="input-icon">alternate_email</mat-icon>
+            <input type="email" formControlName="email" placeholder="admin@vrip.com"
+                   autocomplete="email" class="inp"/>
+          </div>
+          <div *ngIf="isInvalid('email')" class="field-error">
+            {{ form.get('email')?.hasError('required') ? 'Email is required' : 'Enter a valid email' }}
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div style="margin-bottom:24px">
+          <label style="font-size:.75rem;font-weight:700;color:#374151;letter-spacing:.04em;
+                         text-transform:uppercase;display:block;margin-bottom:6px">
+            Password
+          </label>
+          <div class="input-wrap" [class.input-error]="isInvalid('password')">
+            <mat-icon class="input-icon">lock_outline</mat-icon>
+            <input [type]="showPass ? 'text' : 'password'" formControlName="password"
+                   placeholder="Enter your password" autocomplete="current-password" class="inp"/>
+            <button type="button" class="inp-toggle" (click)="showPass = !showPass">
+              <mat-icon>{{ showPass ? 'visibility' : 'visibility_off' }}</mat-icon>
+            </button>
+          </div>
+          <div *ngIf="isInvalid('password')" class="field-error">Password is required</div>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" [disabled]="loading()" class="submit-btn">
+          <span *ngIf="!loading()">
+            Sign In
+            <mat-icon style="font-size:16px;width:16px;height:16px;vertical-align:middle;margin-left:6px">arrow_forward</mat-icon>
+          </span>
+          <span *ngIf="loading()" style="display:flex;align-items:center;gap:10px;justify-content:center">
+            <mat-spinner diameter="18"></mat-spinner>
+            Authenticating...
+          </span>
+        </button>
+
+      </form>
+
+      <!-- Demo credentials -->
+      <div style="margin-top:24px;padding:14px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0">
+        <div style="font-size:.72rem;font-weight:700;color:#64748b;text-transform:uppercase;
+                    letter-spacing:.08em;margin-bottom:8px;display:flex;align-items:center;gap:6px">
+          <mat-icon style="font-size:13px;width:13px;height:13px">info_outline</mat-icon>
+          Demo Credentials
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <div *ngFor="let d of demoUsers" class="demo-chip" (click)="fillDemo(d.email, d.pass)">
+            <div style="font-size:.72rem;font-weight:700;color:#4f46e5">{{ d.role }}</div>
+            <div style="font-size:.68rem;color:#64748b">{{ d.email }}</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

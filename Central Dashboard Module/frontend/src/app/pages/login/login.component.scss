@@ -1,0 +1,111 @@
+// Input wrapper
+.input-wrap {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+  padding: 0 12px;
+  transition: border-color .15s, box-shadow .15s;
+  gap: 8px;
+
+  &:focus-within {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79,70,229,.12);
+  }
+
+  &.input-error {
+    border-color: #ef4444;
+    &:focus-within { box-shadow: 0 0 0 3px rgba(239,68,68,.12); }
+  }
+
+  .input-icon {
+    font-size: 17px;
+    width: 17px;
+    height: 17px;
+    color: #94a3b8;
+    flex-shrink: 0;
+  }
+
+  .inp {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: .875rem;
+    color: #0f172a;
+    font-family: 'Inter', sans-serif;
+    padding: 12px 0;
+
+    &::placeholder { color: #cbd5e1; }
+  }
+
+  .inp-toggle {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    color: #94a3b8;
+    transition: color .15s;
+    mat-icon { font-size: 17px; width: 17px; height: 17px; }
+    &:hover { color: #4f46e5; }
+  }
+}
+
+// Field error
+.field-error {
+  font-size: .72rem;
+  color: #ef4444;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+// Submit button
+.submit-btn {
+  width: 100%;
+  height: 46px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: #fff;
+  font-size: .9rem;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: opacity .15s, transform .15s, box-shadow .15s;
+  box-shadow: 0 4px 14px rgba(79,70,229,.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover:not(:disabled) {
+    opacity: .92;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(79,70,229,.4);
+  }
+
+  &:disabled {
+    opacity: .7;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+// Demo credential chips
+.demo-chip {
+  padding: 8px 10px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+
+  &:hover {
+    border-color: #4f46e5;
+    background: #f0f0ff;
+  }
+}

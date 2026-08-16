@@ -1,0 +1,32 @@
+// Bootstrap 5
+@import 'bootstrap/scss/bootstrap';
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  background: #f5f5f5;
+}
+
+/* ── Status chips ── */
+.status-chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+
+  &.pending   { background: #fff3cd; color: #856404; }
+  &.approved  { background: #d1e7dd; color: #0f5132; }
+  &.rejected  { background: #f8d7da; color: #842029; }
+  &.suspended { background: #e2e3e5; color: #41464b; }
+}
+
+.page-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}

@@ -1,0 +1,624 @@
+<div class="app-shell">
+  <app-sidebar [collapsed]="sidebarCollapsed()"></app-sidebar>
+  <div class="main-content">
+    <app-topbar title="Executive Dashboard" (toggleSidebar)="sidebarCollapsed.set(!sidebarCollapsed())"></app-topbar>
+    <div class="page-body">
+
+      <!-- Header -->
+      <div class="dash-header">
+        <div class="dash-title">
+          <h1>Procurement Intelligence</h1>
+          <p>{{ today }}</p>
+        </div>
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <!-- Active filter chip -->
+          <div *ngIf="activeFilter()" class="active-filter-chip">
+            <mat-icon style="font-size:14px;width:14px;height:14px">filter_alt</mat-icon>
+            {{ activeFilter() }}
+            <button (click)="clearCategoryFilter()" style="border:none;background:none;cursor:pointer;padding:0;margin-left:4px;line-height:1">
+              <mat-icon style="font-size:14px;width:14px;height:14px;color:#4f46e5">close</mat-icon>
+            </button>
+          </div>
+          <button mat-stroked-button (click)="refresh()" [disabled]="loading()" style="border-radius:8px;font-size:.8rem">
+            <mat-icon style="font-size:16px;width:16px;height:16px">refresh</mat-icon>&nbsp;Refresh
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter bar -->
+      <div class="filter-bar">
+        <span class="filter-label">Filters</span>
+        <form [formGroup]="filterForm" class="d-flex flex-wrap align-items-center gap-2 flex-fill">
+          <mat-form-field appearance="outline" style="min-width:150px;max-width:170px">
+            <mat-label>From Date</mat-label>
+            <input matInput [matDatepicker]="dpA" formControlName="date_from"/>
+            <mat-datepicker-toggle matIconSuffix [for]="dpA"></mat-datepicker-toggle>
+            <mat-datepicker #dpA></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="outline" style="min-width:150px;max-width:170px">
+            <mat-label>To Date</mat-label>
+            <input matInput [matDatepicker]="dpB" formControlName="date_to"/>
+            <mat-datepicker-toggle matIconSuffix [for]="dpB"></mat-datepicker-toggle>
+            <mat-datepicker #dpB></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="outline" style="min-width:165px;max-width:190px">
+            <mat-label>Vendor Category</mat-label>
+            <mat-select formControlName="vendor_category">
+              <mat-option value="">All Categories</mat-option>
+              <mat-option *ngFor="let c of vendorCategories" [value]="c.value">{{ c.label }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" style="min-width:120px;max-width:140px">
+            <mat-label>Top Vendors</mat-label>
+            <mat-select formControlName="top_n">
+              <mat-option [value]="5">Top 5</mat-option>
+              <mat-option [value]="10">Top 10</mat-option>
+              <mat-option [value]="20">Top 20</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="filter-actions">
+            <button class="btn-apply" mat-flat-button (click)="applyFilters()" [disabled]="loading()">Apply</button>
+            <button class="btn-reset" mat-stroked-button (click)="resetFilters()">Reset</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Loading -->
+      <div *ngIf="loading()" class="loading-overlay">
+        <mat-spinner diameter="44"></mat-spinner>
+        <p>Loading analytics data...</p>
+      </div>
+
+      <ng-container *ngIf="!loading() && data()">
+
+        <!-- ── KPI Row 1 ──────────────────────────────────────────────── -->
+        <div class="kpi-grid">
+          <div class="kpi-card kpi-primary">
+            <div class="kpi-top">
+              <div class="kpi-icon-wrap bg-primary"><mat-icon>storefront</mat-icon></div>
+              <span class="kpi-trend up"><mat-icon>trending_up</mat-icon>Active</span>
+            </div>
+            <div class="kpi-value">{{ data()!.kpi_summary.total_vendors }}</div>
+            <div class="kpi-label">Total Vendors</div>
+            <div class="kpi-sub">
+              <span class="kpi-dot green"></span>{{ data()!.kpi_summary.active_vendors }} active
+              &nbsp;&bull;&nbsp;
+              <span class="kpi-dot orange"></span>{{ data()!.kpi_summary.pending_vendors }} pending
+            </div>
+          </div>
+
+          <div class="kpi-card kpi-info">
+            <div class="kpi-top">
+              <div class="kpi-icon-wrap bg-info"><mat-icon>receipt_long</mat-icon></div>
+              <span class="kpi-trend neutral"><mat-icon>remove</mat-icon>Orders</span>
+            </div>
+            <div class="kpi-value">{{ data()!.kpi_summary.total_purchase_orders }}</div>
+            <div class="kpi-label">Purchase Orders</div>
+            <div class="kpi-sub">
+              <span class="kpi-dot green"></span>{{ data()!.kpi_summary.active_purchase_orders }} active
+              &nbsp;&bull;&nbsp;
+              <span class="kpi-dot red"></span>{{ data()!.kpi_summary.overdue_orders_count }} overdue
+            </div>
+          </div>
+
+          <div class="kpi-card kpi-success">
+            <div class="kpi-top">
+              <div class="kpi-icon-wrap bg-success"><mat-icon>local_shipping</mat-icon></div>
+              <span class="kpi-trend"
+                [class.up]="data()!.kpi_summary.on_time_delivery_rate >= 80"
+                [class.down]="data()!.kpi_summary.on_time_delivery_rate < 60"
+                [class.neutral]="data()!.kpi_summary.on_time_delivery_rate >= 60 && data()!.kpi_summary.on_time_delivery_rate < 80">
+                <mat-icon>trending_up</mat-icon>{{ data()!.kpi_summary.on_time_delivery_rate | number:'1.0-0' }}%
+              </span>
+            </div>
+            <div class="kpi-value">{{ data()!.kpi_summary.on_time_delivery_rate | number:'1.1-1' }}%</div>
+            <div class="kpi-label">On-Time Delivery</div>
+            <div class="kpi-sub">Based on delivery records</div>
+          </div>
+
+          <div class="kpi-card kpi-purple">
+            <div class="kpi-top">
+              <div class="kpi-icon-wrap bg-purple"><mat-icon>speed</mat-icon></div>
+              <span class="kpi-trend"
+                [class.up]="data()!.kpi_summary.avg_vendor_reliability_score >= 70"
+                [class.down]="data()!.kpi_summary.avg_vendor_reliability_score < 50"
+                [class.neutral]="data()!.kpi_summary.avg_vendor_reliability_score >= 50 && data()!.kpi_summary.avg_vendor_reliability_score < 70">
+                <mat-icon>trending_up</mat-icon>Score
+              </span>
+            </div>
+            <div class="kpi-value">{{ data()!.kpi_summary.avg_vendor_reliability_score | number:'1.0-0' }}</div>
+            <div class="kpi-label">Avg Reliability Score</div>
+            <div class="kpi-sub">Out of 100 &bull; {{ data()!.kpi_summary.active_vendors }} vendors</div>
+          </div>
+        </div>
+
+        <!-- ── KPI Row 2 ──────────────────────────────────────────────── -->
+        <div class="kpi-grid" style="margin-bottom:24px">
+          <div class="kpi-card kpi-warning">
+            <div class="kpi-top"><div class="kpi-icon-wrap bg-warning"><mat-icon>attach_money</mat-icon></div></div>
+            <div class="kpi-value" style="font-size:1.3rem">{{ data()!.kpi_summary.total_procurement_value | currency:'USD':'symbol':'1.0-0' }}</div>
+            <div class="kpi-label">Total Procurement Value</div>
+            <div class="kpi-sub">Cumulative spend</div>
+          </div>
+
+          <div class="kpi-card kpi-success">
+            <div class="kpi-top">
+              <div class="kpi-icon-wrap bg-success"><mat-icon>gavel</mat-icon></div>
+              <span class="kpi-trend"
+                [class.up]="data()!.kpi_summary.contract_compliance_rate >= 80"
+                [class.down]="data()!.kpi_summary.contract_compliance_rate < 60"
+                [class.neutral]="data()!.kpi_summary.contract_compliance_rate >= 60 && data()!.kpi_summary.contract_compliance_rate < 80">
+                <mat-icon>trending_up</mat-icon>{{ data()!.kpi_summary.contract_compliance_rate | number:'1.0-0' }}%
+              </span>
+            </div>
+            <div class="kpi-value">{{ data()!.kpi_summary.contract_compliance_rate | number:'1.1-1' }}%</div>
+            <div class="kpi-label">Contract Compliance</div>
+            <div class="kpi-sub">{{ data()!.kpi_summary.total_contracts }} contracts</div>
+          </div>
+
+          <div class="kpi-card kpi-danger">
+            <div class="kpi-top">
+              <div class="kpi-icon-wrap bg-danger"><mat-icon>warning_amber</mat-icon></div>
+              <span class="kpi-trend down" *ngIf="data()!.kpi_summary.overdue_orders_count > 0">
+                <mat-icon>trending_up</mat-icon>Alert
+              </span>
+            </div>
+            <div class="kpi-value">{{ data()!.kpi_summary.overdue_orders_count }}</div>
+            <div class="kpi-label">Overdue Orders</div>
+            <div class="kpi-sub">Require attention</div>
+          </div>
+
+          <div class="kpi-card kpi-warning">
+            <div class="kpi-top">
+              <div class="kpi-icon-wrap bg-warning"><mat-icon>event_busy</mat-icon></div>
+              <span class="kpi-trend down" *ngIf="data()!.kpi_summary.expiring_contracts_count > 0">
+                <mat-icon>schedule</mat-icon>30 days
+              </span>
+            </div>
+            <div class="kpi-value">{{ data()!.kpi_summary.expiring_contracts_count }}</div>
+            <div class="kpi-label">Expiring Contracts</div>
+            <div class="kpi-sub">Next 30 days</div>
+          </div>
+        </div>
+
+        <!-- ── Row A: Delivery + PO Status ─────────────────────────── -->
+        <div class="section-title">Performance Metrics</div>
+        <div class="chart-grid g-3-2" style="margin-bottom:16px">
+
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <div class="panel-icon p-blue"><mat-icon>local_shipping</mat-icon></div>
+                Delivery Performance
+              </div>
+              <span class="panel-badge">12 months</span>
+            </div>
+            <div class="panel-body">
+              <canvas baseChart [data]="deliveryChartData()" [options]="barOptions" type="bar"></canvas>
+            </div>
+          </div>
+
+          <div class="panel status-chart">
+            <div class="panel-header">
+              <div class="panel-title">
+                <div class="panel-icon p-cyan"><mat-icon>donut_large</mat-icon></div>
+                Order Status
+              </div>
+              <span class="panel-badge click-hint">Click segment to filter</span>
+            </div>
+            <div class="panel-body">
+              <canvas baseChart [data]="procurementStatusChart()" [options]="doughnutClickOptions" type="doughnut"></canvas>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ── Row B: Cost + Reliability ─────────────────────────────── -->
+        <div class="chart-grid g-2" style="margin-bottom:16px">
+
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <div class="panel-icon p-green"><mat-icon>trending_up</mat-icon></div>
+                Procurement Spend Analysis
+              </div>
+              <span class="panel-badge">12 months</span>
+            </div>
+            <div class="panel-body">
+              <canvas baseChart [data]="costChartData()" [options]="lineOptions" type="line"></canvas>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <div class="panel-icon p-purple"><mat-icon>speed</mat-icon></div>
+                Reliability Score Trend
+              </div>
+              <span class="panel-badge">12 months</span>
+            </div>
+            <div class="panel-body">
+              <canvas baseChart [data]="reliabilityChartData()" [options]="lineOptions" type="line"></canvas>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ── Row C: Monthly POs + Vendor Category ─────────────────── -->
+        <div class="section-title">Procurement Breakdown</div>
+        <div class="chart-grid g-3-2" style="margin-bottom:16px">
+
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <div class="panel-icon p-blue"><mat-icon>bar_chart</mat-icon></div>
+                Monthly Purchase Order Volume
+              </div>
+              <span class="panel-badge">12 months</span>
+            </div>
+            <div class="panel-body">
+              <canvas baseChart [data]="monthlyPoChart()" [options]="barOptions" type="bar"></canvas>
+            </div>
+          </div>
+
+          <div class="panel category-chart">
+            <div class="panel-header">
+              <div class="panel-title">
+                <div class="panel-icon p-orange"><mat-icon>category</mat-icon></div>
+                Vendor Categories
+              </div>
+              <span class="panel-badge click-hint">Click to drill down</span>
+            </div>
+            <div class="panel-body">
+              <canvas baseChart [data]="vendorCategoryChart()" [options]="pieClickOptions" type="pie"></canvas>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ── Row D: Top Vendors + Risk ─────────────────────────────── -->
+        <div class="section-title">Vendor Intelligence</div>
+        <div class="chart-grid g-3-2" style="margin-bottom:16px">
+
+          <!-- Top Vendors — clickable rows -->
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <div class="panel-icon p-blue"><mat-icon>leaderboard</mat-icon></div>
+                Top Vendors by Reliability
+              </div>
+              <span class="panel-badge click-hint">Click row to drill down</span>
+            </div>
+            <div class="data-table-wrap">
+              <table mat-table [dataSource]="data()!.top_vendors">
+                <ng-container matColumnDef="rank">
+                  <th mat-header-cell *matHeaderCellDef>#</th>
+                  <td mat-cell *matCellDef="let v; let i=index">
+                    <span style="font-weight:700;color:#64748b">{{ i + 1 }}</span>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef>Vendor</th>
+                  <td mat-cell *matCellDef="let v">
+                    <div style="font-weight:600;color:#0f172a;font-size:.83rem">{{ v.vendor_name }}</div>
+                    <div style="font-size:.72rem;color:#94a3b8">{{ categoryLabel(v.category) }}</div>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="score">
+                  <th mat-header-cell *matHeaderCellDef>Reliability</th>
+                  <td mat-cell *matCellDef="let v">
+                    <div class="d-flex align-items-center gap-2">
+                      <span [class]="scoreClass(v.reliability_score)" style="min-width:28px;font-size:.82rem">
+                        {{ v.reliability_score | number:'1.0-0' }}
+                      </span>
+                      <div class="score-bar">
+                        <div class="score-fill" [class]="scoreClass(v.reliability_score)"
+                             [style.width.%]="v.reliability_score"></div>
+                      </div>
+                    </div>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="delivery">
+                  <th mat-header-cell *matHeaderCellDef>On-Time</th>
+                  <td mat-cell *matCellDef="let v">
+                    <span [class]="scoreClass(v.on_time_delivery_rate)">
+                      {{ v.on_time_delivery_rate | number:'1.0-0' }}%
+                    </span>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="value">
+                  <th mat-header-cell *matHeaderCellDef>Value (USD)</th>
+                  <td mat-cell *matCellDef="let v" style="font-weight:600">
+                    {{ v.total_value | currency:'USD':'symbol':'1.0-0' }}
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="vendorCols"></tr>
+                <tr mat-row *matRowDef="let row; columns: vendorCols;"
+                    class="clickable-row" (click)="onVendorRowClick(row)"
+                    [class.active-row]="vendorDrill()?.vendor_id === row.vendor_id"></tr>
+              </table>
+            </div>
+          </div>
+
+          <!-- Risk Distribution — clickable -->
+          <div class="panel risk-chart">
+            <div class="panel-header">
+              <div class="panel-title">
+                <div class="panel-icon p-red"><mat-icon>shield</mat-icon></div>
+                Procurement Risk
+              </div>
+              <span class="panel-badge click-hint">Click to see details</span>
+            </div>
+            <div class="panel-body">
+              <canvas baseChart [data]="riskChart()" [options]="riskClickOptions" type="doughnut"></canvas>
+              <div style="margin-top:16px">
+                <div *ngFor="let r of data()!.risk_distribution" class="risk-row">
+                  <div class="risk-row-left">
+                    <div class="risk-dot" [style.background]="riskColor(r.risk_level)"></div>
+                    <span style="font-size:.8rem;font-weight:600;color:#0f172a">{{ r.risk_level }}</span>
+                  </div>
+                  <div class="risk-row-right">
+                    <span class="risk-count">{{ r.count }} vendors</span>
+                    <div class="risk-mini-bar">
+                      <div class="risk-mini-fill" [style.width.%]="r.percentage" [style.background]="riskColor(r.risk_level)"></div>
+                    </div>
+                    <span class="risk-pct">{{ r.percentage | number:'1.0-0' }}%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ── Drill-down loading ──────────────────────────────────────── -->
+        <div *ngIf="drillLoading()" class="loading-overlay" style="min-height:120px">
+          <mat-spinner diameter="36"></mat-spinner>
+          <p>Loading drill-down data...</p>
+        </div>
+
+        <!-- ── Drill-down panel ──────────────────────────────────────── -->
+        <div *ngIf="drillType() && !drillLoading()" id="drill-panel" class="drill-panel">
+          <div class="drill-header">
+            <div class="drill-header-left">
+              <div class="drill-icon">
+                <mat-icon>{{ drillType() === 'vendor' ? 'storefront' : 'category' }}</mat-icon>
+              </div>
+              <div>
+                <div class="drill-title">{{ drillTitle }}</div>
+                <div class="drill-subtitle">
+                  {{ drillType() === 'vendor' ? 'Vendor Performance Detail' : 'Category Analysis' }}
+                </div>
+              </div>
+            </div>
+            <button mat-icon-button (click)="closeDrill()" matTooltip="Close drill-down">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+
+          <!-- ── Vendor Drill-Down ──────────────────────────────────── -->
+          <ng-container *ngIf="drillType() === 'vendor' && vendorDrill() as vd">
+            <div class="drill-kpis">
+              <div class="drill-kpi">
+                <div class="drill-kpi-val">{{ vd.reliability_score | number:'1.0-0' }}</div>
+                <div class="drill-kpi-lbl">Reliability Score</div>
+              </div>
+              <div class="drill-kpi">
+                <div class="drill-kpi-val">{{ vd.total_orders }}</div>
+                <div class="drill-kpi-lbl">Total Orders</div>
+              </div>
+              <div class="drill-kpi">
+                <div class="drill-kpi-val">{{ vd.total_spend | currency:'USD':'symbol':'1.0-0' }}</div>
+                <div class="drill-kpi-lbl">Total Spend</div>
+              </div>
+              <div class="drill-kpi">
+                <div class="drill-kpi-val">{{ vd.on_time_rate | number:'1.0-0' }}%</div>
+                <div class="drill-kpi-lbl">On-Time Rate</div>
+              </div>
+              <div class="drill-kpi">
+                <div class="drill-kpi-val">{{ vd.total_deliveries }}</div>
+                <div class="drill-kpi-lbl">Deliveries</div>
+              </div>
+              <div class="drill-kpi">
+                <div class="drill-kpi-val">{{ vd.avg_quality | number:'1.1-1' }}</div>
+                <div class="drill-kpi-lbl">Avg Quality / 5</div>
+              </div>
+            </div>
+
+            <div class="drill-grid">
+              <div class="panel">
+                <div class="panel-header">
+                  <div class="panel-title">
+                    <div class="panel-icon p-blue"><mat-icon>bar_chart</mat-icon></div>
+                    Monthly Order Volume — {{ vd.vendor_name }}
+                  </div>
+                </div>
+                <div class="panel-body">
+                  <canvas baseChart [data]="drillMonthlyChart()" [options]="barOptions" type="bar"></canvas>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="panel-header">
+                  <div class="panel-title">
+                    <div class="panel-icon p-blue"><mat-icon>receipt_long</mat-icon></div>
+                    Recent Purchase Orders
+                  </div>
+                </div>
+                <div class="data-table-wrap">
+                  <table mat-table [dataSource]="vd.recent_orders">
+                    <ng-container matColumnDef="po_number">
+                      <th mat-header-cell *matHeaderCellDef>PO#</th>
+                      <td mat-cell *matCellDef="let po">
+                        <span style="font-family:monospace;font-size:.75rem;background:#f1f5f9;padding:2px 7px;border-radius:4px;color:#4f46e5;font-weight:600">
+                          {{ po.po_number }}
+                        </span>
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="status">
+                      <th mat-header-cell *matHeaderCellDef>Status</th>
+                      <td mat-cell *matCellDef="let po">
+                        <span [class]="'badge ' + statusBadge(po.status)">{{ po.status }}</span>
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="amount">
+                      <th mat-header-cell *matHeaderCellDef>Amount</th>
+                      <td mat-cell *matCellDef="let po" style="font-weight:700">
+                        {{ po.total_amount | currency:'USD':'symbol':'1.0-0' }}
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="order_date">
+                      <th mat-header-cell *matHeaderCellDef>Order Date</th>
+                      <td mat-cell *matCellDef="let po" style="color:#64748b">{{ po.order_date ?? 'N/A' }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="expected_delivery">
+                      <th mat-header-cell *matHeaderCellDef>Expected</th>
+                      <td mat-cell *matCellDef="let po" style="color:#64748b">{{ po.expected_delivery ?? 'N/A' }}</td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="drillOrderCols"></tr>
+                    <tr mat-row *matRowDef="let row; columns: drillOrderCols;"></tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+
+          <!-- ── Category Drill-Down ─────────────────────────────────── -->
+          <ng-container *ngIf="drillType() === 'category' && categoryDrill() as cd">
+            <div class="drill-kpis">
+              <div class="drill-kpi">
+                <div class="drill-kpi-val">{{ cd.vendor_count }}</div>
+                <div class="drill-kpi-lbl">Vendors</div>
+              </div>
+              <div class="drill-kpi">
+                <div class="drill-kpi-val">{{ cd.avg_reliability | number:'1.0-0' }}</div>
+                <div class="drill-kpi-lbl">Avg Reliability</div>
+              </div>
+              <div class="drill-kpi">
+                <div class="drill-kpi-val">{{ cd.total_spend | currency:'USD':'symbol':'1.0-0' }}</div>
+                <div class="drill-kpi-lbl">Total Spend</div>
+              </div>
+              <div class="drill-kpi">
+                <div class="drill-kpi-val">{{ cd.total_orders }}</div>
+                <div class="drill-kpi-lbl">Total Orders</div>
+              </div>
+              <div class="drill-kpi">
+                <div class="drill-kpi-val">{{ cd.on_time_rate | number:'1.0-0' }}%</div>
+                <div class="drill-kpi-lbl">On-Time Rate</div>
+              </div>
+            </div>
+
+            <div class="drill-grid">
+              <div class="panel">
+                <div class="panel-header">
+                  <div class="panel-title">
+                    <div class="panel-icon p-green"><mat-icon>trending_up</mat-icon></div>
+                    Monthly Spend — {{ categoryLabel(cd.category) }}
+                  </div>
+                </div>
+                <div class="panel-body">
+                  <canvas baseChart [data]="drillMonthlyChart()" [options]="lineOptions" type="line"></canvas>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="panel-header">
+                  <div class="panel-title">
+                    <div class="panel-icon p-blue"><mat-icon>leaderboard</mat-icon></div>
+                    Vendors in Category
+                  </div>
+                </div>
+                <div class="data-table-wrap">
+                  <table mat-table [dataSource]="cd.vendors">
+                    <ng-container matColumnDef="name">
+                      <th mat-header-cell *matHeaderCellDef>Vendor</th>
+                      <td mat-cell *matCellDef="let v" style="font-weight:600;font-size:.83rem">{{ v.vendor_name }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="score">
+                      <th mat-header-cell *matHeaderCellDef>Score</th>
+                      <td mat-cell *matCellDef="let v">
+                        <span [class]="scoreClass(v.reliability_score)" style="font-weight:700">
+                          {{ v.reliability_score | number:'1.0-0' }}
+                        </span>
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="delivery">
+                      <th mat-header-cell *matHeaderCellDef>On-Time</th>
+                      <td mat-cell *matCellDef="let v" [class]="scoreClass(v.on_time_delivery_rate)">
+                        {{ v.on_time_delivery_rate | number:'1.0-0' }}%
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="orders">
+                      <th mat-header-cell *matHeaderCellDef>Orders</th>
+                      <td mat-cell *matCellDef="let v">{{ v.total_orders }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="value">
+                      <th mat-header-cell *matHeaderCellDef>Value</th>
+                      <td mat-cell *matCellDef="let v" style="font-weight:700">
+                        {{ v.total_value | currency:'USD':'symbol':'1.0-0' }}
+                      </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="['name','score','delivery','orders','value']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['name','score','delivery','orders','value'];"
+                        class="clickable-row" (click)="onVendorRowClick(row)"></tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+
+        <!-- ── Recent Purchase Orders ─────────────────────────────────── -->
+        <div class="section-title">Recent Activity</div>
+        <div class="panel" style="margin-bottom:32px">
+          <div class="panel-header">
+            <div class="panel-title">
+              <div class="panel-icon p-blue"><mat-icon>receipt_long</mat-icon></div>
+              Recent Purchase Orders
+            </div>
+            <span class="panel-badge">Latest {{ data()!.recent_purchase_orders.length }}</span>
+          </div>
+          <div class="data-table-wrap">
+            <table mat-table [dataSource]="data()!.recent_purchase_orders">
+              <ng-container matColumnDef="po_number">
+                <th mat-header-cell *matHeaderCellDef>PO Number</th>
+                <td mat-cell *matCellDef="let po">
+                  <span style="font-family:monospace;font-size:.78rem;background:#f1f5f9;padding:2px 7px;border-radius:4px;color:#4f46e5;font-weight:600">
+                    {{ po.po_number }}
+                  </span>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="vendor">
+                <th mat-header-cell *matHeaderCellDef>Vendor</th>
+                <td mat-cell *matCellDef="let po" style="font-weight:600;color:#0f172a">{{ po.vendor_name }}</td>
+              </ng-container>
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>Status</th>
+                <td mat-cell *matCellDef="let po">
+                  <span [class]="'badge ' + statusBadge(po.status)">{{ po.status }}</span>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="amount">
+                <th mat-header-cell *matHeaderCellDef>Amount</th>
+                <td mat-cell *matCellDef="let po" style="font-weight:700">
+                  {{ po.total_amount | currency:'USD':'symbol':'1.2-2' }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="order_date">
+                <th mat-header-cell *matHeaderCellDef>Order Date</th>
+                <td mat-cell *matCellDef="let po" style="color:#64748b">{{ po.order_date ?? 'N/A' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="expected_delivery">
+                <th mat-header-cell *matHeaderCellDef>Expected Delivery</th>
+                <td mat-cell *matCellDef="let po" style="color:#64748b">{{ po.expected_delivery ?? 'N/A' }}</td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="orderCols"></tr>
+              <tr mat-row *matRowDef="let row; columns: orderCols;"></tr>
+            </table>
+          </div>
+        </div>
+
+      </ng-container>
+    </div>
+  </div>
+</div>

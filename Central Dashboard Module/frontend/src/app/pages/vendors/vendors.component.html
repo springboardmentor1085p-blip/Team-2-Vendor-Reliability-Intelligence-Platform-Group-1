@@ -1,0 +1,383 @@
+<div class="app-shell">
+  <app-sidebar [collapsed]="sidebarCollapsed()"></app-sidebar>
+  <div class="main-content">
+    <app-topbar title="Vendor Management" (toggleSidebar)="sidebarCollapsed.set(!sidebarCollapsed())"></app-topbar>
+    <div class="page-body">
+
+      <!-- Header -->
+      <div class="dash-header">
+        <div class="dash-title">
+          <h1>Vendor Management</h1>
+          <p>Manage, approve and monitor all supplier relationships</p>
+        </div>
+        <button class="submit-btn" style="width:auto;padding:0 20px;height:40px;font-size:.83rem"
+                (click)="openAddDialog()">
+          <mat-icon style="font-size:16px;width:16px;height:16px;vertical-align:middle;margin-right:6px">add</mat-icon>
+          Add Vendor
+        </button>
+      </div>
+
+      <!-- Stats strip -->
+      <div class="kpi-grid" *ngIf="stats()">
+        <div class="kpi-card kpi-primary">
+          <div class="kpi-top"><div class="kpi-icon-wrap bg-primary"><mat-icon>storefront</mat-icon></div></div>
+          <div class="kpi-value">{{ stats()!.total }}</div>
+          <div class="kpi-label">Total Vendors</div>
+        </div>
+        <div class="kpi-card kpi-success">
+          <div class="kpi-top"><div class="kpi-icon-wrap bg-success"><mat-icon>check_circle</mat-icon></div></div>
+          <div class="kpi-value">{{ stats()!.approved }}</div>
+          <div class="kpi-label">Approved</div>
+        </div>
+        <div class="kpi-card kpi-warning">
+          <div class="kpi-top"><div class="kpi-icon-wrap bg-warning"><mat-icon>hourglass_empty</mat-icon></div></div>
+          <div class="kpi-value">{{ stats()!.pending }}</div>
+          <div class="kpi-label">Pending Review</div>
+        </div>
+        <div class="kpi-card kpi-danger">
+          <div class="kpi-top"><div class="kpi-icon-wrap bg-danger"><mat-icon>block</mat-icon></div></div>
+          <div class="kpi-value">{{ stats()!.suspended + stats()!.rejected }}</div>
+          <div class="kpi-label">Suspended / Rejected</div>
+        </div>
+      </div>
+
+      <!-- Filter bar -->
+      <div class="filter-bar">
+        <span class="filter-label">Search &amp; Filter</span>
+
+        <mat-form-field appearance="outline" style="min-width:220px">
+          <mat-label>Search vendors</mat-label>
+          <input matInput [formControl]="searchCtrl" placeholder="Name, email, contact..."/>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="min-width:165px">
+          <mat-label>Category</mat-label>
+          <mat-select [formControl]="categoryCtrl">
+            <mat-option value="">All Categories</mat-option>
+            <mat-option *ngFor="let c of categories" [value]="c.value">{{ c.label }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="min-width:145px">
+          <mat-label>Status</mat-label>
+          <mat-select [formControl]="statusCtrl">
+            <mat-option value="">All Statuses</mat-option>
+            <mat-option *ngFor="let s of statuses" [value]="s.value">{{ s.label }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="filter-actions">
+          <button class="btn-reset" mat-stroked-button (click)="clearFilters()">Clear</button>
+        </div>
+
+        <span style="margin-left:auto;font-size:.78rem;color:#64748b;font-weight:600">
+          {{ filtered().length }} vendor{{ filtered().length !== 1 ? 's' : '' }} found
+        </span>
+      </div>
+
+      <!-- Loading -->
+      <div *ngIf="loading()" class="loading-overlay">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Loading vendors...</p>
+      </div>
+
+      <!-- Table -->
+      <div class="panel" *ngIf="!loading()">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div class="panel-icon p-blue"><mat-icon>list_alt</mat-icon></div>
+            Vendor Directory
+          </div>
+        </div>
+        <div class="data-table-wrap">
+          <table mat-table [dataSource]="filtered()" matSort>
+
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Vendor</th>
+              <td mat-cell *matCellDef="let v">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <div class="vendor-avatar" [style.background]="avatarBg(v.category)">
+                    {{ v.name.charAt(0).toUpperCase() }}
+                  </div>
+                  <div>
+                    <div style="font-weight:700;color:#0f172a;font-size:.85rem">{{ v.name }}</div>
+                    <div style="font-size:.72rem;color:#94a3b8">{{ v.email }}</div>
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="category">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Category</th>
+              <td mat-cell *matCellDef="let v">
+                <span class="cat-chip" [class]="'cat-'+v.category">{{ categoryLabel(v.category) }}</span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="contact">
+              <th mat-header-cell *matHeaderCellDef>Contact</th>
+              <td mat-cell *matCellDef="let v" style="color:#64748b;font-size:.82rem">
+                {{ v.contact_person || 'N/A' }}
+                <div *ngIf="v.phone" style="font-size:.72rem;color:#94a3b8">{{ v.phone }}</div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="score">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Reliability</th>
+              <td mat-cell *matCellDef="let v">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <span [class]="scoreClass(v.reliability_score)"
+                        style="font-size:.82rem;font-weight:700;min-width:28px">
+                    {{ v.reliability_score | number:'1.0-0' }}
+                  </span>
+                  <div class="score-bar" style="flex:1;min-width:60px">
+                    <div class="score-fill" [class]="scoreClass(v.reliability_score)"
+                         [style.width.%]="v.reliability_score"></div>
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+              <td mat-cell *matCellDef="let v">
+                <span [class]="'badge ' + statusBadge(v.status)">{{ v.status }}</span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="created_at">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Registered</th>
+              <td mat-cell *matCellDef="let v" style="font-size:.8rem;color:#64748b">
+                {{ v.created_at | date:'dd MMM yyyy' }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let v">
+                <div style="display:flex;gap:4px">
+                  <button mat-icon-button matTooltip="View Details"
+                          (click)="viewDetail(v)" style="color:#4f46e5">
+                    <mat-icon style="font-size:18px;width:18px;height:18px">visibility</mat-icon>
+                  </button>
+                  <button mat-icon-button matTooltip="Approve"
+                          *ngIf="v.status==='pending'"
+                          (click)="doAction('approve', v)" style="color:#10b981">
+                    <mat-icon style="font-size:18px;width:18px;height:18px">check_circle</mat-icon>
+                  </button>
+                  <button mat-icon-button matTooltip="Suspend"
+                          *ngIf="v.status==='approved'"
+                          (click)="doAction('suspend', v)" style="color:#f59e0b">
+                    <mat-icon style="font-size:18px;width:18px;height:18px">pause_circle</mat-icon>
+                  </button>
+                  <button mat-icon-button matTooltip="Reject"
+                          *ngIf="v.status==='pending'"
+                          (click)="doAction('reject', v)" style="color:#ef4444">
+                    <mat-icon style="font-size:18px;width:18px;height:18px">cancel</mat-icon>
+                  </button>
+                  <button mat-icon-button matTooltip="Re-activate"
+                          *ngIf="v.status==='suspended' || v.status==='rejected'"
+                          (click)="doAction('approve', v)" style="color:#10b981">
+                    <mat-icon style="font-size:18px;width:18px;height:18px">restart_alt</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="columns"></tr>
+            <tr mat-row *matRowDef="let row; columns: columns;"
+                style="cursor:pointer" (click)="viewDetail(row)"></tr>
+          </table>
+
+          <div *ngIf="filtered().length === 0" style="padding:40px;text-align:center;color:#94a3b8">
+            <mat-icon style="font-size:40px;width:40px;height:40px;display:block;margin:0 auto 12px">storefront</mat-icon>
+            No vendors found matching your filters.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ── Add Vendor Dialog ───────────────────────────────────────────────── -->
+<div *ngIf="showAddDialog()" class="dialog-backdrop" (click)="closeDialog()">
+  <div class="dialog-card" (click)="$event.stopPropagation()">
+    <div class="dialog-header">
+      <h3>Register New Vendor</h3>
+      <button mat-icon-button (click)="closeDialog()"><mat-icon>close</mat-icon></button>
+    </div>
+    <div class="dialog-body">
+      <form [formGroup]="addForm" (ngSubmit)="submitAdd()">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Company Name *</label>
+            <input formControlName="name" placeholder="e.g. Apex Steel Ltd" class="form-inp"
+                   [class.error]="isInvalid('name')"/>
+            <span class="field-err" *ngIf="isInvalid('name')">Required</span>
+          </div>
+          <div class="form-group">
+            <label>Email Address *</label>
+            <input formControlName="email" type="email" placeholder="vendor@company.com" class="form-inp"
+                   [class.error]="isInvalid('email')"/>
+            <span class="field-err" *ngIf="isInvalid('email')">Valid email required</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Category *</label>
+            <select formControlName="category" class="form-inp" [class.error]="isInvalid('category')">
+              <option value="">Select category</option>
+              <option *ngFor="let c of categories" [value]="c.value">{{ c.label }}</option>
+            </select>
+            <span class="field-err" *ngIf="isInvalid('category')">Required</span>
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input formControlName="phone" placeholder="+1-555-0100" class="form-inp"/>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Contact Person</label>
+            <input formControlName="contact_person" placeholder="Full name" class="form-inp"/>
+          </div>
+          <div class="form-group">
+            <label>Website</label>
+            <input formControlName="website" placeholder="https://..." class="form-inp"/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Address</label>
+          <textarea formControlName="address" placeholder="Full address" class="form-inp"
+                    rows="2" style="resize:vertical"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Tax / VAT ID</label>
+          <input formControlName="tax_id" placeholder="e.g. US-123456789" class="form-inp"/>
+        </div>
+
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px">
+          <button type="button" class="btn-reset" mat-stroked-button (click)="closeDialog()">Cancel</button>
+          <button type="submit" class="submit-btn" [disabled]="addLoading()"
+                  style="width:auto;padding:0 24px;height:40px;font-size:.83rem">
+            <span *ngIf="!addLoading()">Register Vendor</span>
+            <span *ngIf="addLoading()" style="display:flex;align-items:center;gap:8px">
+              <mat-spinner diameter="16"></mat-spinner> Saving...
+            </span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ── Vendor Detail Dialog ────────────────────────────────────────────── -->
+<div *ngIf="selectedVendor()" class="dialog-backdrop" (click)="selectedVendor.set(null)">
+  <div class="dialog-card dialog-wide" (click)="$event.stopPropagation()">
+    <div class="dialog-header">
+      <h3>Vendor Details</h3>
+      <button mat-icon-button (click)="selectedVendor.set(null)"><mat-icon>close</mat-icon></button>
+    </div>
+    <div class="dialog-body" *ngIf="selectedVendor() as v">
+
+      <!-- Top info row -->
+      <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px">
+        <div class="vendor-avatar vendor-avatar-lg" [style.background]="avatarBg(v.category)">
+          {{ v.name.charAt(0).toUpperCase() }}
+        </div>
+        <div style="flex:1">
+          <div style="font-size:1.15rem;font-weight:800;color:#0f172a">{{ v.name }}</div>
+          <div style="font-size:.82rem;color:#64748b;margin-top:2px">{{ v.email }}</div>
+          <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+            <span [class]="'badge ' + statusBadge(v.status)">{{ v.status }}</span>
+            <span class="cat-chip" [class]="'cat-'+v.category">{{ categoryLabel(v.category) }}</span>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:1.6rem;font-weight:800" [class]="scoreClass(v.reliability_score)">
+            {{ v.reliability_score | number:'1.0-0' }}
+          </div>
+          <div style="font-size:.7rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em">Reliability</div>
+        </div>
+      </div>
+
+      <!-- Metrics grid -->
+      <div *ngIf="detailData()" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px">
+        <div class="detail-metric">
+          <div class="detail-metric-val">{{ detailData()!.total_orders }}</div>
+          <div class="detail-metric-lbl">Total Orders</div>
+        </div>
+        <div class="detail-metric">
+          <div class="detail-metric-val">{{ detailData()!.total_spend | currency:'USD':'symbol':'1.0-0' }}</div>
+          <div class="detail-metric-lbl">Total Spend</div>
+        </div>
+        <div class="detail-metric">
+          <div class="detail-metric-val">{{ detailData()!.on_time_rate | number:'1.0-0' }}%</div>
+          <div class="detail-metric-lbl">On-Time Rate</div>
+        </div>
+        <div class="detail-metric">
+          <div class="detail-metric-val">{{ detailData()!.total_deliveries }}</div>
+          <div class="detail-metric-lbl">Deliveries</div>
+        </div>
+      </div>
+
+      <!-- Info fields -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+        <div class="info-field" *ngIf="v.contact_person">
+          <span class="info-label">Contact Person</span>
+          <span class="info-val">{{ v.contact_person }}</span>
+        </div>
+        <div class="info-field" *ngIf="v.phone">
+          <span class="info-label">Phone</span>
+          <span class="info-val">{{ v.phone }}</span>
+        </div>
+        <div class="info-field" *ngIf="v.website">
+          <span class="info-label">Website</span>
+          <a [href]="v.website" target="_blank" class="info-val" style="color:#4f46e5">{{ v.website }}</a>
+        </div>
+        <div class="info-field" *ngIf="v.tax_id">
+          <span class="info-label">Tax / VAT ID</span>
+          <span class="info-val">{{ v.tax_id }}</span>
+        </div>
+        <div class="info-field" *ngIf="v.address" style="grid-column:1/-1">
+          <span class="info-label">Address</span>
+          <span class="info-val">{{ v.address }}</span>
+        </div>
+        <div class="info-field">
+          <span class="info-label">Registered</span>
+          <span class="info-val">{{ v.created_at | date:'dd MMM yyyy, HH:mm' }}</span>
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div style="display:flex;gap:8px;flex-wrap:wrap;padding-top:12px;border-top:1px solid #e2e8f0">
+        <button *ngIf="v.status==='pending'" class="action-btn green"
+                (click)="doAction('approve', v); selectedVendor.set(null)">
+          <mat-icon>check_circle</mat-icon> Approve
+        </button>
+        <button *ngIf="v.status==='approved'" class="action-btn orange"
+                (click)="doAction('suspend', v); selectedVendor.set(null)">
+          <mat-icon>pause_circle</mat-icon> Suspend
+        </button>
+        <button *ngIf="v.status==='pending'" class="action-btn red"
+                (click)="doAction('reject', v); selectedVendor.set(null)">
+          <mat-icon>cancel</mat-icon> Reject
+        </button>
+        <button *ngIf="v.status==='suspended' || v.status==='rejected'" class="action-btn green"
+                (click)="doAction('approve', v); selectedVendor.set(null)">
+          <mat-icon>restart_alt</mat-icon> Re-activate
+        </button>
+        <button class="action-btn blue" (click)="recalcScore(v.id)">
+          <mat-icon>refresh</mat-icon> Recalc Score
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

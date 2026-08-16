@@ -1,0 +1,122 @@
+/* ── Global Styles ─────────────────────────────────────────── */
+* { box-sizing: border-box; }
+
+:root {
+  --primary:       #1a237e;
+  --primary-light: #3949ab;
+  --accent:        #00897b;
+  --bg-page:       #f0f2f8;
+  --bg-card:       #ffffff;
+  --text-main:     #1a1a2e;
+  --text-sub:      #546e7a;
+  --text-muted:    #90a4ae;
+  --sidebar-bg:    #1a237e;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Inter', 'Roboto', sans-serif;
+  background: var(--bg-page);
+  color: var(--text-main);
+  margin: 0;
+}
+
+/* ── Bootstrap primary override ───────────────────────────── */
+.btn-primary { background-color: var(--primary) !important; border-color: var(--primary) !important; }
+.btn-primary:hover { background-color: var(--primary-light) !important; }
+.text-primary { color: var(--primary) !important; }
+
+/* ── STATUS BADGES — matches title-case enum values ───────── */
+.status-badge {
+  display: inline-flex; align-items: center;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.4px; text-transform: uppercase; white-space: nowrap;
+
+  /* Pending */
+  &.s-pending    { background:#fff8e1; color:#e65100; border:1px solid #ffcc80; }
+  /* Approved */
+  &.s-approved   { background:#e8f5e9; color:#1b5e20; border:1px solid #a5d6a7; }
+  /* Dispatched */
+  &.s-dispatched { background:#e3f2fd; color:#01579b; border:1px solid #90caf9; }
+  /* Delivered */
+  &.s-delivered  { background:#ede7f6; color:#4527a0; border:1px solid #b39ddb; }
+  /* Completed */
+  &.s-completed  { background:#e0f2f1; color:#004d40; border:1px solid #80cbc4; }
+  /* Cancelled */
+  &.s-cancelled  { background:#fce4ec; color:#880e4f; border:1px solid #f48fb1; }
+}
+
+/* ── Page wrapper card ─────────────────────────────────────── */
+.vr-card {
+  background: var(--bg-card);
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.04);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+/* ── Page header ───────────────────────────────────────────── */
+.vr-page-header {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; flex-wrap: wrap;
+  gap: 12px; margin-bottom: 24px;
+  .vr-title   { font-size: 22px; font-weight: 700; color: var(--primary); margin: 0; }
+  .vr-subtitle{ font-size: 13px; color: var(--text-sub); margin-top: 3px; }
+}
+
+/* ── Stat grid ─────────────────────────────────────────────── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px; margin-bottom: 24px;
+}
+.stat-card {
+  background: var(--bg-card); border-radius: 12px; padding: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  display: flex; align-items: center; gap: 16px;
+  border-left: 4px solid var(--primary);
+  .stat-icon-wrap {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    .material-icons { font-size: 24px; }
+  }
+  .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--text-sub); margin-bottom: 2px; }
+  .stat-value { font-size: 26px; font-weight: 700; line-height: 1; }
+}
+
+/* ── Table ─────────────────────────────────────────────────── */
+.vr-table-wrap { border-radius: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+.mat-mdc-table { width: 100%; }
+.mat-mdc-header-row { background: #e8eaf6 !important; }
+.mat-mdc-header-cell { font-size: 11px !important; font-weight: 700 !important; text-transform: uppercase; letter-spacing: .5px; color: var(--primary) !important; }
+.mat-mdc-row:hover { background: #f5f6ff !important; }
+
+/* ── Form helpers ──────────────────────────────────────────── */
+.form-row {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  mat-form-field { flex: 1; min-width: 200px; }
+  .flex-2 { flex: 2; }
+}
+.full-field { width: 100%; display: block; }
+
+/* ── Snackbar ──────────────────────────────────────────────── */
+.snack-success .mdc-snackbar__surface { background: #2e7d32 !important; }
+.snack-error   .mdc-snackbar__surface { background: #c62828 !important; }
+.snack-info    .mdc-snackbar__surface { background: #0277bd !important; }
+
+/* ── Empty / loading states ────────────────────────────────── */
+.vr-empty {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; padding: 64px 24px; gap: 12px; color: var(--text-sub);
+  .material-icons { font-size: 56px; color: var(--text-muted); }
+  p { font-size: 15px; margin: 0; }
+}
+.vr-loading { display: flex; justify-content: center; align-items: center; padding: 60px; }
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .vr-page-header { flex-direction: column; }
+  .form-row { flex-direction: column; }
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+}

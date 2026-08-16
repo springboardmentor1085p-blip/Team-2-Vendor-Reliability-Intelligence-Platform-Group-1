@@ -1,0 +1,417 @@
+<div class="po-form-page">
+
+  <!-- Page Header -->
+  <div class="vr-page-header">
+    <div>
+      <h1 class="vr-title d-flex align-items-center gap-2">
+        <span class="material-icons">add_circle</span>
+        Generate New Purchase Order
+      </h1>
+      <p class="vr-subtitle">
+        PO number is auto-generated on submit &mdash;
+        format: <code>PO-{{ getMonthPrefix() }}-XXXXXX</code>
+      </p>
+    </div>
+    <a routerLink="/purchase-orders" class="btn btn-outline-secondary d-flex align-items-center gap-2">
+      <span class="material-icons" style="font-size:18px">arrow_back</span> Back to List
+    </a>
+  </div>
+
+  <!-- Stepper — each step has its OWN formGroup so Next works independently -->
+  <mat-stepper orientation="vertical" #stepper [linear]="true">
+
+    <!-- ════════════════════════════════════════════════════════════
+         STEP 1 — Order Details
+         ════════════════════════════════════════════════════════════ -->
+    <mat-step label="Order Details" [stepControl]="step1">
+      <form [formGroup]="step1">
+        <div class="step-body">
+
+          <!-- Vendor + Priority row -->
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="flex-2">
+              <mat-label>Vendor *</mat-label>
+              <mat-select formControlName="vendor_id">
+                @if (vendorsLoading) {
+                  <mat-option disabled>Loading vendors…</mat-option>
+                }
+                @if (!vendorsLoading && vendors.length === 0) {
+                  <mat-option disabled>No approved vendors found</mat-option>
+                }
+                @for (v of vendors; track v.id) {
+                  <mat-option [value]="v.id">
+                    {{ v.company_name }} &mdash; <span style="color:#90a4ae">{{ v.vendor_code }}</span>
+                  </mat-option>
+                }
+              </mat-select>
+              <mat-icon matPrefix>business</mat-icon>
+              @if (step1.get('vendor_id')?.invalid && step1.get('vendor_id')?.touched) {
+                <mat-error>Please select a vendor</mat-error>
+              }
+              <mat-hint>Only approved vendors are listed</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Priority *</mat-label>
+              <mat-select formControlName="priority">
+                @for (p of priorities; track p) {
+                  <mat-option [value]="p">{{ p }}</mat-option>
+                }
+              </mat-select>
+              <mat-icon matPrefix>flag</mat-icon>
+            </mat-form-field>
+          </div>
+
+          <!-- Title -->
+          <mat-form-field appearance="outline" class="full-field">
+            <mat-label>Order Title *</mat-label>
+            <input matInput formControlName="title"
+              placeholder="e.g. Q3 Office Supplies Procurement" />
+            <mat-icon matPrefix>title</mat-icon>
+            @if (step1.get('title')?.hasError('required') && step1.get('title')?.touched) {
+              <mat-error>Title is required</mat-error>
+            }
+            @if (step1.get('title')?.hasError('minlength') && step1.get('title')?.touched) {
+              <mat-error>Minimum 5 characters</mat-error>
+            }
+            <mat-hint align="end">{{ step1.get('title')?.value?.length || 0 }}/255</mat-hint>
+          </mat-form-field>
+
+          <!-- Description -->
+          <mat-form-field appearance="outline" class="full-field">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description" rows="3"
+              placeholder="Brief description of this purchase order…"></textarea>
+            <mat-icon matPrefix>description</mat-icon>
+          </mat-form-field>
+
+          <!-- Dates row -->
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Required By Date</mat-label>
+              <input matInput [matDatepicker]="dp1" formControlName="required_date" />
+              <mat-datepicker-toggle matIconSuffix [for]="dp1" />
+              <mat-datepicker #dp1 />
+              <mat-hint>When items are needed</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Expected Delivery Date</mat-label>
+              <input matInput [matDatepicker]="dp2" formControlName="expected_delivery_date" />
+              <mat-datepicker-toggle matIconSuffix [for]="dp2" />
+              <mat-datepicker #dp2 />
+              <mat-hint>Agreed delivery date</mat-hint>
+            </mat-form-field>
+          </div>
+
+          <!-- Step actions -->
+          <div class="step-actions">
+            <button mat-raised-button color="primary" matStepperNext type="button"
+              (click)="step1.markAllAsTouched()">
+              Next &nbsp;<span class="material-icons" style="font-size:18px;vertical-align:middle">chevron_right</span>
+            </button>
+          </div>
+
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- ════════════════════════════════════════════════════════════
+         STEP 2 — Line Items
+         ════════════════════════════════════════════════════════════ -->
+    <mat-step label="Line Items" [stepControl]="step2">
+      <form [formGroup]="step2">
+        <div class="step-body">
+
+          <!-- Header row -->
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold mb-0" style="color:#1a237e">
+              Order Items &nbsp;
+              <span class="badge bg-primary rounded-pill">{{ itemControls.length }}</span>
+            </h6>
+            <button type="button"
+              class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1"
+              (click)="addItem()">
+              <span class="material-icons" style="font-size:16px">add</span> Add Item
+            </button>
+          </div>
+
+          <!-- Items FormArray -->
+          <div formArrayName="items">
+            @for (item of itemControls; track $index; let i = $index) {
+              <div class="item-card" [formGroupName]="i">
+
+                <!-- Item card header -->
+                <div class="item-card-header">
+                  <span class="fw-bold" style="color:#3949ab;font-size:13px">
+                    Item #{{ i + 1 }}
+                  </span>
+                  <span class="text-muted small ms-auto me-3">
+                    Line Total: <strong class="text-primary">
+                      {{ lineTotal(i) | number:'1.2-2' }}
+                    </strong>
+                  </span>
+                  @if (itemControls.length > 1) {
+                    <button type="button"
+                      class="btn btn-sm btn-outline-danger d-flex align-items-center"
+                      (click)="removeItem(i)">
+                      <span class="material-icons" style="font-size:16px">delete</span>
+                    </button>
+                  }
+                </div>
+
+                <!-- Code + Name row -->
+                <div class="form-row">
+                  <mat-form-field appearance="outline" style="max-width:160px">
+                    <mat-label>Item Code</mat-label>
+                    <input matInput formControlName="item_code" placeholder="SKU-001" />
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" class="flex-2">
+                    <mat-label>Item Name *</mat-label>
+                    <input matInput formControlName="item_name"
+                      placeholder="e.g. A4 Paper Ream" />
+                    @if (item.get('item_name')?.invalid && item.get('item_name')?.touched) {
+                      <mat-error>Item name is required (min 2 chars)</mat-error>
+                    }
+                  </mat-form-field>
+                </div>
+
+                <!-- Qty + Unit + Price row -->
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Quantity *</mat-label>
+                    <input matInput type="number" formControlName="quantity"
+                      min="0.001" step="1" />
+                    @if (item.get('quantity')?.hasError('min') && item.get('quantity')?.touched) {
+                      <mat-error>Must be greater than 0</mat-error>
+                    }
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" style="max-width:120px">
+                    <mat-label>Unit</mat-label>
+                    <input matInput formControlName="unit" placeholder="pcs" />
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Unit Price *</mat-label>
+                    <input matInput type="number" formControlName="unit_price"
+                      min="0" step="0.01" />
+                    <span matTextPrefix>$&nbsp;</span>
+                    @if (item.get('unit_price')?.hasError('min') && item.get('unit_price')?.touched) {
+                      <mat-error>Cannot be negative</mat-error>
+                    }
+                  </mat-form-field>
+                </div>
+
+              </div>
+            }
+          </div>
+
+          <!-- Subtotal bar -->
+          <div class="subtotal-bar">
+            <span class="material-icons" style="font-size:16px;vertical-align:middle">calculate</span>
+            Subtotal: <strong>{{ subtotal | number:'1.2-2' }}</strong>
+          </div>
+
+          <!-- Step actions -->
+          <div class="step-actions">
+            <button mat-stroked-button matStepperPrevious type="button">
+              <span class="material-icons" style="font-size:18px;vertical-align:middle">chevron_left</span>
+              Back
+            </button>
+            <button mat-raised-button color="primary" matStepperNext type="button"
+              (click)="step2.markAllAsTouched()">
+              Next &nbsp;<span class="material-icons" style="font-size:18px;vertical-align:middle">chevron_right</span>
+            </button>
+          </div>
+
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- ════════════════════════════════════════════════════════════
+         STEP 3 — Financials & Delivery
+         ════════════════════════════════════════════════════════════ -->
+    <mat-step label="Financials & Delivery" [stepControl]="step3">
+      <form [formGroup]="step3">
+        <div class="step-body">
+
+          <!-- Currency + Tax + Discount -->
+          <div class="form-row">
+            <mat-form-field appearance="outline" style="max-width:140px">
+              <mat-label>Currency *</mat-label>
+              <mat-select formControlName="currency">
+                @for (c of currencies; track c) {
+                  <mat-option [value]="c">{{ c }}</mat-option>
+                }
+              </mat-select>
+              <mat-icon matPrefix>currency_exchange</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Tax Rate (%)</mat-label>
+              <input matInput type="number" formControlName="tax_rate"
+                min="0" max="100" step="0.5" />
+              <mat-icon matPrefix>percent</mat-icon>
+              <mat-hint>e.g. 10 = 10%</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Discount Amount</mat-label>
+              <input matInput type="number" formControlName="discount_amount"
+                min="0" step="0.01" />
+              <mat-icon matPrefix>discount</mat-icon>
+            </mat-form-field>
+          </div>
+
+          <!-- Totals summary box -->
+          <div class="totals-box">
+            <div class="t-row">
+              <span>Subtotal</span>
+              <span>{{ step3.get('currency')?.value }} {{ subtotal | number:'1.2-2' }}</span>
+            </div>
+            <div class="t-row">
+              <span>Tax ({{ step3.get('tax_rate')?.value || 0 }}%)</span>
+              <span>{{ step3.get('currency')?.value }} {{ taxAmount | number:'1.2-2' }}</span>
+            </div>
+            <div class="t-row">
+              <span>Discount</span>
+              <span>− {{ step3.get('currency')?.value }} {{ step3.get('discount_amount')?.value || 0 | number:'1.2-2' }}</span>
+            </div>
+            <hr class="my-2" />
+            <div class="t-row t-total">
+              <span>TOTAL</span>
+              <strong>{{ step3.get('currency')?.value }} {{ totalAmount | number:'1.2-2' }}</strong>
+            </div>
+          </div>
+
+          <mat-divider class="my-3" />
+
+          <!-- Delivery address -->
+          <mat-form-field appearance="outline" class="full-field">
+            <mat-label>Delivery Address</mat-label>
+            <textarea matInput formControlName="delivery_address" rows="2"
+              placeholder="Full delivery address…"></textarea>
+            <mat-icon matPrefix>location_on</mat-icon>
+          </mat-form-field>
+
+          <!-- Shipping method -->
+          <mat-form-field appearance="outline">
+            <mat-label>Shipping Method</mat-label>
+            <mat-select formControlName="shipping_method">
+              <mat-option value="">— Select —</mat-option>
+              @for (m of shippingMethods; track m) {
+                <mat-option [value]="m">{{ m }}</mat-option>
+              }
+            </mat-select>
+            <mat-icon matPrefix>local_shipping</mat-icon>
+          </mat-form-field>
+
+          <!-- Step actions -->
+          <div class="step-actions">
+            <button mat-stroked-button matStepperPrevious type="button">
+              <span class="material-icons" style="font-size:18px;vertical-align:middle">chevron_left</span>
+              Back
+            </button>
+            <button mat-raised-button color="primary" matStepperNext type="button">
+              Next &nbsp;<span class="material-icons" style="font-size:18px;vertical-align:middle">chevron_right</span>
+            </button>
+          </div>
+
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- ════════════════════════════════════════════════════════════
+         STEP 4 — Notes & Submit
+         ════════════════════════════════════════════════════════════ -->
+    <mat-step label="Notes & Submit">
+      <form [formGroup]="step4">
+        <div class="step-body">
+
+          <mat-form-field appearance="outline" class="full-field">
+            <mat-label>Internal Notes (not visible to vendor)</mat-label>
+            <textarea matInput formControlName="internal_notes" rows="3"
+              placeholder="Internal procurement notes…"></textarea>
+            <mat-icon matPrefix>lock</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-field">
+            <mat-label>Vendor Notes (visible to vendor)</mat-label>
+            <textarea matInput formControlName="vendor_notes" rows="3"
+              placeholder="Special instructions for the vendor…"></textarea>
+            <mat-icon matPrefix>chat</mat-icon>
+          </mat-form-field>
+
+          <!-- Review summary card -->
+          <div class="review-card">
+            <h6 class="fw-bold mb-3 d-flex align-items-center gap-2">
+              <span class="material-icons" style="font-size:18px;color:#2e7d32">checklist</span>
+              Order Summary
+            </h6>
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <div class="r-label">Vendor</div>
+                <div class="r-value">{{ getVendorName() }}</div>
+              </div>
+              <div class="col-6">
+                <div class="r-label">Title</div>
+                <div class="r-value">{{ step1.get('title')?.value }}</div>
+              </div>
+              <div class="col-6">
+                <div class="r-label">Priority</div>
+                <div class="r-value">{{ step1.get('priority')?.value }}</div>
+              </div>
+              <div class="col-6">
+                <div class="r-label">Line Items</div>
+                <div class="r-value">{{ itemControls.length }}</div>
+              </div>
+              <div class="col-6">
+                <div class="r-label">Currency</div>
+                <div class="r-value">{{ step3.get('currency')?.value }}</div>
+              </div>
+              <div class="col-6">
+                <div class="r-label">Total Amount</div>
+                <div class="r-value fw-bold" style="font-size:18px;color:#1a237e">
+                  {{ step3.get('currency')?.value }} {{ totalAmount | number:'1.2-2' }}
+                </div>
+              </div>
+            </div>
+
+            <!-- PO ID preview notice -->
+            <div class="po-id-hint">
+              <span class="material-icons">info</span>
+              PO number will be auto-generated:&nbsp;
+              <code>PO-{{ getMonthPrefix() }}-XXXXXX</code>
+            </div>
+          </div>
+
+          <!-- Step actions -->
+          <div class="step-actions justify-content-between">
+            <button mat-stroked-button matStepperPrevious type="button">
+              <span class="material-icons" style="font-size:18px;vertical-align:middle">chevron_left</span>
+              Back
+            </button>
+
+            <button mat-raised-button color="primary"
+              type="button"
+              class="submit-btn"
+              [disabled]="loading"
+              (click)="onSubmit()">
+              @if (loading) {
+                <mat-spinner diameter="22" />
+              } @else {
+                <ng-container>
+                  <span class="material-icons me-1" style="font-size:20px">send</span>
+                  Submit Purchase Order
+                </ng-container>
+              }
+            </button>
+          </div>
+
+        </div>
+      </form>
+    </mat-step>
+
+  </mat-stepper>
+</div>
