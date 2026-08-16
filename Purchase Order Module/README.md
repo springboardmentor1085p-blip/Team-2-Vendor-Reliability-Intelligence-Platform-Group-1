@@ -1,5 +1,5 @@
 # Vendor Reliability Intelligence Platform
-## Member 1 Module: Purchase Order Logic & ID Generation
+## Module: Purchase Order Logic & ID Generation
 
 ---
 
