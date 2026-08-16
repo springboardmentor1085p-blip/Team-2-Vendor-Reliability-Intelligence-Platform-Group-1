@@ -1,5 +1,5 @@
 # Vendor Reliability Intelligence Platform
-## Team B — Core Analytics & Dashboard Module
+## Core Analytics & Dashboard Module
 
 ### Tech Stack
 | Layer | Technology |
