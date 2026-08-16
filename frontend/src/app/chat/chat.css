@@ -4,14 +4,14 @@
   background: #f4f7fc;
 }
 
-/* Page */
+
 .chat-page {
   min-height: calc(100vh - 80px);
   padding: 45px 25px;
   box-sizing: border-box;
 }
 
-/* Main card */
+
 .chat-card {
   width: min(900px, 95%);
   height: 650px;
@@ -24,7 +24,7 @@
   flex-direction: column;
 }
 
-/* Header */
+
 .chat-header {
   background: linear-gradient(135deg, #1769c2, #233f91);
   color: white;
@@ -57,7 +57,7 @@
   opacity: 0.9;
 }
 
-/* Messages area */
+
 .messages {
   flex: 1;
   padding: 25px;
@@ -65,7 +65,7 @@
   background: #f8faff;
 }
 
-/* Empty state */
+
 .empty-chat {
   height: 100%;
   display: flex;
@@ -99,7 +99,7 @@
   font-size: 14px;
 }
 
-/* Message */
+
 .message {
   width: fit-content;
   max-width: 70%;
@@ -123,7 +123,7 @@
   line-height: 1.5;
 }
 
-/* Input section */
+
 .message-input-area {
   padding: 18px 22px;
   background: white;
@@ -132,7 +132,7 @@
   gap: 12px;
 }
 
-/* Input */
+
 .message-input-area input {
   flex: 1;
   height: 48px;
@@ -155,7 +155,7 @@
   color: #9aa5b1;
 }
 
-/* Send */
+
 .message-input-area button {
   height: 48px;
   min-width: 110px;
@@ -174,7 +174,7 @@
   transform: translateY(-1px);
 }
 
-/* Scrollbar */
+
 .messages::-webkit-scrollbar {
   width: 7px;
 }
@@ -184,7 +184,7 @@
   border-radius: 10px;
 }
 
-/* Mobile */
+
 @media (max-width: 600px) {
 
   .chat-page {
