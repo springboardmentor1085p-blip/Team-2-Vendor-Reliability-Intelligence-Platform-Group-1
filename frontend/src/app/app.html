@@ -1,0 +1,48 @@
+<nav class="home-nav">
+
+  <a
+    routerLink="/"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: true }">
+    Home
+  </a>
+
+  <a
+    routerLink="/purchase-order"
+    routerLinkActive="active">
+    Purchase Order
+  </a>
+
+  <a
+    routerLink="/tracking"
+    routerLinkActive="active">
+    PO Tracking
+  </a>
+
+  <a
+    routerLink="/chat"
+    routerLinkActive="active">
+    Chat
+  </a>
+
+  <a
+    routerLink="/notifications"
+    routerLinkActive="active">
+    Notifications
+  </a>
+
+  <a
+    routerLink="/export-status"
+    routerLinkActive="active">
+    Export Status
+  </a>
+
+  <a
+    routerLink="/analytics"
+    routerLinkActive="active">
+    Analytics
+  </a>
+
+</nav>
+
+<router-outlet></router-outlet>

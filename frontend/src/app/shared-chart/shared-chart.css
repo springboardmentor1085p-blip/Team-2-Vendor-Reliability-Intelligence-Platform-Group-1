@@ -1,0 +1,79 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #f4f7fc;
+}
+
+/* Analytics page */
+.analytics-page {
+  min-height: calc(100vh - 80px);
+  padding: 45px 25px;
+  box-sizing: border-box;
+}
+
+/* Main card */
+.analytics-card {
+  width: min(1050px, 95%);
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.12);
+}
+
+/* Header */
+.analytics-header {
+  background: linear-gradient(135deg, #1769c2, #233f91);
+  color: white;
+  text-align: center;
+  padding: 32px;
+}
+
+.analytics-header h2 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.analytics-header p {
+  margin: 8px 0 0;
+  font-size: 15px;
+  opacity: 0.9;
+}
+
+/* Chart section */
+.chart-container {
+  padding: 35px;
+  min-height: 450px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* Chart */
+.chart-container canvas {
+  max-width: 100%;
+  max-height: 420px;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+
+  .analytics-page {
+    padding: 25px 12px;
+  }
+
+  .analytics-header {
+    padding: 25px 15px;
+  }
+
+  .analytics-header h2 {
+    font-size: 24px;
+  }
+
+  .chart-container {
+    padding: 20px;
+    min-height: 350px;
+  }
+}

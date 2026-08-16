@@ -1,0 +1,28 @@
+<div class="analytics-page">
+
+  <div class="analytics-card">
+
+    <div class="analytics-header">
+
+      <h2>Vendor Analytics</h2>
+
+      <p>
+        Procurement performance and vendor reliability overview
+      </p>
+
+    </div>
+
+    <div class="chart-container">
+
+      <canvas
+        baseChart
+        [data]="barChartData"
+        [options]="barChartOptions"
+        [type]="'bar'">
+      </canvas>
+
+    </div>
+
+  </div>
+
+</div>

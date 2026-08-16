@@ -1,0 +1,60 @@
+<div class="export-page">
+
+  <div class="export-card">
+
+    <div class="export-header">
+      <div class="export-icon">📤</div>
+
+      <h2>Export Status</h2>
+
+      <p>
+        Monitor the current status of your data export
+      </p>
+    </div>
+
+
+    <div class="export-content">
+
+      <div class="status-section">
+
+        <span class="status-label">
+          Current Status
+        </span>
+
+        <div
+          class="status-badge"
+          [class.processing]="exportStatus === 'Processing'"
+          [class.completed]="exportStatus === 'Completed'"
+          [class.failed]="exportStatus === 'Failed'"
+        >
+          <span class="status-dot"></span>
+
+          {{ exportStatus }}
+        </div>
+
+      </div>
+
+
+      <div class="status-actions">
+
+        <button
+          class="complete-button"
+          (click)="setCompleted()"
+        >
+          ✓ Completed
+        </button>
+
+        <button
+          class="failed-button"
+          (click)="setFailed()"
+        >
+          ✕ Failed
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

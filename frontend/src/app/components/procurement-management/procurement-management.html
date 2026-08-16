@@ -1,0 +1,305 @@
+<div class="header">
+    <h1>Procurement Management</h1>
+    <p>Vendor Reliability Intelligence Platform</p>
+</div>
+<div class="dashboard">
+
+    <div class="card">
+        <h3>Total Requests</h3>
+        <h2>{{ procurements.length }}</h2>
+    </div>
+
+    <div class="card">
+       <h3>Pending Orders</h3>
+        <h2>{{ getPendingCount() }}</h2>
+    </div>
+
+    <div class="card">
+        <h3>Completed Orders</h3>
+        <h2>{{ getCompletedCount() }}</h2>
+    </div>
+
+    <div class="card">
+        <h3>Cancelled Orders</h3>
+        <h2>{{ getCancelledCount() }}</h2>
+    </div>
+
+</div>
+<div class="search-box">
+
+   <input
+type="text"
+placeholder="🔍 Search Request ID"
+[(ngModel)]="searchText">
+
+    <select [(ngModel)]="selectedStatus">
+
+    <option value="">All Status</option>
+    <option>Pending</option>
+    <option>Approved</option>
+    <option>Ordered</option>
+    <option>Delivered</option>
+    <option>Completed</option>
+    <option>Cancelled</option>
+
+</select>
+
+</div>
+<div class="form-container">
+<h3 class="form-title">
+    Add Procurement Request
+</h3>
+<p class="success-message">
+    {{ message }}
+</p>
+  <input
+    type="text"
+    placeholder="Request ID"
+    [(ngModel)]="procurement.requestId">
+    <input
+type="text"
+placeholder="Purchase Order Number"
+[(ngModel)]="procurement.purchaseOrder">
+  <input
+    type="text"
+    placeholder="Item Name"
+    [(ngModel)]="procurement.itemName">
+
+  <input
+    type="number"
+    placeholder="Quantity"
+    [(ngModel)]="procurement.quantity">
+
+  <select [(ngModel)]="procurement.vendor">
+  <option value="">Select Vendor</option>
+
+  <option *ngFor="let vendor of vendors" [value]="vendor">
+    {{ vendor }}
+  </option>
+</select>
+
+  <input
+    type="date"
+    [(ngModel)]="procurement.deliveryDate">
+
+  <select [(ngModel)]="procurement.status">
+    <option *ngFor="let status of statuses" [value]="status">
+      {{ status }}
+    </option>
+  </select>
+<div class="invoice-section">
+
+    <label>Upload Invoice</label>
+
+    <input
+type="file"
+(change)="procurement.invoice = $any($event.target).files[0]?.name">
+
+</div>
+
+<div class="button-group">
+
+   <button (click)="addProcurement()">
+    {{ editingId !== null ? 'Update Procurement' : 'Add Procurement' }}
+</button>
+
+    <button (click)="procurement={
+        requestId:'',
+        purchaseOrder:'',
+        itemName:'',
+        quantity:0,
+        vendor:'',
+        deliveryDate:'',
+        status:'Pending',
+        invoice:''
+    }">
+        Reset Form
+    </button>
+
+</div>
+
+</div>
+<div class="table-container">
+
+    <h3 class="table-title">Procurement Records</h3>
+
+    <table>
+
+  <thead>
+    <tr>
+      <th>Request ID</th>
+      <th>PO Number</th>
+      <th>Item</th>
+      <th>Quantity</th>
+      <th>Vendor</th>
+      <th>Delivery Date</th>
+      <th>Status</th>
+      <th>Invoice</th>
+      <th>Order Tracking</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+
+  <tbody>
+
+ <tr *ngFor="
+  let item of procurements.filter(item =>
+    (item.request_id.toLowerCase().includes(searchText.toLowerCase()) ||
+     item.item_name.toLowerCase().includes(searchText.toLowerCase()) ||
+     item.vendor.toLowerCase().includes(searchText.toLowerCase()))
+    &&
+    (selectedStatus == '' || item.status == selectedStatus)
+  )
+">
+
+  <td>{{ item.request_id }}</td>
+
+  <td>{{ item.purchase_order }}</td>
+
+  <td>{{ item.item_name }}</td>
+
+  <td>{{ item.quantity }}</td>
+
+  <td>{{ item.vendor }}</td>
+
+  <td>{{ item.delivery_date }}</td>
+
+  <td>
+    <span class="status-badge">
+      {{ item.status }}
+    </span>
+  </td>
+
+  <td>
+    {{ item.invoice }}
+  </td>
+
+  <td>
+
+    <div class="step-tracker">
+
+      <span
+        [class.active]="
+          item.status == 'Pending' ||
+          item.status == 'Approved' ||
+          item.status == 'Ordered' ||
+          item.status == 'Delivered' ||
+          item.status == 'Completed'
+        ">
+        ●
+      </span>
+
+      <span class="line"></span>
+
+      <span
+        [class.active]="
+          item.status == 'Approved' ||
+          item.status == 'Ordered' ||
+          item.status == 'Delivered' ||
+          item.status == 'Completed'
+        ">
+        ●
+      </span>
+
+      <span class="line"></span>
+
+      <span
+        [class.active]="
+          item.status == 'Ordered' ||
+          item.status == 'Delivered' ||
+          item.status == 'Completed'
+        ">
+        ●
+      </span>
+
+      <span class="line"></span>
+
+      <span
+        [class.active]="
+          item.status == 'Delivered' ||
+          item.status == 'Completed'
+        ">
+        ●
+      </span>
+
+      <span class="line"></span>
+
+      <span
+        [class.active]="item.status == 'Completed'">
+        ●
+      </span>
+
+    </div>
+
+    <div class="tracking-text">
+      Pending → Approved → Ordered → Delivered → Completed
+    </div>
+
+  </td>
+
+  <td>
+
+    <div class="action-buttons">
+
+      <button
+        style="background:#1976D2"
+        (click)="approveOrder(procurements.indexOf(item))">
+        Approve
+      </button>
+
+      <button
+        style="background:#7B1FA2"
+        (click)="orderPlaced(procurements.indexOf(item))">
+        Order
+      </button>
+
+      <button
+        style="background:#FB8C00"
+        (click)="markDelivered(procurements.indexOf(item))">
+        Deliver
+      </button>
+
+      <button
+        style="background:#2E7D32"
+        (click)="completeOrder(procurements.indexOf(item))">
+        Complete
+      </button>
+
+      <button
+        style="background:#D32F2F"
+        (click)="cancelOrder(procurements.indexOf(item))">
+        Cancel
+      </button>
+
+      <button
+        style="background:#FFC107;color:black"
+        (click)="editProcurement(procurements.indexOf(item))">
+        Edit
+      </button>
+
+      <button
+        style="background:#616161"
+        (click)="deleteProcurement(procurements.indexOf(item))">
+        Delete
+      </button>
+
+    </div>
+
+  </td>
+
+</tr>
+
+  </tbody>
+
+</table>
+<p
+*ngIf="procurements.length==0"
+style="text-align:center;color:gray;font-size:18px;">
+
+No Procurement Records Available
+
+</p>
+</div>
+<div class="footer">
+    Total Records : {{ procurements.length }}
+</div>

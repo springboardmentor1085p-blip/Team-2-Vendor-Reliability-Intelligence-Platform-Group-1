@@ -1,0 +1,106 @@
+<div class="tracking-container">
+
+  <div class="header">
+    <h1>Purchase Order Tracking</h1>
+    <p>Track purchase orders and delivery progress</p>
+  </div>
+
+  <div class="summary">
+
+    <div class="summary-card">
+      <h3>Total Orders</h3>
+      <h2>{{ totalOrders }}</h2>
+    </div>
+
+    <div class="summary-card">
+      <h3>Pending</h3>
+      <h2>{{ pendingOrders }}</h2>
+    </div>
+
+    <div class="summary-card">
+      <h3>Ordered</h3>
+      <h2>{{ orderedOrders }}</h2>
+    </div>
+
+    <div class="summary-card">
+      <h3>Delivered</h3>
+      <h2>{{ deliveredOrders }}</h2>
+    </div>
+
+  </div>
+
+  <div class="table-card">
+
+    <h2>Order Tracking</h2>
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>PO Number</th>
+          <th>Vendor</th>
+          <th>Item</th>
+          <th>Quantity</th>
+          <th>Order Date</th>
+          <th>Expected Delivery</th>
+          <th>Status</th>
+          <th>Progress</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr *ngFor="let order of orders">
+
+          <td>{{ order.po_number }}</td>
+
+          <td>{{ order.vendor }}</td>
+
+          <td>{{ order.item_name }}</td>
+
+          <td>{{ order.quantity }}</td>
+
+          <td>{{ order.order_date }}</td>
+
+          <td>{{ order.expected_delivery }}</td>
+
+          <td>
+            <span class="status">
+              {{ order.status }}
+            </span>
+          </td>
+
+          <td>
+
+            <div class="progress">
+
+              <div
+                class="progress-bar"
+                [style.width.%]="getProgress(order.status)">
+              </div>
+
+            </div>
+
+            <small>
+              {{ getProgress(order.status) }}%
+            </small>
+
+          </td>
+
+        </tr>
+
+        <tr *ngIf="orders.length === 0">
+
+          <td colspan="8">
+            No Purchase Orders Available
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>

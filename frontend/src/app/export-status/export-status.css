@@ -1,0 +1,183 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #f4f7fc;
+}
+
+/* Page */
+.export-page {
+  min-height: calc(100vh - 80px);
+  padding: 50px 25px;
+  box-sizing: border-box;
+}
+
+/* Main card */
+.export-card {
+  width: min(750px, 95%);
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.12);
+}
+
+/* Header */
+.export-header {
+  background: linear-gradient(135deg, #1769c2, #233f91);
+  color: white;
+  text-align: center;
+  padding: 32px;
+}
+
+.export-icon {
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 27px;
+}
+
+.export-header h2 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.export-header p {
+  margin: 8px 0 0;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* Content */
+.export-content {
+  padding: 40px;
+}
+
+/* Status */
+.status-section {
+  background: #f8faff;
+  border: 1px solid #e0e6ef;
+  border-radius: 14px;
+  padding: 25px;
+  text-align: center;
+}
+
+.status-label {
+  display: block;
+  color: #7b8794;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+/* Status badge */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 25px;
+  border-radius: 30px;
+  background: #fff3cd;
+  color: #856404;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* Dot */
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #f0ad00;
+}
+
+/* Processing */
+.status-badge.processing {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status-badge.processing .status-dot {
+  background: #f0ad00;
+}
+
+/* Completed */
+.status-badge.completed {
+  background: #e8f7ee;
+  color: #218838;
+}
+
+.status-badge.completed .status-dot {
+  background: #28a745;
+}
+
+/* Failed */
+.status-badge.failed {
+  background: #fdeaea;
+  color: #c62828;
+}
+
+.status-badge.failed .status-dot {
+  background: #dc3545;
+}
+
+/* Buttons */
+.status-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.status-actions button {
+  flex: 1;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.complete-button {
+  background: #2e7d32;
+}
+
+.complete-button:hover {
+  background: #256628;
+  transform: translateY(-1px);
+}
+
+.failed-button {
+  background: #d32f2f;
+}
+
+.failed-button:hover {
+  background: #b71c1c;
+  transform: translateY(-1px);
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+
+  .export-page {
+    padding: 25px 12px;
+  }
+
+  .export-content {
+    padding: 22px;
+  }
+
+  .status-actions {
+    flex-direction: column;
+  }
+
+  .export-header h2 {
+    font-size: 23px;
+  }
+}

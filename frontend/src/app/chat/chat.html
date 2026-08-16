@@ -1,0 +1,62 @@
+<div class="chat-page">
+
+  <div class="chat-card">
+
+    <div class="chat-header">
+      <div class="chat-icon">💬</div>
+
+      <div>
+        <h2>Procurement Messaging</h2>
+        <p>Communicate with your procurement team</p>
+      </div>
+    </div>
+
+    <div class="messages">
+
+      <div
+        *ngIf="messages.length === 0"
+        class="empty-chat"
+      >
+        <div class="empty-icon">💬</div>
+        <h3>No messages yet</h3>
+        <p>Start a conversation by sending a message.</p>
+      </div>
+
+      <div
+        *ngFor="let msg of messages"
+        class="message"
+      >
+
+        <div class="message-user">
+          User {{ msg.sender_id }}
+        </div>
+
+        <div class="message-text">
+          {{ msg.message }}
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="message-input-area">
+
+      <input
+        type="text"
+        [(ngModel)]="newMessage"
+        placeholder="Type your message..."
+        (keyup.enter)="sendMessage()"
+      />
+
+      <button
+        type="button"
+        (click)="sendMessage()"
+      >
+        Send
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

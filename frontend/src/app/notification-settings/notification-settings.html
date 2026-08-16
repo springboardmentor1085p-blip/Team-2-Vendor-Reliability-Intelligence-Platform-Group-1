@@ -1,0 +1,85 @@
+<div class="notification-page">
+
+  <div class="notification-card">
+
+    <div class="notification-header">
+      <div class="notification-icon">🔔</div>
+
+      <h2>Notification Preferences</h2>
+
+      <p>
+        Manage how you receive procurement updates
+      </p>
+    </div>
+
+    <div class="notification-content">
+
+      <div class="notification-option">
+
+        <div class="option-info">
+          <div class="option-icon">✉️</div>
+
+          <div>
+            <h3>Email Notifications</h3>
+            <p>Receive procurement updates through email</p>
+          </div>
+        </div>
+
+        <input
+          type="checkbox"
+          [(ngModel)]="email_notifications"
+        >
+
+      </div>
+
+
+      <div class="notification-option">
+
+        <div class="option-info">
+          <div class="option-icon">📱</div>
+
+          <div>
+            <h3>SMS Notifications</h3>
+            <p>Receive important alerts through SMS</p>
+          </div>
+        </div>
+
+        <input
+          type="checkbox"
+          [(ngModel)]="sms_notifications"
+        >
+
+      </div>
+
+
+      <div class="notification-option">
+
+        <div class="option-info">
+          <div class="option-icon">🔔</div>
+
+          <div>
+            <h3>Push Notifications</h3>
+            <p>Receive real-time procurement notifications</p>
+          </div>
+        </div>
+
+        <input
+          type="checkbox"
+          [(ngModel)]="push_notifications"
+        >
+
+      </div>
+
+
+      <button
+        class="save-button"
+        (click)="saveSettings()"
+      >
+        Save Preferences
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
