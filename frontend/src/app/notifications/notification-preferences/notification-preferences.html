@@ -1,0 +1,46 @@
+<div class="container mt-5">
+
+  <h2>Notification Preferences</h2>
+
+  <div class="form-check mt-3">
+    <input
+      class="form-check-input"
+      type="checkbox"
+      [(ngModel)]="email">
+
+    <label class="form-check-label">
+      Email Notifications
+    </label>
+  </div>
+
+  <div class="form-check mt-3">
+    <input
+      class="form-check-input"
+      type="checkbox"
+      [(ngModel)]="push">
+
+    <label class="form-check-label">
+      Push Notifications
+    </label>
+  </div>
+
+  <div class="form-check mt-3">
+    <input
+      class="form-check-input"
+      type="checkbox"
+      [(ngModel)]="sms">
+
+    <label class="form-check-label">
+      SMS Notifications
+    </label>
+  </div>
+
+  <button
+    class="btn btn-primary mt-4"
+    (click)="save()">
+
+    Save Preferences
+
+  </button>
+
+</div>

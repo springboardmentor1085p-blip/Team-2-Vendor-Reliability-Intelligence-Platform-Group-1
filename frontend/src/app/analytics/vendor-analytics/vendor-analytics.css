@@ -1,0 +1,44 @@
+.kpi-card{
+  cursor:pointer;
+  border-radius:16px;
+  transition:all .25s ease;
+}
+
+.kpi-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 14px 28px rgba(0,0,0,.12)!important;
+}
+
+.kpi-icon{
+  font-size:2rem;
+  margin-bottom:.5rem;
+}
+
+.vendor-row{
+  cursor:pointer;
+  transition:background-color .2s ease;
+}
+
+.vendor-row:hover{
+  background:#f8fbff;
+}
+
+.card{
+  border-radius:16px;
+}
+
+canvas{
+  max-height:360px;
+}
+
+.table-row-clickable:hover { background: #f8fafc; transition: 0.2s ease; }
+
+.dashboard-card{ transition:all .2s ease; cursor:pointer; } 
+.dashboard-card:hover{ transform:translateY(-4px); box-shadow:0 10px 24px rgba(0,0,0,.12); } 
+.table-row-clickable{ cursor:pointer; transition:background .2s ease; } 
+.table-row-clickable:hover{ background:#f8fafc; } 
+.badge{ font-weight:600; }
+
+.card{ transition:transform .2s ease, box-shadow .2s ease; } .card:hover{ transform:translateY(-3px); box-shadow:0 10px 24px rgba(0,0,0,.12)!important; } .vendor-row{ transition:background-color .2s ease, transform .15s ease; } .vendor-row:hover{ background:#f8fafc; transform:scale(1.01); } .table td, .table th{ vertical-align:middle; } canvas{ max-height:320px; }
+
+.vendor-row{ transition:all .2s ease; } .vendor-row:hover{ background:#f8fafc; transform:translateX(4px); } .card{ border-radius:1rem; }

@@ -1,0 +1,117 @@
+<div *ngIf="po">
+
+  <div class="container mt-4">
+
+    <div class="card shadow border-0 rounded-4">
+
+      <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center rounded-top-4">
+
+        <h4 class="mb-0">📄 Purchase Order Details</h4>
+
+        <button
+          class="btn btn-light btn-sm"
+          routerLink="/notifications">
+
+          ← Back
+
+        </button>
+
+      </div>
+
+      <div class="card-body p-4">
+
+        <div class="row g-4">
+
+          <div class="col-md-6">
+
+            <div class="info-box">
+
+              <div class="label">🆔 PO Number</div>
+
+              <div class="value">{{ po?.id }}</div>
+
+            </div>
+
+          </div>
+
+          <div class="col-md-6">
+
+            <div class="info-box">
+
+              <div class="label">🏢 Vendor</div>
+
+              <div class="value">{{ po?.vendor_name }}</div>
+
+            </div>
+
+          </div>
+
+          <div class="col-md-6">
+
+            <div class="info-box">
+
+              <div class="label mb-2">📌 Status</div>
+
+             <span
+  class="badge px-3 py-2 fs-6 rounded-pill border"
+  [ngClass]="{
+    'bg-warning-subtle text-warning border-warning': po?.status === 'Pending',
+    'bg-success-subtle text-success border-success': po?.status === 'Delivered',
+    'bg-primary-subtle text-primary border-primary': po?.status === 'Approved',
+    'bg-danger-subtle text-danger border-danger': po?.status === 'Rejected',
+    'bg-info-subtle text-info border-info': po?.status === 'In Progress',
+    'bg-secondary-subtle text-secondary border-secondary': po?.status === 'Completed',
+    'bg-dark text-white border-dark': po?.status === 'Cancelled',
+    'bg-light text-dark border-secondary': po?.status === 'Draft',
+    'bg-orange-subtle text-orange border-orange': po?.status === 'Delayed',
+    'bg-success text-white border-success': po?.status === 'Active',
+    'bg-purple-subtle text-purple border-purple': po?.status === 'On Hold',
+    'bg-warning text-dark border-warning': po?.status === 'Pending Review'
+  }">
+
+  {{ po?.status }}
+
+</span>
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3"> <div> <h5 class="mb-1">🏢 {{ po?.vendor_name }}</h5> <small class="text-muted">Purchase Order #{{ po?.id }}</small> </div> <span class="badge bg-success px-3 py-2 fs-6 rounded-pill"> {{ po?.status }} </span> </div>
+            </div>
+
+          </div>
+
+          <div class="col-md-6">
+
+            <div class="info-box">
+
+              <div class="label">📅 Target Date</div>
+
+              <div class="value">{{ po?.target_date }}</div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div
+  class="text-center mt-5"
+  *ngIf="!po">
+
+  <div class="card shadow-sm border-0 p-5 rounded-4 d-inline-block">
+
+    <div style="font-size:48px" class="mb-3">⏳</div>
+
+    <h4 class="mb-2">Loading Purchase Order Details...</h4>
+
+    <p class="text-muted mb-0">Please wait while the order information is being loaded.</p>
+
+  </div>
+
+</div>

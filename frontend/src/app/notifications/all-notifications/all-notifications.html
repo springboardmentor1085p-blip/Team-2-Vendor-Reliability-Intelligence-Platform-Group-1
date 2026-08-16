@@ -1,0 +1,96 @@
+<div class="container mt-4">
+
+
+<h2>
+🔔 All Notifications
+</h2>
+
+
+
+<div *ngIf="notifications.length===0"
+class="text-center mt-5">
+
+
+<h4>
+📭
+</h4>
+
+
+<h5>
+No Notifications Available
+</h5>
+
+
+</div>
+
+
+
+
+
+<div
+*ngFor="let n of notifications"
+
+class="card shadow-sm mb-3 notification-card"
+
+(click)="openOrder(n)"
+>
+
+
+<div class="card-body">
+
+
+<h5>
+
+
+<span *ngIf="n.title.includes('Created')">
+🆕
+</span>
+
+
+<span *ngIf="n.title.includes('Updated')">
+✏️
+</span>
+
+
+{{n.title}}
+
+
+</h5>
+
+
+
+<p>
+{{n.message}}
+</p>
+
+
+
+<span
+class="badge"
+[ngClass]="
+n.is_read?'bg-success':'bg-danger'
+">
+
+
+{{n.is_read?'Read':'Unread'}}
+
+
+</span>
+
+
+
+<span class="float-end text-primary">
+
+➡ View Details
+
+</span>
+
+
+
+</div>
+
+
+</div>
+
+
+</div>
