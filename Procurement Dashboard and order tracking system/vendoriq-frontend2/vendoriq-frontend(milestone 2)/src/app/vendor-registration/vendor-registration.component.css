@@ -1,0 +1,97 @@
+/* ── Page wrapper ─────────────────────────────────────────────────────────── */
+.page-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: calc(100vh - 52px);   /* subtract navbar height */
+  padding: 40px 16px;
+  background-color: #f5f5f5;
+}
+
+/* ── Card ─────────────────────────────────────────────────────────────────── */
+.registration-card {
+  width: 100%;
+  max-width: 560px;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+mat-card-header {
+  margin-bottom: 8px;
+}
+
+.title-icon {
+  vertical-align: middle;
+  margin-right: 8px;
+  color: #3f51b5;   /* indigo-500 — matches the Material theme primary */
+}
+
+mat-card-content {
+  padding: 8px 0 0;
+}
+
+/* ── Form fields ──────────────────────────────────────────────────────────── */
+.full-width {
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.optional {
+  font-size: 11px;
+  color: #888;
+  font-weight: 400;
+}
+
+/* ── Alert banners ────────────────────────────────────────────────────────── */
+.alert {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.alert mat-icon {
+  font-size: 20px;
+  height: 20px;
+  width: 20px;
+  flex-shrink: 0;
+}
+
+.alert-success {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border-left: 4px solid #2e7d32;
+}
+
+.alert-success mat-icon { color: #2e7d32; }
+
+.alert-error {
+  background-color: #fce4ec;
+  color: #c62828;
+  border-left: 4px solid #c62828;
+}
+
+.alert-error mat-icon { color: #c62828; }
+
+/* ── Submit / Reset row ───────────────────────────────────────────────────── */
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.form-actions button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 20px;
+}
+
+.form-actions mat-spinner {
+  display: inline-block;
+}

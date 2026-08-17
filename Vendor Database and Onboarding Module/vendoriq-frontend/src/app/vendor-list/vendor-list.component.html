@@ -1,0 +1,136 @@
+<div class="list-container">
+
+  <div class="list-header">
+    <h2>Vendor List</h2>
+    <a routerLink="/" class="btn-register">+ Register New Vendor</a>
+  </div>
+
+  <!-- Global alerts -->
+  <div class="alert alert-success" role="alert" *ngIf="successMessage">
+    {{ successMessage }}
+  </div>
+  <div class="alert alert-error" role="alert" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Loading state -->
+  <div class="loading" *ngIf="isLoading">Loading vendors...</div>
+
+  <!-- Empty state -->
+  <div class="empty-state" *ngIf="!isLoading && vendors.length === 0 && !errorMessage">
+    No vendors registered yet.
+    <a routerLink="/">Register the first vendor.</a>
+  </div>
+
+  <!-- Vendor table -->
+  <div class="table-wrapper" *ngIf="!isLoading && vendors.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Vendor Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Address</th>
+          <th>Status</th>
+          <th>Registered</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let vendor of vendors; let i = index">
+
+          <!-- Normal row -->
+          <tr *ngIf="editingVendorId !== vendor.id">
+            <td>{{ i + 1 }}</td>
+            <td>{{ vendor.vendorName }}</td>
+            <td>{{ vendor.email }}</td>
+            <td>{{ vendor.phone ?? '—' }}</td>
+            <td class="address-cell">{{ vendor.address ?? '—' }}</td>
+            <td>
+              <span class="status-badge status-{{ vendor.status }}">
+                {{ vendor.status }}
+              </span>
+            </td>
+            <td>{{ vendor.created_at | date: 'dd MMM yyyy' }}</td>
+            <td class="action-cell">
+              <button class="btn-edit" (click)="openEdit(vendor)">Edit</button>
+              <button class="btn-delete" (click)="confirmDelete(vendor)">Delete</button>
+            </td>
+          </tr>
+
+          <!-- Inline edit row — replaces the normal row when editing -->
+          <tr *ngIf="editingVendorId === vendor.id" class="edit-row">
+            <td colspan="8">
+              <form [formGroup]="editForm" (ngSubmit)="saveEdit()" novalidate class="edit-form">
+
+                <div class="edit-form-grid">
+
+                  <div class="form-group">
+                    <label for="editVendorName">Vendor Name</label>
+                    <input id="editVendorName" type="text" formControlName="vendorName" />
+                    <div class="field-error" *ngIf="editVendorName?.invalid && editVendorName?.touched">
+                      <span *ngIf="editVendorName?.errors?.['required']">Required.</span>
+                      <span *ngIf="editVendorName?.errors?.['minlength']">Min 3 characters.</span>
+                      <span *ngIf="editVendorName?.errors?.['maxlength']">Max 100 characters.</span>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="editEmail">Email</label>
+                    <input id="editEmail" type="email" formControlName="email" />
+                    <div class="field-error" *ngIf="editEmail?.invalid && editEmail?.touched">
+                      <span *ngIf="editEmail?.errors?.['required']">Required.</span>
+                      <span *ngIf="editEmail?.errors?.['email']">Invalid email.</span>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="editPhone">Phone</label>
+                    <input id="editPhone" type="tel" formControlName="phone" maxlength="10" />
+                    <div class="field-error" *ngIf="editPhone?.invalid && editPhone?.touched">
+                      <span *ngIf="editPhone?.errors?.['required']">Required.</span>
+                      <span *ngIf="editPhone?.errors?.['pattern']">Must be 10 digits.</span>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="editAddress">Address</label>
+                    <input id="editAddress" type="text" formControlName="address" />
+                    <div class="field-error" *ngIf="editAddress?.invalid && editAddress?.touched">
+                      <span *ngIf="editAddress?.errors?.['required']">Required.</span>
+                      <span *ngIf="editAddress?.errors?.['minlength']">Min 10 characters.</span>
+                      <span *ngIf="editAddress?.errors?.['maxlength']">Max 500 characters.</span>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="editStatus">Status</label>
+                    <select id="editStatus" formControlName="status">
+                      <option value="pending">Pending</option>
+                      <option value="approved">Approved</option>
+                      <option value="rejected">Rejected</option>
+                    </select>
+                  </div>
+
+                </div>
+
+                <div class="edit-form-actions">
+                  <button type="submit" class="btn-save" [disabled]="editForm.invalid || isSaving">
+                    {{ isSaving ? 'Saving...' : 'Save Changes' }}
+                  </button>
+                  <button type="button" class="btn-cancel" (click)="cancelEdit()" [disabled]="isSaving">
+                    Cancel
+                  </button>
+                </div>
+
+              </form>
+            </td>
+          </tr>
+
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+
+</div>

@@ -1,0 +1,21 @@
+<!-- ── Top navigation bar ──────────────────────────────────────────────────── -->
+<nav class="navbar">
+  <span class="navbar-brand">VendorIQ</span>
+
+  <div class="navbar-links">
+    <a routerLink="/"          routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+      Register Vendor
+    </a>
+    <a routerLink="/vendors"   routerLinkActive="active">
+      Vendor List
+    </a>
+    <a routerLink="/dashboard" routerLinkActive="active">
+      PO Dashboard
+    </a>
+  </div>
+</nav>
+
+<!-- ── Routed page content ────────────────────────────────────────────────── -->
+<main>
+  <router-outlet></router-outlet>
+</main>

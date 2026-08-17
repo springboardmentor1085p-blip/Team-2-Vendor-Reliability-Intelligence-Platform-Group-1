@@ -1,0 +1,87 @@
+<div class="form-container">
+  <h2>Vendor Registration</h2>
+
+  <!-- Global status banners -->
+  <div class="alert alert-success" role="alert" *ngIf="successMessage">
+    {{ successMessage }}
+    <a routerLink="/vendors" class="alert-link">View all vendors →</a>
+  </div>
+  <div class="alert alert-error" role="alert" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <form [formGroup]="vendorForm" (ngSubmit)="onSubmit()" novalidate>
+
+    <!-- Vendor Name -->
+    <div class="form-group">
+      <label for="vendorName">Vendor Name</label>
+      <input
+        id="vendorName"
+        type="text"
+        formControlName="vendorName"
+        autocomplete="organization"
+        placeholder="e.g. Acme Supplies Pvt Ltd"
+      />
+      <div class="field-error" *ngIf="vendorName?.invalid && vendorName?.touched">
+        <span *ngIf="vendorName?.errors?.['required']">Vendor name is required.</span>
+        <span *ngIf="vendorName?.errors?.['minlength']">Minimum 3 characters required.</span>
+        <span *ngIf="vendorName?.errors?.['maxlength']">Maximum 100 characters allowed.</span>
+      </div>
+    </div>
+
+    <!-- Email -->
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        autocomplete="email"
+        placeholder="e.g. contact@acme.com"
+      />
+      <div class="field-error" *ngIf="email?.invalid && email?.touched">
+        <span *ngIf="email?.errors?.['required']">Email is required.</span>
+        <span *ngIf="email?.errors?.['email']">Enter a valid email address.</span>
+      </div>
+    </div>
+
+    <!-- Phone -->
+    <div class="form-group">
+      <label for="phone">Phone</label>
+      <input
+        id="phone"
+        type="tel"
+        formControlName="phone"
+        autocomplete="tel"
+        placeholder="10-digit number, e.g. 9876543210"
+        maxlength="10"
+      />
+      <div class="field-error" *ngIf="phone?.invalid && phone?.touched">
+        <span *ngIf="phone?.errors?.['required']">Phone number is required.</span>
+        <span *ngIf="phone?.errors?.['pattern']">Enter a valid 10-digit phone number.</span>
+      </div>
+    </div>
+
+    <!-- Address -->
+    <div class="form-group">
+      <label for="address">Address</label>
+      <input
+        id="address"
+        type="text"
+        formControlName="address"
+        autocomplete="street-address"
+        placeholder="Full business address (min 10 characters)"
+      />
+      <div class="field-error" *ngIf="address?.invalid && address?.touched">
+        <span *ngIf="address?.errors?.['required']">Address is required.</span>
+        <span *ngIf="address?.errors?.['minlength']">Minimum 10 characters required.</span>
+        <span *ngIf="address?.errors?.['maxlength']">Maximum 500 characters allowed.</span>
+      </div>
+    </div>
+
+    <button type="submit" [disabled]="vendorForm.invalid || isLoading">
+      {{ isLoading ? 'Registering...' : 'Register Vendor' }}
+    </button>
+
+  </form>
+</div>

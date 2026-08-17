@@ -1,0 +1,156 @@
+/* ── Dialog title ─────────────────────────────────────────────────────────── */
+.dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #212121;
+  margin: 0;
+  padding: 20px 24px 12px;
+}
+
+.dialog-title-icon {
+  color: #3f51b5;
+  font-size: 22px;
+  height: 22px;
+  width: 22px;
+}
+
+/* ── Dialog content ───────────────────────────────────────────────────────── */
+.dialog-content {
+  padding: 0 24px 8px !important;
+  min-width: 560px;
+  max-width: 780px;
+}
+
+/* ── Summary line ─────────────────────────────────────────────────────────── */
+.summary-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #424242;
+  background-color: #e8eaf6;
+  border-left: 4px solid #3f51b5;
+  padding: 10px 14px;
+  border-radius: 0 6px 6px 0;
+  margin: 0 0 16px;
+}
+
+.summary-icon {
+  color: #3f51b5;
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+  flex-shrink: 0;
+}
+
+.format-badge {
+  display: inline-block;
+  background-color: #3f51b5;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  margin-left: 2px;
+}
+
+/* ── Sample heading ───────────────────────────────────────────────────────── */
+.sample-heading {
+  font-size: 12px;
+  color: #757575;
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  font-weight: 600;
+}
+
+/* ── Table ────────────────────────────────────────────────────────────────── */
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+}
+
+.preview-table {
+  width: 100%;
+}
+
+.preview-table th.mat-header-cell {
+  background-color: #f5f5f5;
+  color: #616161;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 10px 14px;
+  border-bottom: 2px solid #e0e0e0;
+  white-space: nowrap;
+}
+
+.preview-table td.mat-cell {
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #424242;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.preview-row:last-child td {
+  border-bottom: none;
+}
+
+.preview-row:hover td {
+  background-color: #f9f9f9;
+}
+
+.num-col {
+  text-align: right !important;
+}
+
+/* PO number badge — matches dashboard style */
+.po-number {
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  background-color: #e8eaf6;
+  color: #3f51b5;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.amount-cell {
+  font-weight: 500;
+}
+
+/* ── Status badge ─────────────────────────────────────────────────────────── */
+.status-badge {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: capitalize;
+  border: 1px solid;
+}
+
+.status-pending   { background-color: #fff8e1; color: #f57f17; border-color: #ffc107; }
+.status-approved  { background-color: #e8f5e9; color: #2e7d32; border-color: #4caf50; }
+.status-shipped   { background-color: #e3f2fd; color: #1565c0; border-color: #2196f3; }
+.status-delivered { background-color: #f3e5f5; color: #6a1b9a; border-color: #9c27b0; }
+.status-cancelled { background-color: #fce4ec; color: #c62828; border-color: #f44336; }
+
+/* ── Dialog actions ───────────────────────────────────────────────────────── */
+.dialog-actions {
+  padding: 12px 24px 20px !important;
+  gap: 10px;
+}
+
+.dialog-actions button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 120px;
+}

@@ -1,0 +1,52 @@
+<div class="chart-container">
+
+  <!-- Optional title -->
+  <h3 class="chart-title" *ngIf="title">{{ title }}</h3>
+
+  <!-- No-data placeholder -->
+  <div class="no-data" *ngIf="!hasData">
+    <span class="no-data-icon">&#128202;</span>
+    <p>No data available</p>
+  </div>
+
+  <!-- Bar chart -->
+  <ng-container *ngIf="hasData && chartType === 'bar'">
+    <ngx-charts-bar-vertical
+      [view]="view"
+      [scheme]="colorScheme"
+      [results]="data"
+      [legend]="showLegend"
+      [showDataLabel]="showLabels"
+      [xAxis]="true"
+      [yAxis]="true"
+      [showXAxisLabel]="false"
+      [showYAxisLabel]="false">
+    </ngx-charts-bar-vertical>
+  </ng-container>
+
+  <!-- Line chart -->
+  <ng-container *ngIf="hasData && chartType === 'line'">
+    <ngx-charts-line-chart
+      [view]="view"
+      [scheme]="colorScheme"
+      [results]="data"
+      [legend]="showLegend"
+      [xAxis]="true"
+      [yAxis]="true"
+      [showXAxisLabel]="false"
+      [showYAxisLabel]="false">
+    </ngx-charts-line-chart>
+  </ng-container>
+
+  <!-- Pie chart -->
+  <ng-container *ngIf="hasData && chartType === 'pie'">
+    <ngx-charts-pie-chart
+      [view]="view"
+      [scheme]="colorScheme"
+      [results]="data"
+      [legend]="showLegend"
+      [labels]="showLabels">
+    </ngx-charts-pie-chart>
+  </ng-container>
+
+</div>
