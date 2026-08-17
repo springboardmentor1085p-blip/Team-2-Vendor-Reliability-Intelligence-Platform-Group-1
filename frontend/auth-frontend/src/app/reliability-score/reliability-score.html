@@ -1,0 +1,994 @@
+<div
+  class="dashboard-shell"
+  [class.dark-theme]="isDarkMode"
+>
+
+  
+  <header class="top-navigation">
+    <div class="brand-section">
+      <div class="brand-logo">
+        <span>V</span>
+      </div>
+
+      <div>
+        <h2>Vendor Intelligence</h2>
+        <p>Reliability Command Centre</p>
+      </div>
+    </div>
+
+    <div class="top-actions">
+
+      <button
+        type="button"
+        class="icon-button"
+        (click)="toggleTheme()"
+        [title]="isDarkMode ? 'Light mode' : 'Dark mode'"
+      >
+        {{ isDarkMode ? '☀' : '☾' }}
+      </button>
+
+      <div class="notification-wrapper">
+        <button
+          type="button"
+          class="icon-button notification-button"
+          (click)="toggleNotifications()"
+        >
+          ♢
+
+          <span
+            class="notification-count"
+            *ngIf="unreadCount > 0"
+          >
+            {{ unreadCount }}
+          </span>
+        </button>
+
+        <div
+          class="notification-panel"
+          *ngIf="showNotifications"
+        >
+          <div class="panel-header">
+            <div>
+              <h3>Notification Centre</h3>
+              <p>{{ unreadCount }} unread notifications</p>
+            </div>
+
+            <button
+              type="button"
+              class="close-button"
+              (click)="toggleNotifications()"
+            >
+              ×
+            </button>
+          </div>
+
+          <div class="notification-filters">
+            <button
+              type="button"
+              *ngFor="let filter of notificationFilters"
+              [class.active]="selectedNotificationFilter === filter"
+              (click)="selectedNotificationFilter = filter"
+            >
+              {{ filter }}
+            </button>
+          </div>
+
+          <div class="notification-list">
+            <div
+              class="notification-empty"
+              *ngIf="filteredNotifications.length === 0"
+            >
+              <div>✓</div>
+              <h4>Everything is clear</h4>
+              <p>No notifications found for this filter.</p>
+            </div>
+
+            <button
+              type="button"
+              class="notification-item"
+              *ngFor="let notification of filteredNotifications"
+              [class.unread]="!notification.read"
+              [class.warning-notification]="
+                notification.type === 'warning'
+              "
+              [class.success-notification]="
+                notification.type === 'success'
+              "
+              [class.danger-notification]="
+                notification.type === 'danger'
+              "
+              (click)="markNotificationAsRead(notification)"
+            >
+              <span
+                class="notification-type-icon"
+                [class]="notification.type"
+              >
+                {{ getNotificationIcon(notification.type) }}
+              </span>
+
+              <span class="notification-content">
+                <strong>{{ notification.title }}</strong>
+                <small>{{ notification.message }}</small>
+                <em>{{ notification.time }}</em>
+              </span>
+
+              <span
+                class="unread-dot"
+                *ngIf="!notification.read"
+              ></span>
+            </button>
+          </div>
+
+          <div class="notification-footer">
+            <button
+              type="button"
+              (click)="markAllAsRead()"
+              [disabled]="unreadCount === 0"
+            >
+              Mark all as read
+            </button>
+
+            <button
+              type="button"
+              class="clear-button"
+              (click)="clearNotifications()"
+              [disabled]="notifications.length === 0"
+            >
+              Clear all
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="profile-chip">
+        <div class="profile-avatar">PM</div>
+
+        <div>
+          <strong>Procurement Manager</strong>
+          <span>Administrator</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="dashboard-content">
+
+    <section class="dashboard-heading">
+      <div>
+        <div class="page-eyebrow">
+          PERFORMANCE INTELLIGENCE
+        </div>
+
+        <h1>Vendor Reliability Dashboard</h1>
+
+        <p>
+          Real-time supplier performance, predictive risk signals
+          and procurement intelligence.
+        </p>
+      </div>
+
+      <div class="heading-actions">
+        <select
+  class="period-select"
+  [(ngModel)]="selectedPeriod"
+  (change)="changePeriod()"
+>
+          <option
+            *ngFor="let period of periodOptions"
+            [value]="period"
+          >
+            {{ period }}
+          </option>
+        </select>
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="exportReport()"
+        >
+          ↓ Export Report
+        </button>
+
+        <div class="actions-wrapper">
+          <button
+            type="button"
+            class="primary-button"
+            (click)="toggleActionsMenu()"
+          >
+            Quick Actions
+            <span>⌄</span>
+          </button>
+
+          <div
+            class="actions-menu"
+            *ngIf="showActionsMenu"
+          >
+            <button
+              type="button"
+              (click)="refreshDashboard()"
+            >
+              <span>↻</span>
+              Refresh intelligence
+            </button>
+            <p class="refresh-message" *ngIf="refreshMessage">
+  {{ refreshMessage }}
+</p>
+            <button
+              type="button"
+              (click)="exportReport()"
+            >
+              <span>↓</span>
+              Download report
+            </button>
+
+            <button
+              type="button"
+              (click)="printReport()"
+            >
+              <span>▤</span>
+              Print dashboard
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="hero-grid">
+
+      <article class="vendor-hero-card">
+        <div class="hero-decoration hero-decoration-one"></div>
+        <div class="hero-decoration hero-decoration-two"></div>
+
+        <div class="vendor-selector-wrapper">
+          <button
+            type="button"
+            class="vendor-selector"
+            (click)="toggleVendorMenu()"
+          >
+            <span class="vendor-avatar">
+              {{ selectedVendor.name.charAt(0) }}
+            </span>
+
+            <span class="vendor-selector-content">
+              <small>Selected vendor</small>
+              <strong>{{ selectedVendor.name }}</strong>
+              <em>
+                {{ selectedVendor.code }} ·
+                {{ selectedVendor.category }}
+              </em>
+            </span>
+
+            <span class="selector-arrow">⌄</span>
+          </button>
+
+          <div
+            class="vendor-dropdown"
+            *ngIf="showVendorMenu"
+          >
+            <button
+              type="button"
+              *ngFor="let vendor of vendors"
+              [class.selected]="selectedVendor.id === vendor.id"
+              (click)="selectVendor(vendor)"
+            >
+              <span class="dropdown-avatar">
+                {{ vendor.name.charAt(0) }}
+              </span>
+
+              <span>
+                <strong>{{ vendor.name }}</strong>
+                <small>
+                  {{ vendor.code }} · {{ vendor.category }}
+                </small>
+              </span>
+
+              <em>{{ vendor.overallScore }}%</em>
+            </button>
+          </div>
+        </div>
+
+        <div class="vendor-hero-content">
+          <div class="score-ring-area">
+            <div class="score-ring">
+              <svg
+                viewBox="0 0 180 180"
+                aria-label="Overall reliability score"
+              >
+                <circle
+                  class="ring-background"
+                  cx="90"
+                  cy="90"
+                  r="72"
+                ></circle>
+
+                <circle
+                  class="ring-progress"
+                  cx="90"
+                  cy="90"
+                  r="72"
+                  [attr.stroke-dasharray]="scoreCircumference"
+                  [attr.stroke-dashoffset]="scoreOffset"
+                ></circle>
+              </svg>
+
+              <div class="score-ring-value">
+                <strong>{{ overallScore }}</strong>
+                <span>/ 100</span>
+              </div>
+            </div>
+
+            <div class="score-summary">
+              <span
+                class="hero-score-badge"
+                [class]="getScoreClass(overallScore)"
+              >
+                {{ getScoreLabel(overallScore) }}
+              </span>
+
+              <h2>Overall Reliability</h2>
+
+              <p>
+                This vendor is outperforming
+                <strong>87% of approved suppliers</strong>.
+              </p>
+            </div>
+          </div>
+
+          <div class="hero-stat-grid">
+            <div class="hero-stat">
+              <span>Vendor Rank</span>
+              <strong>
+                #{{ selectedVendor.rank }}
+                <small>/ {{ selectedVendor.totalVendors }}</small>
+              </strong>
+            </div>
+
+            <div class="hero-stat">
+              <span>Risk Classification</span>
+              <strong class="low-risk-text">
+                {{ selectedVendor.riskLevel }}
+              </strong>
+            </div>
+
+            <div class="hero-stat">
+              <span>Performance Trend</span>
+              <strong class="positive-value">↗ 4.2%</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-footer">
+          <div class="live-update">
+            <span class="live-dot"></span>
+            Live intelligence
+            <small>Updated {{ lastUpdated }}</small>
+          </div>
+
+          <button
+            type="button"
+            class="recalculate-button"
+            (click)="calculateScore()"
+          >
+          <p class="success-message" *ngIf="recalculateMessage">
+  {{ recalculateMessage }}
+</p>
+            <span>↻</span>
+            Recalculate Score
+          </button>
+        </div>
+
+
+    
+      </article>
+
+      <article class="ai-insight-card">
+        <div class="ai-card-header">
+          <div class="ai-icon">✦</div>
+
+          <div>
+            <span>AI PERFORMANCE INSIGHT</span>
+            <h3>Predictive Intelligence</h3>
+          </div>
+
+          <span class="confidence-chip">
+            94% confidence
+          </span>
+        </div>
+
+        <div class="prediction-box">
+          <div>
+            <span>Predicted next-month score</span>
+            <strong>95%</strong>
+          </div>
+
+          <span class="prediction-trend">
+            ↗ +3 points
+          </span>
+        </div>
+
+        <div class="insight-message">
+          <span class="insight-indicator"></span>
+
+          <p>
+            Performance is expected to improve due to stronger
+            compliance and faster issue resolution.
+          </p>
+        </div>
+
+        <div class="insight-factors">
+          <div>
+            <span>✓</span>
+            <p>
+              <strong>Quality consistency</strong>
+              <small>Defect rate reduced by 18%</small>
+            </p>
+          </div>
+
+          <div>
+            <span>✓</span>
+            <p>
+              <strong>Compliance improvement</strong>
+              <small>All mandatory documents verified</small>
+            </p>
+          </div>
+
+          <div class="warning-factor">
+            <span>!</span>
+            <p>
+              <strong>Delivery attention required</strong>
+              <small>Two recent orders exceeded ETA</small>
+            </p>
+          </div>
+        </div>
+
+        <div class="recommendation-box">
+          <span>RECOMMENDED ACTION</span>
+
+          <p>
+            Continue the vendor partnership and review delivery
+            performance during the next monthly assessment.
+          </p>
+
+          <button
+  type="button"
+  (click)="viewFullAnalysis()"
+>
+  View full analysis
+  <span>→</span>
+</button>
+        </div>
+      </article>
+    </section>
+
+    <section class="section-block">
+      <div class="section-title">
+        <div>
+          <span>SCORE BREAKDOWN</span>
+          <h2>Reliability Dimensions</h2>
+        </div>
+
+        <p>
+          Weighted operational metrics contributing to the
+          final reliability score.
+        </p>
+      </div>
+
+      <div class="score-card-grid">
+        <article
+          class="score-card"
+          *ngFor="let item of scores"
+        >
+          <div class="score-card-top">
+            <span class="score-icon">
+              {{ item.icon }}
+            </span>
+
+            <span
+              class="trend-chip"
+              [class.negative]="item.trend < 0"
+            >
+              {{ item.trend >= 0 ? '↗ +' : '↘ ' }}
+              {{ item.trend }}%
+            </span>
+          </div>
+
+          <div class="score-card-value">
+            <strong>{{ item.score }}</strong>
+            <span>%</span>
+          </div>
+
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.description }}</p>
+
+          <div class="score-progress">
+            <span [style.width.%]="item.score"></span>
+          </div>
+
+          <div class="score-card-footer">
+            <span
+              class="metric-status"
+              [class]="getScoreClass(item.score)"
+            >
+              {{ getScoreLabel(item.score) }}
+            </span>
+
+            <small>Weight: 25%</small>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="analytics-grid">
+      <article class="analytics-card trend-chart-card">
+        <div class="analytics-card-header">
+          <div>
+            <span>HISTORICAL ANALYTICS</span>
+            <h2>Reliability Performance Trend</h2>
+            <p>
+              Score progression compared with the supplier benchmark.
+            </p>
+          </div>
+
+          <span class="growth-pill">
+            ↗ 14 points gained
+          </span>
+        </div>
+
+        <div class="chart-container line-chart-container">
+          <canvas
+            baseChart
+            [type]="'line'"
+            [data]="performanceChartData"
+            [options]="performanceChartOptions"
+          >
+          </canvas>
+        </div>
+      </article>
+
+      <article class="analytics-card">
+        <div class="analytics-card-header">
+          <div>
+            <span>BENCHMARK ANALYSIS</span>
+            <h2>Metric Comparison</h2>
+            <p>
+              Current vendor performance against the network average.
+            </p>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <canvas
+            baseChart
+            [type]="'bar'"
+            [data]="comparisonChartData"
+            [options]="comparisonChartOptions"
+          >
+          </canvas>
+        </div>
+      </article>
+    </section>
+
+    <section class="section-block">
+      <div class="section-title">
+        <div>
+          <span>OPERATIONAL SNAPSHOT</span>
+          <h2>Key Performance Indicators</h2>
+        </div>
+
+        <p>
+          Live procurement and supplier-operation statistics.
+        </p>
+      </div>
+
+      <div class="kpi-grid">
+        <article
+          class="kpi-card"
+          *ngFor="let kpi of kpis"
+        >
+          <div class="kpi-icon">
+            {{ kpi.icon }}
+          </div>
+
+          <div class="kpi-content">
+            <span>{{ kpi.title }}</span>
+
+            <div class="kpi-value-row">
+              <strong>{{ kpi.value }}</strong>
+
+              <em
+                [class.positive]="kpi.trendDirection === 'up'"
+                [class.negative]="kpi.trendDirection === 'down'"
+                [class.neutral]="kpi.trendDirection === 'neutral'"
+              >
+                {{ kpi.trend }}
+              </em>
+            </div>
+
+            <small>{{ kpi.subtitle }}</small>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="intelligence-grid">
+      <article class="risk-card">
+        <div class="card-heading">
+          <div>
+            <span>RISK INTELLIGENCE</span>
+            <h2>Predictive Risk Signals</h2>
+          </div>
+
+          <span class="low-risk-badge">
+            Overall Low Risk
+          </span>
+        </div>
+
+        <p class="card-description">
+          Risk levels are calculated using delivery, compliance,
+          financial and operational behaviour.
+        </p>
+
+        <div class="risk-list">
+          <div
+            class="risk-item"
+            *ngFor="let risk of risks"
+          >
+            <div class="risk-item-header">
+              <span>{{ risk.title }}</span>
+
+              <strong
+                [class]="getRiskClass(risk.value)"
+              >
+                {{ risk.level }} · {{ risk.value }}%
+              </strong>
+            </div>
+
+            <div class="risk-track">
+              <span
+                [class]="getRiskClass(risk.value)"
+                [style.width.%]="risk.value"
+              ></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="risk-summary">
+          <span>◎</span>
+
+          <p>
+            <strong>No critical risks detected</strong>
+            <small>
+              Delivery risk requires observation but remains
+              within the acceptable threshold.
+            </small>
+          </p>
+        </div>
+      </article>
+
+      <article class="activity-card">
+        <div class="card-heading">
+          <div>
+            <span>ACTIVITY STREAM</span>
+            <h2>Recent Vendor Activity</h2>
+          </div>
+
+          <button
+            type="button"
+            (click)="viewAllActivities()"
+          >
+            {{ showAllActivities ? 'Show less' : 'View all' }}
+          </button>
+        </div>
+
+        <div class="activity-timeline">
+          <div
+            class="activity-item"
+            *ngFor="let activity of (
+  showAllActivities
+    ? activities
+    : activities.slice(0, 3)
+)"
+          >
+            <div
+              class="activity-marker"
+              [class]="activity.status"
+            >
+              {{ activity.icon }}
+            </div>
+
+            <div class="activity-content">
+              <strong>{{ activity.title }}</strong>
+              <p>{{ activity.description }}</p>
+              <small>{{ activity.time }}</small>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="vendor-details-card">
+        <div class="card-heading">
+          <div>
+            <span>VENDOR PROFILE</span>
+            <h2>Supplier Details</h2>
+          </div>
+
+          <button
+  type="button"
+  (click)="editVendorProfile()"
+>
+  Edit profile
+</button>
+        </div>
+
+        <div class="vendor-profile-summary">
+          <div class="large-vendor-avatar">
+            {{ selectedVendor.name.charAt(0) }}
+          </div>
+
+          <div>
+            <h3>{{ selectedVendor.name }}</h3>
+            <p>{{ selectedVendor.code }}</p>
+
+            <div class="vendor-badges">
+              <span>Platinum Vendor</span>
+              <span>ISO Certified</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="vendor-detail-list">
+          <div>
+            <span>Vendor category</span>
+            <strong>{{ selectedVendor.category }}</strong>
+          </div>
+
+          <div>
+            <span>Business location</span>
+            <strong>{{ selectedVendor.location }}</strong>
+          </div>
+
+          <div>
+            <span>Partnership since</span>
+            <strong>{{ selectedVendor.joinedDate }}</strong>
+          </div>
+
+          <div>
+            <span>Active contracts</span>
+            <strong>08 contracts</strong>
+          </div>
+
+          <div>
+            <span>Primary contact</span>
+            <strong>Arjun Mehta</strong>
+          </div>
+
+          <div>
+            <span>Performance grade</span>
+            <strong class="grade-value">A+</strong>
+          </div>
+        </div>
+      </article>
+    </section>
+<!-- Full Analysis Modal -->
+<div
+  class="custom-modal-overlay"
+  *ngIf="showAnalysis"
+  (click)="closeAnalysis()"
+>
+  <div
+    class="custom-modal"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="custom-modal-header">
+      <div>
+        <span>AI PERFORMANCE ANALYSIS</span>
+        <h2>Vendor Reliability Insights</h2>
+      </div>
+
+      <button
+        type="button"
+        (click)="closeAnalysis()"
+      >
+        ×
+      </button>
+    </div>
+
+    <div class="analysis-score">
+      <div>
+        <span>Current reliability score</span>
+        <strong>{{ overallScore }}%</strong>
+      </div>
+
+      <div>
+        <span>Predicted next month</span>
+        <strong class="positive-modal-value">95%</strong>
+      </div>
+
+      <div>
+        <span>Prediction confidence</span>
+        <strong>94%</strong>
+      </div>
+    </div>
+
+    <div class="analysis-details">
+      <div>
+        <span class="analysis-icon success">✓</span>
+
+        <p>
+          <strong>Strong quality performance</strong>
+          <small>
+            Product quality remains above the vendor network average.
+          </small>
+        </p>
+      </div>
+
+      <div>
+        <span class="analysis-icon success">✓</span>
+
+        <p>
+          <strong>Excellent compliance</strong>
+          <small>
+            All mandatory documents and certifications are valid.
+          </small>
+        </p>
+      </div>
+
+      <div>
+        <span class="analysis-icon warning">!</span>
+
+        <p>
+          <strong>Delivery requires attention</strong>
+          <small>
+            Two recent purchase orders exceeded their expected dates.
+          </small>
+        </p>
+      </div>
+    </div>
+
+    <div class="modal-recommendation">
+      <span>RECOMMENDED DECISION</span>
+
+      <h3>Continue Vendor Partnership</h3>
+
+      <p>
+        The vendor is reliable and suitable for contract renewal.
+        Delivery performance should be reviewed during the next
+        assessment.
+      </p>
+    </div>
+
+    <div class="custom-modal-footer">
+      <button
+        type="button"
+        class="modal-secondary-button"
+        (click)="closeAnalysis()"
+      >
+        Close
+      </button>
+
+      <button
+        type="button"
+        class="modal-primary-button"
+        (click)="exportReport()"
+      >
+        Download Report
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Edit Vendor Modal -->
+<div
+  class="custom-modal-overlay"
+  *ngIf="showEditVendor"
+  (click)="closeEditVendor()"
+>
+  <div
+    class="custom-modal edit-vendor-modal"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="custom-modal-header">
+      <div>
+        <span>VENDOR MANAGEMENT</span>
+        <h2>Edit Vendor Profile</h2>
+      </div>
+
+      <button
+        type="button"
+        (click)="closeEditVendor()"
+      >
+        ×
+      </button>
+    </div>
+
+    <div class="edit-form-grid">
+      <label>
+        Vendor Name
+
+        <input
+          type="text"
+          [(ngModel)]="selectedVendor.name"
+        />
+      </label>
+
+      <label>
+        Vendor Code
+
+        <input
+          type="text"
+          [(ngModel)]="selectedVendor.code"
+        />
+      </label>
+
+      <label>
+        Vendor Category
+
+        <input
+          type="text"
+          [(ngModel)]="selectedVendor.category"
+        />
+      </label>
+
+      <label>
+        Business Location
+
+        <input
+          type="text"
+          [(ngModel)]="selectedVendor.location"
+        />
+      </label>
+
+      <label>
+        Partnership Since
+
+        <input
+          type="text"
+          [(ngModel)]="selectedVendor.joinedDate"
+        />
+      </label>
+
+      <label>
+        Risk Level
+
+        <select [(ngModel)]="selectedVendor.riskLevel">
+          <option value="Low Risk">Low Risk</option>
+          <option value="Medium Risk">Medium Risk</option>
+          <option value="High Risk">High Risk</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="custom-modal-footer">
+      <button
+        type="button"
+        class="modal-secondary-button"
+        (click)="closeEditVendor()"
+      >
+        Cancel
+      </button>
+
+      <button
+        type="button"
+        class="modal-primary-button"
+        (click)="saveVendorProfile()"
+      >
+        Save Changes
+      </button>
+    </div>
+  </div>
+</div>
+    <footer class="dashboard-footer">
+      <div>
+        <span class="footer-status-dot"></span>
+
+        Vendor Intelligence Platform is operational
+      </div>
+
+      <p>
+        Analytics generated from procurement, contract,
+        compliance and delivery data.
+      </p>
+    </footer>
+  </main>
+</div>

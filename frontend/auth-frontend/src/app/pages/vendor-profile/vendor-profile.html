@@ -1,0 +1,676 @@
+<div class="profile-page">
+
+  <div class="profile-header">
+
+    <div>
+      <span class="page-label">
+        VENDOR MANAGEMENT
+      </span>
+
+      <h2>Vendor Profile Management</h2>
+
+      <p>
+        Manage vendor details, contact persons and linked contracts.
+      </p>
+    </div>
+
+    <div class="header-actions">
+
+      <a
+        routerLink="/dashboard"
+        class="dashboard-btn"
+      >
+        <i class="bi bi-arrow-left"></i>
+        Dashboard
+      </a>
+
+      <button
+        type="button"
+        class="add-contact-btn"
+        (click)="openAddContactForm()"
+      >
+        <i class="bi bi-person-plus-fill"></i>
+        Add Contact
+      </button>
+
+      <button
+        type="button"
+        class="edit-btn"
+        (click)="openEditForm()"
+      >
+        <i class="bi bi-pencil-square"></i>
+        Edit Profile
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="profile-card">
+
+    <div class="vendor-title">
+
+      <div>
+        <h3>{{ vendor.companyName }}</h3>
+
+        <p>
+          {{ vendor.approvalStatus }}
+          •
+          {{ vendor.status }}
+        </p>
+      </div>
+
+      <span
+        class="vendor-badge"
+        [ngClass]="{
+          'inactive-badge': vendor.status === 'Inactive'
+        }"
+      >
+        {{ vendor.status }}
+      </span>
+
+    </div>
+
+    <div class="quick-stats">
+
+      <div>
+        <h4>{{ contacts.length }}</h4>
+        <p>Contacts</p>
+      </div>
+
+      <div>
+        <h4>{{ contracts.length }}</h4>
+        <p>Linked Contracts</p>
+      </div>
+
+      <div>
+        <h4>{{ vendor.reliabilityScore }}%</h4>
+        <p>Reliability Score</p>
+      </div>
+
+    </div>
+
+    <div class="reliability-section">
+
+      <div class="reliability-heading">
+        <span>Vendor Reliability</span>
+
+        <strong>
+          {{ vendor.reliabilityScore }}%
+        </strong>
+      </div>
+
+      <div class="progress-track">
+        <div
+          class="progress-value"
+          [style.width.%]="vendor.reliabilityScore"
+        ></div>
+      </div>
+
+    </div>
+
+    <h4 class="section-title">
+      Company Details
+    </h4>
+
+    <div class="info-grid">
+
+      <div>
+        <label>Email</label>
+        <p>{{ vendor.email }}</p>
+      </div>
+
+      <div>
+        <label>Phone</label>
+        <p>{{ vendor.phone }}</p>
+      </div>
+
+      <div>
+        <label>Address</label>
+        <p>{{ vendor.address }}</p>
+      </div>
+
+      <div>
+        <label>Vendor Type</label>
+        <p>{{ vendor.vendorType }}</p>
+      </div>
+
+    </div>
+
+    <div class="document-heading">
+
+      <h4 class="section-title">
+        Company Documents
+      </h4>
+
+      <label class="upload-document-btn">
+        <i class="bi bi-plus-lg"></i>
+        Add Document
+
+        <input
+          type="file"
+          accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+          (change)="uploadNewDocument($event)"
+          hidden
+        >
+      </label>
+
+    </div>
+
+    <div class="document-list">
+
+      <div
+        class="document-card"
+        *ngFor="let vendorDocument of documents; let i = index"
+      >
+
+        <div class="document-info">
+
+          <div class="document-icon">
+            <i class="bi bi-file-earmark-text"></i>
+          </div>
+
+          <div>
+            <h4>
+              {{ vendorDocument.documentName }}
+            </h4>
+
+            <p>
+              {{ vendorDocument.fileName }}
+            </p>
+          </div>
+
+        </div>
+
+        <div class="document-actions">
+
+          <button
+            class="document-view-btn"
+            type="button"
+            (click)="viewDocument(vendorDocument)"
+          >
+            <i class="bi bi-eye"></i>
+            View
+          </button>
+
+          <button
+            class="download-btn"
+            type="button"
+            (click)="downloadDocument(vendorDocument)"
+          >
+            <i class="bi bi-download"></i>
+            Download
+          </button>
+
+          <button
+            class="replace-btn"
+            type="button"
+            (click)="openDocumentSelector(i, replaceFileInput)"
+          >
+            <i class="bi bi-arrow-repeat"></i>
+            Replace
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <input
+      #replaceFileInput
+      type="file"
+      accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+      (change)="replaceDocument($event)"
+      hidden
+    >
+
+  </div>
+
+  <div class="contact-section">
+
+    <div class="document-heading">
+
+      <h3>Points of Contact</h3>
+
+      <button
+        type="button"
+        class="add-contact-btn"
+        (click)="openAddContactForm()"
+      >
+        <i class="bi bi-person-plus"></i>
+        Add Contact
+      </button>
+
+    </div>
+
+    <div class="contact-grid">
+
+      <div
+        class="contact-card"
+        *ngFor="let contact of contacts"
+      >
+
+        <h4>
+          {{ contact.icon }}
+          {{ contact.type }}
+        </h4>
+
+        <p>
+          <strong>Name:</strong>
+          {{ contact.name }}
+        </p>
+
+        <p>
+          <strong>Designation:</strong>
+          {{ contact.designation }}
+        </p>
+
+        <p>
+          <strong>Email:</strong>
+          {{ contact.email }}
+        </p>
+
+        <p>
+          <strong>Phone:</strong>
+          {{ contact.phone }}
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="recent-contracts">
+
+    <h3>Recent Contracts</h3>
+
+    <div class="contract-list">
+
+      <div
+        class="contract-item"
+        *ngFor="let contract of contracts"
+      >
+
+        <div>
+          <h4>
+            <i class="bi bi-file-earmark-text"></i>
+            {{ contract.id }} -
+            {{ contract.title }}
+          </h4>
+
+          <p>
+            Valid from {{ contract.startDate }}
+            to {{ contract.endDate }}
+          </p>
+        </div>
+
+        <span
+          [ngClass]="{
+            'active-status': contract.status === 'Active',
+            'pending-status': contract.status === 'Pending',
+            'expired-status': contract.status === 'Expired'
+          }"
+        >
+          {{ contract.status }}
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Edit Vendor Profile Modal -->
+
+  <div
+    class="modal-overlay"
+    *ngIf="showEditForm"
+  >
+
+    <div class="edit-modal">
+
+      <div class="modal-header">
+
+        <div>
+          <h3>Edit Vendor Profile</h3>
+
+          <p>
+            Update company and vendor information.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="close-btn"
+          (click)="closeEditForm()"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <form (ngSubmit)="saveProfile()">
+
+        <div class="form-group">
+
+          <label for="companyName">
+            Company Name
+          </label>
+
+          <input
+            id="companyName"
+            type="text"
+            name="companyName"
+            [(ngModel)]="editVendor.companyName"
+            required
+          >
+
+        </div>
+
+        <div class="form-row">
+
+          <div class="form-group">
+
+            <label for="vendorEmail">
+              Email
+            </label>
+
+            <input
+              id="vendorEmail"
+              type="email"
+              name="email"
+              [(ngModel)]="editVendor.email"
+              required
+            >
+
+          </div>
+
+          <div class="form-group">
+
+            <label for="vendorPhone">
+              Phone
+            </label>
+
+            <input
+              id="vendorPhone"
+              type="text"
+              name="phone"
+              [(ngModel)]="editVendor.phone"
+              required
+            >
+
+          </div>
+
+        </div>
+
+        <div class="form-group">
+
+          <label for="vendorAddress">
+            Address
+          </label>
+
+          <input
+            id="vendorAddress"
+            type="text"
+            name="address"
+            [(ngModel)]="editVendor.address"
+            required
+          >
+
+        </div>
+
+        <div class="form-group">
+
+          <label for="vendorType">
+            Vendor Type
+          </label>
+
+          <input
+            id="vendorType"
+            type="text"
+            name="vendorType"
+            [(ngModel)]="editVendor.vendorType"
+            required
+          >
+
+        </div>
+
+        <div class="form-row">
+
+          <div class="form-group">
+
+            <label for="vendorStatus">
+              Status
+            </label>
+
+            <select
+              id="vendorStatus"
+              name="status"
+              [(ngModel)]="editVendor.status"
+            >
+              <option value="Active">
+                Active
+              </option>
+
+              <option value="Inactive">
+                Inactive
+              </option>
+            </select>
+
+          </div>
+
+          <div class="form-group">
+
+            <label for="reliabilityScore">
+              Reliability Score
+            </label>
+
+            <input
+              id="reliabilityScore"
+              type="number"
+              name="reliabilityScore"
+              min="0"
+              max="100"
+              [(ngModel)]="editVendor.reliabilityScore"
+            >
+
+          </div>
+
+        </div>
+
+        <div class="form-group">
+
+          <label>
+            Add Company Document
+          </label>
+
+          <input
+            type="file"
+            accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+            (change)="uploadNewDocument($event)"
+          >
+
+          <small>
+            Supported files: PDF, DOC, DOCX, PNG and JPG
+          </small>
+
+        </div>
+
+        <div class="modal-actions">
+
+          <button
+            type="button"
+            class="cancel-btn"
+            (click)="closeEditForm()"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            class="save-btn"
+          >
+            Save Changes
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+  <!-- Add Contact Modal -->
+
+  <div
+    class="modal-overlay"
+    *ngIf="showAddContactForm"
+  >
+
+    <div class="edit-modal contact-modal">
+
+      <div class="modal-header">
+
+        <div>
+          <h3>Add Contact Person</h3>
+
+          <p>
+            Add a new contact for this vendor.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="close-btn"
+          (click)="closeAddContactForm()"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <form (ngSubmit)="addContact()">
+
+        <div class="form-group">
+
+          <label for="contactType">
+            Contact Type
+          </label>
+
+          <select
+            id="contactType"
+            name="contactType"
+            [(ngModel)]="newContact.type"
+          >
+            <option value="Primary Contact">
+              Primary Contact
+            </option>
+
+            <option value="Secondary Contact">
+              Secondary Contact
+            </option>
+          </select>
+
+        </div>
+
+        <div class="form-group">
+
+          <label for="contactName">
+            Full Name
+          </label>
+
+          <input
+            id="contactName"
+            type="text"
+            name="contactName"
+            [(ngModel)]="newContact.name"
+            placeholder="Enter full name"
+            required
+          >
+
+        </div>
+
+        <div class="form-group">
+
+          <label for="contactDesignation">
+            Designation
+          </label>
+
+          <input
+            id="contactDesignation"
+            type="text"
+            name="contactDesignation"
+            [(ngModel)]="newContact.designation"
+            placeholder="Enter designation"
+            required
+          >
+
+        </div>
+
+        <div class="form-row">
+
+          <div class="form-group">
+
+            <label for="contactEmail">
+              Email
+            </label>
+
+            <input
+              id="contactEmail"
+              type="email"
+              name="contactEmail"
+              [(ngModel)]="newContact.email"
+              placeholder="Enter email"
+              required
+            >
+
+          </div>
+
+          <div class="form-group">
+
+            <label for="contactPhone">
+              Phone
+            </label>
+
+            <input
+              id="contactPhone"
+              type="text"
+              name="contactPhone"
+              [(ngModel)]="newContact.phone"
+              placeholder="Enter phone number"
+              required
+            >
+
+          </div>
+
+        </div>
+
+        <div class="modal-actions">
+
+          <button
+            type="button"
+            class="cancel-btn"
+            (click)="closeAddContactForm()"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            class="save-btn"
+          >
+            Add Contact
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</div>

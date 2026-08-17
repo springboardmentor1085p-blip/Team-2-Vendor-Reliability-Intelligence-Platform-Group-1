@@ -1,38 +1,159 @@
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-5">
-      <div class="card shadow p-4">
-        <h2 class="text-center mb-4">Login</h2>
+<div class="login-page">
+  <div class="login-wrapper">
 
-        <div class="mb-3">
-          <label>Email</label>
-          <input
-            type="email"
-            class="form-control"
-            placeholder="Enter Email"
-            [(ngModel)]="loginData.email"
-          >
-        </div>
+    <!-- Left Branding Section -->
+    <div class="brand-section">
+      <div class="brand-content">
 
-        <div class="mb-3">
-          <label>Password</label>
-          <input
-            type="password"
-            class="form-control"
-            placeholder="Enter Password"
-            [(ngModel)]="loginData.password"
-          >
-        </div>
+        <div class="brand-icon">VR</div>
 
-        <button class="btn btn-primary w-100" type="button" (click)="loginUser()">
-          Login
-        </button>
+        <h1>
+          Vendor Reliability
+          <br>
+          Intelligence Platform
+        </h1>
 
-        <p class="text-center mt-3">
-          Don't have an account?
-          <a routerLink="/register">Register</a>
+        <p>
+          Manage vendors, monitor procurement risks, and make smarter
+          business decisions from one secure platform.
         </p>
+
+        <div class="feature">
+          <span>✓</span>
+          Secure vendor management
+        </div>
+
+        <div class="feature">
+          <span>✓</span>
+          Procurement performance insights
+        </div>
+
+        <div class="feature">
+          <span>✓</span>
+          Contract and compliance tracking
+        </div>
+
       </div>
     </div>
+
+    <!-- Login Section -->
+    <div class="form-section">
+      <div class="login-card">
+
+        <div class="mobile-logo">VR</div>
+
+        <h2>Welcome Back!</h2>
+
+        <p class="subtitle">
+          Sign in to continue to your dashboard
+        </p>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email">Email Address</label>
+
+          <input
+            id="email"
+            type="email"
+            class="form-control"
+            placeholder="Enter your email"
+            [(ngModel)]="loginData.email"
+            autocomplete="email"
+          >
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label for="password">Password</label>
+
+          <div class="password-wrapper">
+
+            <input
+              id="password"
+              [type]="showPassword ? 'text' : 'password'"
+              class="form-control password-input"
+              placeholder="Enter your password"
+              [(ngModel)]="loginData.password"
+              autocomplete="current-password"
+              (keyup.enter)="loginUser()"
+            >
+
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="togglePasswordVisibility()"
+              [attr.aria-label]="
+                showPassword ? 'Hide password' : 'Show password'
+              "
+            >
+              {{ showPassword ? '🙈' : '👁️' }}
+            </button>
+
+          </div>
+        </div>
+
+        <!-- Options -->
+        <div class="form-options">
+
+          <label class="remember-me">
+            <input
+              type="checkbox"
+              [(ngModel)]="rememberMe"
+            >
+            <span>Remember me</span>
+          </label>
+
+          <button
+            type="button"
+            class="forgot-link"
+            (click)="forgotPassword()"
+          >
+            Forgot password?
+          </button>
+
+        </div>
+
+        <!-- Error -->
+        <p
+          class="login-error"
+          *ngIf="loginError"
+        >
+          {{ loginError }}
+        </p>
+
+        <!-- Login Button -->
+        <button
+          class="login-button"
+          type="button"
+          (click)="loginUser()"
+          [disabled]="isLoading"
+        >
+          <span *ngIf="!isLoading">
+            Sign In
+          </span>
+
+          <span
+            class="button-loading"
+            *ngIf="isLoading"
+          >
+            <span class="login-spinner"></span>
+            Signing in...
+          </span>
+        </button>
+
+        <div class="divider">
+          <span>New to our platform?</span>
+        </div>
+
+        <p class="register-text">
+          Don't have an account?
+          <a routerLink="/register">
+            Create an account
+          </a>
+        </p>
+
+      </div>
+    </div>
+
   </div>
 </div>

@@ -1,1 +1,134 @@
-<p>register works!</p>
+<div class="register-page">
+  <div class="register-wrapper">
+
+    <!-- Left Branding Section -->
+    <div class="brand-section">
+      <div class="brand-content">
+
+        <div class="brand-icon">VR</div>
+
+        <h1>
+          Vendor Reliability<br>
+          Intelligence Platform
+        </h1>
+
+        <p>
+          Register securely and manage vendor agreements, contracts,
+          procurement risks and supplier information in one platform.
+        </p>
+
+        <div class="feature">
+          <span>✓</span>
+          Secure vendor registration
+        </div>
+
+        <div class="feature">
+          <span>✓</span>
+          Multiple vendor contact management
+        </div>
+
+        <div class="feature">
+          <span>✓</span>
+          Contract and compliance tracking
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Registration Section -->
+    <div class="form-section">
+      <div class="register-card">
+
+        <div class="mobile-logo">VR</div>
+
+        <h2>Create Account</h2>
+
+        <p class="subtitle">
+          Enter your details to join the platform
+        </p>
+
+        <form (ngSubmit)="registerUser()">
+
+          <div class="form-group">
+            <label for="name">Full Name</label>
+
+            <input
+              id="name"
+              type="text"
+              name="name"
+              class="form-control"
+              placeholder="Enter your full name"
+              [(ngModel)]="registerData.name"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address</label>
+
+            <input
+              id="email"
+              type="email"
+              name="email"
+              class="form-control"
+              placeholder="Enter your email"
+              [(ngModel)]="registerData.email"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="role">Select Role</label>
+
+            <select
+              id="role"
+              name="role"
+              class="form-control"
+              [(ngModel)]="registerData.role"
+              required
+            >
+              <option value="Vendor">Vendor</option>
+              <option value="Procurement Manager">
+                Procurement Manager
+              </option>
+              <option value="Admin">Admin</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+
+            <input
+              id="password"
+              type="password"
+              name="password"
+              class="form-control"
+              placeholder="Create a password"
+              [(ngModel)]="registerData.password"
+              required
+            >
+          </div>
+
+          <button
+            class="register-button"
+            type="submit"
+          >
+            Create Account
+          </button>
+
+        </form>
+
+        <div class="divider">
+          <span>Already registered?</span>
+        </div>
+
+        <p class="login-text">
+          Already have an account?
+          <a routerLink="/login">Sign In</a>
+        </p>
+
+      </div>
+    </div>
+
+  </div>
+</div>

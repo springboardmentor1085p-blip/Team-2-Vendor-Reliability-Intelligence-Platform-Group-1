@@ -1,0 +1,447 @@
+<div class="contract-page">
+
+  <div class="header">
+
+    <div>
+      <span class="page-label">
+        CONTRACT MANAGEMENT
+      </span>
+
+      <h2>Vendor Contracts</h2>
+
+      <p>
+        Manage agreements and monitor contract status.
+      </p>
+    </div>
+
+    <div class="header-actions">
+
+      <a
+        routerLink="/dashboard"
+        class="dashboard-btn"
+      >
+        <i class="bi bi-arrow-left"></i>
+        Dashboard
+      </a>
+
+      <button
+        class="refresh-btn"
+        type="button"
+        (click)="loadContracts()"
+        [disabled]="isLoading"
+      >
+        <i
+          class="bi bi-arrow-clockwise"
+          [class.spin]="isLoading"
+        ></i>
+
+        {{ isLoading ? 'Loading...' : 'Refresh' }}
+      </button>
+
+      <button
+        class="upload-btn"
+        type="button"
+        (click)="openUploadForm()"
+      >
+        <i class="bi bi-file-earmark-plus"></i>
+        Add Contract
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="summary-cards">
+
+    <div class="card total-card">
+      <div>
+        <p>Total Contracts</p>
+        <h3>{{ totalContracts }}</h3>
+      </div>
+
+      <div class="card-icon">
+        <i class="bi bi-files"></i>
+      </div>
+    </div>
+
+    <div class="card active-card">
+      <div>
+        <p>Active Contracts</p>
+        <h3>{{ activeContracts }}</h3>
+      </div>
+
+      <div class="card-icon">
+        <i class="bi bi-check-circle"></i>
+      </div>
+    </div>
+
+    <div class="card pending-card">
+      <div>
+        <p>Pending Contracts</p>
+        <h3>{{ pendingContracts }}</h3>
+      </div>
+
+      <div class="card-icon">
+        <i class="bi bi-clock-history"></i>
+      </div>
+    </div>
+
+    <div class="card expired-card">
+      <div>
+        <p>Expired Contracts</p>
+        <h3>{{ expiredContracts }}</h3>
+      </div>
+
+      <div class="card-icon">
+        <i class="bi bi-exclamation-circle"></i>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="filter-section">
+
+    <div class="search-box">
+      <i class="bi bi-search"></i>
+
+      <input
+        type="text"
+        placeholder="Search by vendor, contract, ID or status"
+        [(ngModel)]="searchText"
+      >
+    </div>
+
+    <select
+      class="status-filter"
+      [(ngModel)]="statusFilter"
+    >
+      <option value="All">All Status</option>
+      <option value="Active">Active</option>
+      <option value="Pending">Pending</option>
+      <option value="Expired">Expired</option>
+    </select>
+
+    <button
+      type="button"
+      class="clear-btn"
+      (click)="clearFilters()"
+    >
+      Clear
+    </button>
+
+  </div>
+
+  <div class="table-container">
+
+    <div class="loading-state" *ngIf="isLoading">
+      <div class="loader"></div>
+      <p>Loading contracts...</p>
+    </div>
+
+    <table *ngIf="!isLoading">
+
+      <thead>
+        <tr>
+          <th>Contract ID</th>
+          <th>Vendor</th>
+          <th>Contract Name</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Status</th>
+          <th>Document</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr *ngFor="let contract of filteredContracts">
+
+          <td>
+            <strong class="contract-id">
+              {{ contract.id }}
+            </strong>
+          </td>
+
+          <td>{{ contract.vendorName }}</td>
+
+          <td>
+            <strong>{{ contract.title }}</strong>
+          </td>
+
+          <td>{{ contract.startDate }}</td>
+
+          <td>{{ contract.endDate }}</td>
+
+          <td>
+            <span
+              class="status-badge"
+              [ngClass]="{
+                'active': contract.status === 'Active',
+                'pending': contract.status === 'Pending',
+                'expired': contract.status === 'Expired'
+              }"
+            >
+              {{ contract.status }}
+            </span>
+          </td>
+
+          <td>
+            <span class="document-name">
+              <i class="bi bi-file-earmark-text"></i>
+              {{ contract.document }}
+            </span>
+          </td>
+
+          <td>
+            <div class="action-buttons">
+
+              <button
+                class="view-btn"
+                type="button"
+                title="View contract"
+                (click)="viewContract(contract)"
+              >
+                <i class="bi bi-eye"></i>
+              </button>
+
+              <button
+                class="delete-btn"
+                type="button"
+                title="Delete contract"
+                (click)="deleteContract(contract.databaseId)"
+              >
+                <i class="bi bi-trash"></i>
+              </button>
+
+            </div>
+          </td>
+
+        </tr>
+
+        <tr *ngIf="filteredContracts.length === 0">
+          <td colspan="8" class="empty-state">
+            <i class="bi bi-inbox"></i>
+            <h3>No contracts found</h3>
+            <p>Try changing the search or status filter.</p>
+          </td>
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+  <!-- Add Contract Modal -->
+
+  <div class="modal-overlay" *ngIf="showUploadForm">
+
+    <div class="modal-card">
+
+      <div class="modal-header">
+
+        <div>
+          <h3>Add New Contract</h3>
+          <p>Enter the vendor agreement details.</p>
+        </div>
+
+        <button
+          class="close-btn"
+          type="button"
+          (click)="closeUploadForm()"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <form (ngSubmit)="addContract()">
+
+        <div class="form-group">
+          <label>Vendor Name</label>
+
+          <input
+            type="text"
+            name="vendorName"
+            [(ngModel)]="newContract.vendorName"
+            placeholder="Enter vendor name"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label>Contract Name</label>
+
+          <input
+            type="text"
+            name="title"
+            [(ngModel)]="newContract.title"
+            placeholder="Enter contract name"
+            required
+          >
+        </div>
+
+        <div class="form-row">
+
+          <div class="form-group">
+            <label>Start Date</label>
+
+            <input
+              type="date"
+              name="startDate"
+              [(ngModel)]="newContract.startDate"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label>End Date</label>
+
+            <input
+              type="date"
+              name="endDate"
+              [(ngModel)]="newContract.endDate"
+              required
+            >
+          </div>
+
+        </div>
+
+        <div class="form-group">
+          <label>Status</label>
+
+          <select
+            name="status"
+            [(ngModel)]="newContract.status"
+          >
+            <option value="Active">Active</option>
+            <option value="Pending">Pending</option>
+            <option value="Expired">Expired</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Contract Document</label>
+
+          <input
+            type="file"
+            accept=".pdf,.doc,.docx"
+            (change)="onFileSelected($event)"
+          >
+
+          <small *ngIf="newContract.document">
+            Selected: {{ newContract.document }}
+          </small>
+        </div>
+
+        <div class="modal-actions">
+
+          <button
+            class="cancel-btn"
+            type="button"
+            (click)="closeUploadForm()"
+          >
+            Cancel
+          </button>
+
+          <button
+            class="save-btn"
+            type="submit"
+            [disabled]="isSaving"
+          >
+            {{ isSaving ? 'Saving...' : 'Save Contract' }}
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+  <!-- Contract Details Modal -->
+
+  <div class="modal-overlay" *ngIf="selectedContract">
+
+    <div class="modal-card details-card">
+
+      <div class="modal-header">
+
+        <div>
+          <span class="page-label">
+            CONTRACT DETAILS
+          </span>
+
+          <h3>{{ selectedContract.title }}</h3>
+          <p>{{ selectedContract.id }}</p>
+        </div>
+
+        <button
+          class="close-btn"
+          type="button"
+          (click)="closeContractDetails()"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <div class="detail-row">
+        <span>Vendor</span>
+        <strong>{{ selectedContract.vendorName }}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Contract Name</span>
+        <strong>{{ selectedContract.title }}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Start Date</span>
+        <strong>{{ selectedContract.startDate }}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>End Date</span>
+        <strong>{{ selectedContract.endDate }}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Status</span>
+
+        <span
+          class="status-badge"
+          [ngClass]="{
+            'active': selectedContract.status === 'Active',
+            'pending': selectedContract.status === 'Pending',
+            'expired': selectedContract.status === 'Expired'
+          }"
+        >
+          {{ selectedContract.status }}
+        </span>
+      </div>
+
+      <div class="detail-row">
+        <span>Document</span>
+
+        <strong>
+          <i class="bi bi-file-earmark-text"></i>
+          {{ selectedContract.document }}
+        </strong>
+      </div>
+
+      <button
+        class="save-btn full-width"
+        type="button"
+        (click)="closeContractDetails()"
+      >
+        Close
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

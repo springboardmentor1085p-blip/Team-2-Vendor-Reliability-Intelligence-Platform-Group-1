@@ -1,1 +1,83 @@
-<router-outlet></router-outlet>
+<nav class="main-navbar" *ngIf="showNavbar">
+
+  <!-- Logo -->
+  <div class="navbar-brand">
+    <div class="brand-logo">
+      VR
+    </div>
+
+    <div class="brand-text">
+      <h2>Vendor Intelligence</h2>
+      <p>Reliability Platform</p>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="navbar-links">
+
+    <a
+      routerLink="/dashboard"
+      routerLinkActive="active-link"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <i class="bi bi-grid-fill"></i>
+      Dashboard
+    </a>
+
+    <a
+      routerLink="/vendor-profile"
+      routerLinkActive="active-link"
+    >
+      <i class="bi bi-building"></i>
+      Vendors
+    </a>
+
+    <a
+      routerLink="/contract-management"
+      routerLinkActive="active-link"
+    >
+      <i class="bi bi-file-earmark-text-fill"></i>
+      Contracts
+    </a>
+    <a
+  routerLink="/reliability-score"
+  routerLinkActive="active-link"
+>
+  <i class="bi bi-graph-up"></i>
+  Reliability Score
+</a>
+
+  </div>
+
+  <!-- User -->
+  <div class="navbar-right">
+
+    <div class="user-box">
+
+      <div class="user-avatar">
+        {{ userInitial }}
+      </div>
+
+      <div class="user-details">
+        <strong>{{ userName }}</strong>
+        <small>{{ userEmail }}</small>
+      </div>
+
+    </div>
+
+    <button
+      class="logout-btn"
+      type="button"
+      (click)="logout()"
+    >
+      <i class="bi bi-box-arrow-right"></i>
+      Logout
+    </button>
+
+  </div>
+
+</nav>
+
+<main [class.page-with-navbar]="showNavbar">
+  <router-outlet></router-outlet>
+</main>

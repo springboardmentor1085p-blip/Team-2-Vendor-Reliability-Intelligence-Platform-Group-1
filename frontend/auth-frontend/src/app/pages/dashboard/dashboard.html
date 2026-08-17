@@ -1,0 +1,267 @@
+<div class="dashboard-page">
+
+  <main class="dashboard-container">
+
+    <div class="dashboard-header">
+      <div>
+        <span class="page-label">OVERVIEW</span>
+        <h1>Dashboard</h1>
+        <p>Welcome back, {{ userName }} 👋</p>
+
+        <small class="current-time">
+          <i class="bi bi-clock"></i>
+          {{ currentDateTime }}
+        </small>
+      </div>
+
+      <button
+        class="refresh-btn"
+        type="button"
+        (click)="refreshDashboard()"
+        [disabled]="isRefreshing"
+      >
+        <i
+          class="bi bi-arrow-clockwise"
+          [class.spin]="isRefreshing"
+        ></i>
+
+        {{ isRefreshing ? 'Refreshing...' : 'Refresh' }}
+      </button>
+    </div>
+
+    <div class="cards-grid">
+      <div class="summary-card" *ngFor="let card of dashboardCards">
+        <div class="card-top">
+          <div>
+            <h4>{{ card.title }}</h4>
+            <h2>{{ card.value }}</h2>
+            <small>{{ card.subtitle }}</small>
+          </div>
+
+          <div class="icon-box">
+            <i [class]="card.icon"></i>
+          </div>
+        </div>
+
+        <p class="trend">
+          <i class="bi bi-arrow-up-right"></i>
+          {{ card.trend }}
+        </p>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+
+      <a routerLink="/vendor-profile" class="quick-action">
+        <div class="quick-icon">
+          <i class="bi bi-building-add"></i>
+        </div>
+
+        <div>
+          <strong>Manage Vendors</strong>
+          <span>View and update vendor profiles</span>
+        </div>
+
+        <i class="bi bi-arrow-right"></i>
+      </a>
+
+      <a routerLink="/contract-management" class="quick-action">
+        <div class="quick-icon">
+          <i class="bi bi-file-earmark-plus"></i>
+        </div>
+
+        <div>
+          <strong>Manage Contracts</strong>
+          <span>Create and monitor agreements</span>
+        </div>
+
+        <i class="bi bi-arrow-right"></i>
+      </a>
+
+      <a routerLink="/reliability-score" class="quick-action">
+        <div class="quick-icon">
+          <i class="bi bi-graph-up-arrow"></i>
+        </div>
+
+        <div>
+          <strong>Reliability Score</strong>
+          <span>View and calculate vendor reliability</span>
+        </div>
+
+        <i class="bi bi-arrow-right"></i>
+      </a>
+
+    </div>
+
+    <div class="analytics-grid">
+
+      <div class="analytics-card">
+
+        <div class="section-heading">
+          <div>
+            <h3>Vendor Performance</h3>
+            <p>Overall operational performance</p>
+          </div>
+
+          <span class="score-badge">
+            {{ reliabilityScore }}%
+          </span>
+        </div>
+
+        <div class="reliability-summary">
+
+          <div class="reliability-score">
+            <span>Reliability Score</span>
+            <strong>{{ reliabilityScore }}%</strong>
+          </div>
+
+          <div class="reliability-status">
+            <span>Status</span>
+            <strong>{{ reliabilityStatus }}</strong>
+          </div>
+
+        </div>
+
+        <div class="progress-block">
+          <div class="progress-item">
+            <span>Vendor Reliability</span>
+            <strong>{{ reliabilityScore }}%</strong>
+          </div>
+
+          <progress
+            max="100"
+            [value]="reliabilityScore"
+          ></progress>
+        </div>
+
+        <div class="progress-block">
+          <div class="progress-item">
+            <span>On-Time Delivery</span>
+            <strong>{{ onTimeDelivery }}%</strong>
+          </div>
+
+          <progress
+            max="100"
+            [value]="onTimeDelivery"
+          ></progress>
+        </div>
+
+        <div class="progress-block">
+          <div class="progress-item">
+            <span>Contract Compliance</span>
+            <strong>{{ contractCompliance }}%</strong>
+          </div>
+
+          <progress
+            max="100"
+            [value]="contractCompliance"
+          ></progress>
+        </div>
+
+        <div class="progress-block">
+          <div class="progress-item">
+            <span>Quality Rating</span>
+            <strong>{{ qualityRating }}%</strong>
+          </div>
+
+          <progress
+            max="100"
+            [value]="qualityRating"
+          ></progress>
+        </div>
+
+      </div>
+
+      <div class="analytics-card">
+
+        <div class="section-heading">
+          <div>
+            <h3>Recent Activities</h3>
+            <p>Latest platform updates</p>
+          </div>
+
+          <i class="bi bi-activity section-icon"></i>
+        </div>
+
+        <div
+          class="activity"
+          *ngFor="let activity of recentActivities"
+        >
+          <div class="activity-icon">
+            <i [class]="activity.icon"></i>
+          </div>
+
+          <div class="activity-content">
+            <strong>{{ activity.title }}</strong>
+            <p>{{ activity.description }}</p>
+            <small>{{ activity.time }}</small>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="contracts-card">
+
+      <div class="section-heading">
+        <div>
+          <h3>Upcoming Contract Expirations</h3>
+          <p>Contracts requiring attention</p>
+        </div>
+
+        <a
+          routerLink="/contract-management"
+          class="view-all"
+        >
+          View all
+          <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+
+          <thead>
+            <tr>
+              <th>Contract</th>
+              <th>Vendor</th>
+              <th>Expiry Date</th>
+              <th>Days Left</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let contract of expiringContracts">
+
+              <td>
+                <strong>{{ contract.contractName }}</strong>
+              </td>
+
+              <td>{{ contract.vendorName }}</td>
+
+              <td>{{ contract.expiryDate }}</td>
+
+              <td>{{ contract.daysLeft }} days</td>
+
+              <td>
+                <span
+                  class="status"
+                  [class.urgent]="contract.status === 'Urgent'"
+                >
+                  {{ contract.status }}
+                </span>
+              </td>
+
+            </tr>
+          </tbody>
+
+        </table>
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
