@@ -1,0 +1,45 @@
+<app-breadcrumb></app-breadcrumb>
+
+<h2 class="page-title">Dashboard</h2>
+
+<div class="dashboard-grid">
+
+  <!-- Data loaded -->
+  <ng-container *ngIf="summary && !loading">
+
+    <mat-card class="dashboard-card">
+      <h3>Vendor Overview</h3>
+      <p><strong>Vendor:</strong> {{ summary.vendor_name }}</p>
+      <p><strong>Status:</strong> {{ summary.vendor_status }}</p>
+      <p><strong>Contract:</strong> {{ summary.contract_status }}</p>
+    </mat-card>
+
+    <mat-card class="dashboard-card">
+      <h3>Purchase Orders</h3>
+      <p><strong>Total Orders:</strong> {{ summary.purchase_orders }}</p>
+      <p><strong>Latest Status:</strong> {{ summary.latest_order }}</p>
+    </mat-card>
+
+    <mat-card class="dashboard-card">
+      <h3>Messaging &amp; Notifications</h3>
+      <p><strong>Last Message:</strong> {{ summary.last_message }}</p>
+      <p><strong>Unread Notifications:</strong> {{ summary.notification_count }}</p>
+    </mat-card>
+
+  </ng-container>
+
+  <!-- Loading spinner -->
+  <app-loading-spinner
+    *ngIf="loading"
+    message="Loading dashboard data..."
+  ></app-loading-spinner>
+
+  <!-- Error state -->
+  <div class="error-panel" *ngIf="!loading && errorMessage">
+    <mat-card>
+      <h3>Unable to load data</h3>
+      <p>{{ errorMessage }}</p>
+    </mat-card>
+  </div>
+
+</div>

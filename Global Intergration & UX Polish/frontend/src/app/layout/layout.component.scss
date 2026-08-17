@@ -1,0 +1,68 @@
+// ── Shell ──────────────────────────────────────────────────────────────────
+.layout-shell {
+  min-height: 100vh;
+  width: 100%;
+  background: #f4f7fa;
+  overflow-x: hidden;
+}
+
+.layout-shell .mat-sidenav-content {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+// ── Sidenav ────────────────────────────────────────────────────────────────
+.layout-sidenav {
+  width: 280px !important;
+  min-width: 280px !important;
+  max-width: 280px !important;
+  background: #111827 !important;
+  color: #ffffff;
+  border-right: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+.layout-sidenav .mat-drawer-inner-container {
+  padding: 0;
+  overflow: hidden;
+  height: 100%;
+}
+
+// ── Content Area ───────────────────────────────────────────────────────────
+.layout-content {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  background-color: #f4f7fa;
+  padding: 28px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+}
+
+// ── Dark Theme Override ────────────────────────────────────────────────────
+body.dark-theme .layout-shell {
+  background: #0f172a;
+}
+
+body.dark-theme .layout-content {
+  background-color: #0f172a;
+  color: #e2e8f0;
+}
+
+// ── Responsive ─────────────────────────────────────────────────────────────
+@media (max-width: 960px) {
+  .layout-shell {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .layout-content {
+    padding: 16px;
+  }
+}

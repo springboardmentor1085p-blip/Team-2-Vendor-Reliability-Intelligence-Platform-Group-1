@@ -1,0 +1,128 @@
+// ── Toolbar Shell ──────────────────────────────────────────────────────────
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  display: flex !important;
+  flex-direction: row;
+  align-items: center;
+  min-height: 72px;
+  padding: 0 20px;
+  gap: 8px;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.12);
+  background: linear-gradient(90deg, #1e3a8a 0%, #2563eb 100%) !important;
+  color: #ffffff !important;
+}
+
+// ── Mobile toggle ──────────────────────────────────────────────────────────
+.menu-toggle {
+  flex-shrink: 0;
+  color: #ffffff;
+  margin-right: 4px;
+}
+
+// ── Title group ────────────────────────────────────────────────────────────
+.header-title-group {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.app-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.15px;
+  color: #ffffff;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.app-subtitle {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.82);
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+// ── Spacer ────────────────────────────────────────────────────────────────
+.header-spacer {
+  flex: 1 1 auto;
+}
+
+// ── Actions ────────────────────────────────────────────────────────────────
+.header-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.action-btn {
+  color: #ffffff;
+  position: relative;
+}
+
+// ── Notification Badge ─────────────────────────────────────────────────────
+.badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 9px;
+  background: #facc15;
+  color: #111827;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  pointer-events: none;
+}
+
+// ── Profile Button ─────────────────────────────────────────────────────────
+.profile-button {
+  display: inline-flex !important;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  color: #ffffff !important;
+  text-transform: none;
+  padding: 0 12px;
+  min-width: 0;
+  border-radius: 8px;
+  font-weight: 500;
+
+  mat-icon {
+    flex-shrink: 0;
+  }
+}
+
+.profile-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+  font-size: 0.88rem;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+// ── Responsive ─────────────────────────────────────────────────────────────
+@media (max-width: 600px) {
+  .app-header {
+    padding: 0 12px;
+    min-height: 60px;
+  }
+
+  .app-subtitle {
+    display: none;
+  }
+
+  .profile-name {
+    display: none;
+  }
+}

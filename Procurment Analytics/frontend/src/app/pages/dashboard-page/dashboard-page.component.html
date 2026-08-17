@@ -1,0 +1,496 @@
+<div class="dash" [class.dark-theme]="darkTheme()">
+
+  <!-- ══ HEADER HERO ══════════════════════════════════════════════════════ -->
+  <header class="hero">
+    <div class="hero__left">
+      <span class="hero__eyebrow">Vendor Reliability Intelligence Platform</span>
+      <h1 class="hero__title">Procurement Analytics</h1>
+      <p class="hero__sub">Real-time spend, vendor performance, contracts, budgets &amp; savings.</p>
+    </div>
+    <div class="hero__actions">
+      <button mat-icon-button [matTooltip]="darkTheme() ? 'Light mode' : 'Dark mode'"
+              (click)="toggleTheme()" class="theme-btn">
+        <mat-icon>{{ darkTheme() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      </button>
+      <button mat-stroked-button (click)="exportCsv()" matTooltip="Export CSV">
+        <mat-icon>file_download</mat-icon> CSV
+      </button>
+      <button mat-stroked-button (click)="exportExcel()" matTooltip="Export Excel">
+        <mat-icon>table_chart</mat-icon> Excel
+      </button>
+      <button mat-flat-button color="primary" (click)="printDashboard()">
+        <mat-icon>print</mat-icon> Print
+      </button>
+    </div>
+  </header>
+
+  <!-- ══ FILTERS ═══════════════════════════════════════════════════════════ -->
+  <mat-card class="filters-card">
+    <div class="filters-row">
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Vendor</mat-label>
+        <mat-select [(ngModel)]="selectedVendor" (selectionChange)="applyFilters()">
+          <mat-option value="">All Vendors</mat-option>
+          <mat-option *ngFor="let v of filterOptions.vendors" [value]="v.name">{{ v.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Category</mat-label>
+        <mat-select [(ngModel)]="selectedCategory" (selectionChange)="applyFilters()">
+          <mat-option value="">All Categories</mat-option>
+          <mat-option *ngFor="let c of filterOptions.categories" [value]="c.name">{{ c.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Department</mat-label>
+        <mat-select [(ngModel)]="selectedDepartment" (selectionChange)="applyFilters()">
+          <mat-option value="">All Departments</mat-option>
+          <mat-option *ngFor="let d of filterOptions.departments" [value]="d.name">{{ d.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Status</mat-label>
+        <mat-select [(ngModel)]="selectedStatus" (selectionChange)="applyFilters()">
+          <mat-option value="">All Statuses</mat-option>
+          <mat-option *ngFor="let s of filterOptions.statuses" [value]="s">{{ s }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Financial Year</mat-label>
+        <mat-select [(ngModel)]="selectedYear" (selectionChange)="applyFilters()">
+          <mat-option value="">All Years</mat-option>
+          <mat-option *ngFor="let y of filterOptions.financial_years" [value]="y">{{ y }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-stroked-button class="reset-btn" (click)="resetFilters()" matTooltip="Clear all filters">
+        <mat-icon>restart_alt</mat-icon> Reset
+      </button>
+    </div>
+  </mat-card>
+
+  <!-- ══ ERROR STATE ════════════════════════════════════════════════════════ -->
+  <div *ngIf="hasError()" class="error-state">
+    <mat-icon>error_outline</mat-icon>
+    <h3>Unable to load analytics</h3>
+    <p>Make sure the backend is running on <code>http://127.0.0.1:8000</code></p>
+    <button mat-flat-button color="primary" (click)="loadAll()">Retry</button>
+  </div>
+
+  <!-- ══ KPI CARDS ══════════════════════════════════════════════════════════ -->
+  <section class="kpi-grid" *ngIf="!hasError()">
+    <app-kpi-card
+      label="Total Spend" icon="payments" color="blue" prefix="$"
+      [value]="kpi?.total_spend ?? 0"
+      [trendPct]="kpi?.spend_trend_pct ?? null"
+      [loading]="loading()"
+      tooltip="Sum of all purchase orders">
+    </app-kpi-card>
+
+    <app-kpi-card
+      label="Purchase Orders" icon="receipt_long" color="purple"
+      [value]="kpi?.total_orders ?? 0"
+      [loading]="loading()"
+      tooltip="Total number of purchase orders">
+    </app-kpi-card>
+
+    <app-kpi-card
+      label="Active Vendors" icon="groups" color="teal"
+      [value]="kpi?.active_vendors ?? 0"
+      [loading]="loading()"
+      tooltip="Vendors with active status">
+    </app-kpi-card>
+
+    <app-kpi-card
+      label="Active Contracts" icon="description" color="orange"
+      [value]="kpi?.active_contracts ?? 0"
+      [loading]="loading()"
+      tooltip="Contracts currently active">
+    </app-kpi-card>
+
+    <app-kpi-card
+      label="Budget Utilized" icon="account_balance" color="red" suffix="%"
+      [value]="kpi?.budget_utilization_percentage ?? 0"
+      [loading]="loading()"
+      tooltip="Percentage of total allocated budget spent">
+    </app-kpi-card>
+
+    <app-kpi-card
+      label="Total Savings" icon="savings" color="green" prefix="$"
+      [value]="kpi?.total_procurement_savings ?? 0"
+      [trendPct]="kpi?.savings_pct ?? null"
+      [loading]="loading()"
+      tooltip="Combined negotiated + budget + procurement savings">
+    </app-kpi-card>
+  </section>
+
+  <!-- ══ SECTION NAV TABS ───────────────────────────────────────────────── -->
+  <nav class="section-tabs" *ngIf="!hasError()">
+    <button [class.active]="activeSection==='overview'"   (click)="activeSection='overview'">
+      <mat-icon>dashboard</mat-icon> Overview
+    </button>
+    <button [class.active]="activeSection==='vendors'"    (click)="activeSection='vendors'">
+      <mat-icon>groups</mat-icon> Vendors
+    </button>
+    <button [class.active]="activeSection==='contracts'"  (click)="activeSection='contracts'">
+      <mat-icon>description</mat-icon> Contracts
+    </button>
+    <button [class.active]="activeSection==='budget'"     (click)="activeSection='budget'">
+      <mat-icon>account_balance</mat-icon> Budget
+    </button>
+    <button [class.active]="activeSection==='savings'"    (click)="activeSection='savings'">
+      <mat-icon>savings</mat-icon> Savings
+    </button>
+  </nav>
+
+  <!-- ══════════════════════ OVERVIEW SECTION ═══════════════════════════════ -->
+  <ng-container *ngIf="activeSection==='overview' && !hasError()">
+
+    <!-- Charts grid -->
+    <section class="charts-grid">
+      <mat-card class="chart-card">
+        <div class="card-header">
+          <span class="card-title">Monthly Spend Trend</span>
+          <mat-icon class="card-icon" style="color:#2563eb">show_chart</mat-icon>
+        </div>
+        <app-spend-trend-chart
+          [data]="spendSummary?.monthly_trend ?? []"
+          [loading]="loading()">
+        </app-spend-trend-chart>
+      </mat-card>
+
+      <mat-card class="chart-card">
+        <div class="card-header">
+          <span class="card-title">Category-wise Spend</span>
+          <mat-icon class="card-icon" style="color:#7c3aed">bar_chart</mat-icon>
+        </div>
+        <app-category-bar-chart
+          [data]="categoryBarData"
+          [loading]="loading()">
+        </app-category-bar-chart>
+      </mat-card>
+
+      <mat-card class="chart-card">
+        <div class="card-header">
+          <span class="card-title">Vendor Spend Distribution</span>
+          <mat-icon class="card-icon" style="color:#0891b2">pie_chart</mat-icon>
+        </div>
+        <app-vendor-pie-chart
+          [data]="vendorPieData"
+          [loading]="loading()">
+        </app-vendor-pie-chart>
+      </mat-card>
+
+      <mat-card class="chart-card">
+        <div class="card-header">
+          <span class="card-title">Quarterly Spend</span>
+          <mat-icon class="card-icon" style="color:#0891b2">area_chart</mat-icon>
+        </div>
+        <app-quarterly-area-chart
+          [data]="spendSummary?.quarterly_trend ?? []"
+          [loading]="loading()">
+        </app-quarterly-area-chart>
+      </mat-card>
+    </section>
+
+    <!-- Purchase Order Status + Spend Metrics -->
+    <section class="two-col">
+
+      <mat-card class="info-card">
+        <div class="card-header">
+          <span class="card-title">Purchase Order Status</span>
+          <mat-icon class="card-icon">receipt_long</mat-icon>
+        </div>
+        <mat-divider></mat-divider>
+        <ng-container *ngIf="!loading(); else skeletonBlock">
+          <div class="po-status-grid">
+            <div class="po-stat po-stat--blue">
+              <span class="po-stat__num">{{ purchaseOrders?.total_orders ?? 0 }}</span>
+              <span class="po-stat__label">Total</span>
+            </div>
+            <div class="po-stat po-stat--orange">
+              <span class="po-stat__num">{{ purchaseOrders?.pending_orders ?? 0 }}</span>
+              <span class="po-stat__label">Pending</span>
+            </div>
+            <div class="po-stat po-stat--green">
+              <span class="po-stat__num">{{ purchaseOrders?.approved_orders ?? 0 }}</span>
+              <span class="po-stat__label">Approved</span>
+            </div>
+            <div class="po-stat po-stat--teal">
+              <span class="po-stat__num">{{ purchaseOrders?.completed_orders ?? 0 }}</span>
+              <span class="po-stat__label">Completed</span>
+            </div>
+            <div class="po-stat po-stat--red">
+              <span class="po-stat__num">{{ purchaseOrders?.rejected_orders ?? 0 }}</span>
+              <span class="po-stat__label">Rejected</span>
+            </div>
+            <div class="po-stat po-stat--grey">
+              <span class="po-stat__num">{{ purchaseOrders?.cancelled_orders ?? 0 }}</span>
+              <span class="po-stat__label">Cancelled</span>
+            </div>
+          </div>
+          <mat-divider></mat-divider>
+          <div class="metric-row">
+            <span class="metric-label">Avg Order Value</span>
+            <strong class="metric-value">${{ purchaseOrders?.average_order_value | number:'1.0-0' }}</strong>
+          </div>
+        </ng-container>
+      </mat-card>
+
+      <mat-card class="info-card">
+        <div class="card-header">
+          <span class="card-title">Spend Summary</span>
+          <mat-icon class="card-icon">payments</mat-icon>
+        </div>
+        <mat-divider></mat-divider>
+        <ng-container *ngIf="!loading(); else skeletonBlock">
+          <div class="metric-row"><span class="metric-label">Total Spend</span>
+            <strong class="metric-value">${{ spendSummary?.total_spend | number:'1.0-0' }}</strong></div>
+          <mat-divider></mat-divider>
+          <div class="metric-row"><span class="metric-label">Average Spend</span>
+            <strong class="metric-value">${{ spendSummary?.average_spend | number:'1.0-0' }}</strong></div>
+          <mat-divider></mat-divider>
+          <div class="metric-row"><span class="metric-label">Largest Purchase</span>
+            <strong class="metric-value">${{ spendSummary?.max_purchase | number:'1.0-0' }}</strong></div>
+          <mat-divider></mat-divider>
+          <div class="metric-row"><span class="metric-label">Smallest Purchase</span>
+            <strong class="metric-value">${{ spendSummary?.min_purchase | number:'1.0-0' }}</strong></div>
+        </ng-container>
+      </mat-card>
+
+    </section>
+  </ng-container>
+
+  <!-- ══════════════════════ VENDOR SECTION ═════════════════════════════════ -->
+  <ng-container *ngIf="activeSection==='vendors' && !hasError()">
+    <section class="two-col">
+
+      <mat-card class="info-card full-col">
+        <div class="card-header">
+          <span class="card-title">Vendor Ranking &amp; Performance</span>
+          <mat-icon class="card-icon">leaderboard</mat-icon>
+        </div>
+        <mat-divider></mat-divider>
+
+        <ng-container *ngIf="!loading(); else skeletonBlock">
+          <div *ngIf="vendors.length === 0" class="empty-state">
+            <mat-icon>groups</mat-icon><p>No vendor data available</p>
+          </div>
+          <div class="vendor-table" *ngIf="vendors.length">
+            <div class="vendor-row vendor-row--header">
+              <span>Rank</span><span>Vendor</span><span>Spend</span>
+              <span>Orders</span><span>Reliability</span><span>Delivery</span>
+            </div>
+            <div class="vendor-row" *ngFor="let v of vendors">
+              <span class="rank-badge rank-badge--{{ v.rank <= 3 ? v.rank : 'other' }}">
+                #{{ v.rank }}
+              </span>
+              <span class="vendor-name">{{ v.vendor }}</span>
+              <span class="vendor-spend">${{ v.spend | number:'1.0-0' }}</span>
+              <span>{{ v.total_orders }}</span>
+              <span>
+                <div class="mini-bar-wrap">
+                  <div class="mini-bar" [style.width.%]="v.reliability_score * 100"
+                    [class.mini-bar--high]="v.reliability_score >= 0.9"
+                    [class.mini-bar--mid]="v.reliability_score >= 0.75 && v.reliability_score < 0.9"
+                    [class.mini-bar--low]="v.reliability_score < 0.75">
+                  </div>
+                </div>
+                <span class="score-text">{{ (v.reliability_score * 100) | number:'1.0-0' }}%</span>
+              </span>
+              <span>{{ v.avg_delivery_time | number:'1.1-1' }} days</span>
+            </div>
+          </div>
+        </ng-container>
+      </mat-card>
+
+    </section>
+
+    <section class="charts-grid">
+      <mat-card class="chart-card">
+        <div class="card-header">
+          <span class="card-title">Vendor Spend Distribution</span>
+          <mat-icon class="card-icon" style="color:#0891b2">pie_chart</mat-icon>
+        </div>
+        <app-vendor-pie-chart [data]="vendorPieData" [loading]="loading()"></app-vendor-pie-chart>
+      </mat-card>
+
+      <mat-card class="info-card">
+        <div class="card-header">
+          <span class="card-title">Category Analytics</span>
+          <mat-icon class="card-icon" style="color:#7c3aed">category</mat-icon>
+        </div>
+        <mat-divider></mat-divider>
+        <ng-container *ngIf="!loading(); else skeletonBlock">
+          <div class="vendor-row vendor-row--header">
+            <span>Category</span><span>Spend</span><span>Orders</span><span>Avg Cost</span>
+          </div>
+          <div class="vendor-row" *ngFor="let c of categories">
+            <span>{{ c.category }}</span>
+            <span>${{ c.spend | number:'1.0-0' }}</span>
+            <span>{{ c.purchase_count }}</span>
+            <span>${{ c.average_cost | number:'1.0-0' }}</span>
+          </div>
+        </ng-container>
+      </mat-card>
+    </section>
+  </ng-container>
+
+  <!-- ══════════════════════ CONTRACTS SECTION ══════════════════════════════ -->
+  <ng-container *ngIf="activeSection==='contracts' && !hasError()">
+    <section class="kpi-grid">
+      <app-kpi-card label="Active Contracts"  icon="check_circle"  color="green"
+        [value]="contracts?.active_contracts ?? 0"   [loading]="loading()"></app-kpi-card>
+      <app-kpi-card label="Expired Contracts" icon="cancel"        color="red"
+        [value]="contracts?.expired_contracts ?? 0"  [loading]="loading()"></app-kpi-card>
+      <app-kpi-card label="Expiring in 90d"   icon="warning"       color="orange"
+        [value]="contracts?.contracts_expiring_soon ?? 0" [loading]="loading()"></app-kpi-card>
+      <app-kpi-card label="Total Contract Value" icon="paid"       color="blue" prefix="$"
+        [value]="contracts?.contract_value ?? 0"     [loading]="loading()"></app-kpi-card>
+      <app-kpi-card label="Avg Contract Duration" icon="schedule"  color="teal" suffix=" days"
+        [value]="contracts?.average_contract_duration ?? 0" [loading]="loading()"></app-kpi-card>
+    </section>
+
+    <mat-card class="info-card" style="margin-top:0">
+      <div class="card-header">
+        <span class="card-title">Contract Status Breakdown</span>
+        <mat-icon class="card-icon">description</mat-icon>
+      </div>
+      <mat-divider></mat-divider>
+      <ng-container *ngIf="!loading(); else skeletonBlock">
+        <div class="metric-row">
+          <span class="metric-label">Active</span>
+          <div class="progress-with-label">
+            <mat-progress-bar mode="determinate"
+              [value]="contractActivePct()"
+              color="primary"></mat-progress-bar>
+            <span>{{ contracts?.active_contracts }}</span>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="metric-row">
+          <span class="metric-label">Expired</span>
+          <div class="progress-with-label">
+            <mat-progress-bar mode="determinate"
+              [value]="contractExpiredPct()"
+              color="warn"></mat-progress-bar>
+            <span>{{ contracts?.expired_contracts }}</span>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="metric-row">
+          <span class="metric-label">Expiring Soon</span>
+          <div class="progress-with-label">
+            <mat-progress-bar mode="determinate"
+              [value]="50" color="accent"></mat-progress-bar>
+            <span>{{ contracts?.contracts_expiring_soon }}</span>
+          </div>
+        </div>
+      </ng-container>
+    </mat-card>
+  </ng-container>
+
+  <!-- ══════════════════════ BUDGET SECTION ═════════════════════════════════ -->
+  <ng-container *ngIf="activeSection==='budget' && !hasError()">
+    <section class="kpi-grid">
+      <app-kpi-card label="Allocated Budget" icon="account_balance_wallet" color="blue"   prefix="$"
+        [value]="budget?.budget_allocated ?? 0"   [loading]="loading()"></app-kpi-card>
+      <app-kpi-card label="Utilized Budget"  icon="payments"               color="orange" prefix="$"
+        [value]="budget?.budget_utilized ?? 0"    [loading]="loading()"></app-kpi-card>
+      <app-kpi-card label="Remaining Budget" icon="savings"                color="green"  prefix="$"
+        [value]="budget?.remaining_budget ?? 0"   [loading]="loading()"></app-kpi-card>
+      <app-kpi-card label="Utilization %"    icon="donut_large"            color="purple" suffix="%"
+        [value]="budget?.budget_utilization_percentage ?? 0" [loading]="loading()"></app-kpi-card>
+    </section>
+
+    <mat-card class="info-card">
+      <div class="card-header">
+        <span class="card-title">Budget vs Actual by Department</span>
+        <mat-icon class="card-icon">bar_chart</mat-icon>
+      </div>
+      <mat-divider></mat-divider>
+      <ng-container *ngIf="!loading() && budget?.department_breakdown?.length; else skeletonBlock">
+        <div class="dept-budget-row" *ngFor="let d of budget.department_breakdown">
+          <div class="dept-budget-label">
+            <span>{{ d.department }}</span>
+            <span class="dept-pct"
+              [class.pct-warn]="d.utilization_pct >= 90"
+              [class.pct-ok]="d.utilization_pct < 70">
+              {{ d.utilization_pct | number:'1.0-0' }}%
+            </span>
+          </div>
+          <mat-progress-bar mode="determinate" [value]="d.utilization_pct"
+            [color]="budgetBarColor(d.utilization_pct)"></mat-progress-bar>
+          <div class="dept-budget-amounts">
+            <span>Utilized: ${{ d.utilized | number:'1.0-0' }}</span>
+            <span>Allocated: ${{ d.allocated | number:'1.0-0' }}</span>
+          </div>
+        </div>
+      </ng-container>
+    </mat-card>
+
+    <mat-card class="info-card">
+      <div class="card-header">
+        <span class="card-title">Overall Budget Utilization</span>
+        <mat-icon class="card-icon">donut_large</mat-icon>
+      </div>
+      <mat-divider></mat-divider>
+      <ng-container *ngIf="!loading(); else skeletonBlock">
+        <div class="big-progress-wrap">
+          <div class="big-progress-label">
+            <span>${{ budget?.budget_utilized | number:'1.0-0' }} of ${{ budget?.budget_allocated | number:'1.0-0' }}</span>
+            <strong>{{ budget?.budget_utilization_percentage | number:'1.0-0' }}%</strong>
+          </div>
+          <mat-progress-bar mode="determinate"
+            [value]="budget?.budget_utilization_percentage || 0"
+            [color]="budgetBarColor(budget?.budget_utilization_percentage || 0)"
+            style="height:12px; border-radius:6px;">
+          </mat-progress-bar>
+          <div class="metric-row" style="margin-top:12px">
+            <span class="metric-label">Remaining Budget</span>
+            <strong class="metric-value">${{ budget?.remaining_budget | number:'1.0-0' }}</strong>
+          </div>
+        </div>
+      </ng-container>
+    </mat-card>
+  </ng-container>
+
+  <!-- ══════════════════════ SAVINGS SECTION ════════════════════════════════ -->
+  <ng-container *ngIf="activeSection==='savings' && !hasError()">
+    <section class="kpi-grid">
+      <app-kpi-card label="Negotiated Savings"   icon="handshake"     color="green"  prefix="$"
+        [value]="savings?.negotiated_savings ?? 0"   [loading]="loading()"></app-kpi-card>
+      <app-kpi-card label="Budget Savings"       icon="account_balance_wallet" color="blue" prefix="$"
+        [value]="savings?.budget_savings ?? 0"       [loading]="loading()"></app-kpi-card>
+      <app-kpi-card label="Procurement Savings"  icon="local_offer"   color="teal"   prefix="$"
+        [value]="savings?.procurement_savings ?? 0"  [loading]="loading()"></app-kpi-card>
+      <app-kpi-card label="Avg Savings %"        icon="percent"       color="purple" suffix="%"
+        [value]="savings?.savings_percentage ?? 0"   [loading]="loading()"></app-kpi-card>
+    </section>
+
+    <mat-card class="chart-card">
+      <div class="card-header">
+        <span class="card-title">Monthly Savings Trend</span>
+        <mat-icon class="card-icon" style="color:#16a34a">trending_up</mat-icon>
+      </div>
+      <app-savings-bar-chart
+        [data]="savings?.monthly_savings_trend ?? []"
+        [loading]="loading()">
+      </app-savings-bar-chart>
+    </mat-card>
+  </ng-container>
+
+</div>
+
+<!-- ── Shared skeleton template ──────────────────────────────────────────── -->
+<ng-template #skeletonBlock>
+  <div class="skeleton-block">
+    <div class="skeleton skel-line skel-line--80"></div>
+    <div class="skeleton skel-line skel-line--60"></div>
+    <div class="skeleton skel-line skel-line--40"></div>
+  </div>
+</ng-template>

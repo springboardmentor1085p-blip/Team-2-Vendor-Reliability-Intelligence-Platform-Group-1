@@ -1,0 +1,53 @@
+<mat-toolbar class="app-header" color="primary">
+
+  <!-- Mobile hamburger menu -->
+  <button
+    *ngIf="showMenuButton"
+    mat-icon-button
+    class="menu-toggle"
+    (click)="toggleSidenav.emit()"
+    aria-label="Open navigation menu"
+    matTooltip="Menu"
+  >
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <!-- Title group -->
+  <div class="header-title-group">
+    <span class="app-title">Vendor Reliability Intelligence</span>
+    <span class="app-subtitle">Enterprise insights &amp; operations</span>
+  </div>
+
+  <!-- Spacer -->
+  <span class="header-spacer"></span>
+
+  <!-- Action buttons -->
+  <div class="header-actions">
+
+    <button
+      mat-icon-button
+      matTooltip="Notifications ({{ notificationCount }})"
+      aria-label="Notifications"
+      class="action-btn"
+    >
+      <mat-icon aria-hidden="true">notifications</mat-icon>
+      <span class="badge" [attr.aria-label]="notificationCount + ' notifications'">{{ notificationCount }}</span>
+    </button>
+
+    <button
+      mat-icon-button
+      matTooltip="Toggle dark mode"
+      (click)="toggleDarkMode.emit()"
+      aria-label="Toggle dark mode"
+      class="action-btn"
+    >
+      <mat-icon aria-hidden="true">dark_mode</mat-icon>
+    </button>
+
+    <button mat-button class="profile-button" aria-label="User profile">
+      <mat-icon aria-hidden="true">account_circle</mat-icon>
+      <span class="profile-name">{{ userName }}</span>
+    </button>
+
+  </div>
+</mat-toolbar>

@@ -1,0 +1,21 @@
+<div class="sidebar-brand">
+  <div class="brand-avatar">VI</div>
+  <div class="brand-info">
+    <div class="brand-title">Vendor Reliability</div>
+    <div class="brand-subtitle">Intelligence Platform</div>
+  </div>
+</div>
+
+<nav class="menu-list" role="navigation" aria-label="Primary navigation">
+  <a
+    class="menu-link"
+    *ngFor="let item of menuItems"
+    [routerLink]="item.route"
+    routerLinkActive="active-link"
+    [routerLinkActiveOptions]="{ exact: item.exact }"
+    [attr.aria-label]="item.label"
+  >
+    <mat-icon aria-hidden="true">{{ item.icon }}</mat-icon>
+    <span class="menu-text">{{ item.label }}</span>
+  </a>
+</nav>

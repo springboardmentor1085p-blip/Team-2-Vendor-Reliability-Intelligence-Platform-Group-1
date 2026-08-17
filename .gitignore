@@ -216,3 +216,16 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+.angular/
+
+# Ignore dependencies and generated files
+node_modules/
+.venv/
+venv/
+.angular/
+**/.angular/
+**/node_modules/
+**/.venv/
+__pycache__/
+*.pyc
+

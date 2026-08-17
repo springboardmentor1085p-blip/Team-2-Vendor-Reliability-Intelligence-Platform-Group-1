@@ -1,0 +1,98 @@
+:host { display: block; }
+
+.kpi-card {
+  padding: 20px 24px;
+  border-radius: 16px !important;
+  cursor: default;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  border-top: 4px solid transparent;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12) !important;
+  }
+
+  // Colour variants
+  &--blue   { border-top-color: #2563eb; .kpi-icon-wrap { background: #dbeafe; color: #2563eb; } }
+  &--green  { border-top-color: #16a34a; .kpi-icon-wrap { background: #dcfce7; color: #16a34a; } }
+  &--orange { border-top-color: #ea580c; .kpi-icon-wrap { background: #ffedd5; color: #ea580c; } }
+  &--purple { border-top-color: #7c3aed; .kpi-icon-wrap { background: #ede9fe; color: #7c3aed; } }
+  &--teal   { border-top-color: #0891b2; .kpi-icon-wrap { background: #cffafe; color: #0891b2; } }
+  &--red    { border-top-color: #dc2626; .kpi-icon-wrap { background: #fee2e2; color: #dc2626; } }
+}
+
+.kpi-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.kpi-icon-wrap {
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  mat-icon { font-size: 26px; width: 26px; height: 26px; }
+}
+
+.kpi-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.kpi-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary, #64748b);
+  white-space: nowrap;
+}
+
+.kpi-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary, #0f172a);
+  line-height: 1.1;
+  word-break: break-all;
+}
+
+.kpi-trend {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.75rem;
+  color: var(--text-secondary, #64748b);
+
+  .trend-icon { font-size: 14px; width: 14px; height: 14px; }
+}
+
+.trend-up   { color: #16a34a !important; }
+.trend-down { color: #dc2626 !important; }
+
+// Skeleton loader
+.skeleton {
+  border-radius: 6px;
+  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+.skeleton-value { height: 36px; width: 120px; margin: 4px 0; }
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+// Dark theme
+:host-context(.dark-theme) {
+  .kpi-card   { background: #1e293b; }
+  .kpi-value  { color: #f1f5f9; }
+  .kpi-label  { color: #94a3b8; }
+  .skeleton   { background: linear-gradient(90deg, #334155 25%, #475569 50%, #334155 75%); background-size: 200% 100%; }
+}

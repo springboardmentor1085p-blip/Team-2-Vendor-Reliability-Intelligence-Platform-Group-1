@@ -1,0 +1,22 @@
+<mat-card class="kpi-card kpi-card--{{ color }}" [class.kpi-card--loading]="loading" [matTooltip]="tooltip">
+  <div class="kpi-body">
+    <div class="kpi-icon-wrap">
+      <mat-icon>{{ icon }}</mat-icon>
+    </div>
+    <div class="kpi-content">
+      <span class="kpi-label">{{ label }}</span>
+      <ng-container *ngIf="!loading; else skeleton">
+        <span class="kpi-value">{{ formattedValue }}</span>
+      </ng-container>
+      <ng-template #skeleton>
+        <div class="skeleton skeleton-value"></div>
+      </ng-template>
+      <div class="kpi-trend" *ngIf="trendPct !== null && !loading">
+        <mat-icon class="trend-icon" [class.trend-up]="trendUp" [class.trend-down]="trendDown">
+          {{ trendUp ? 'arrow_upward' : trendDown ? 'arrow_downward' : 'remove' }}
+        </mat-icon>
+        <span [class.trend-up]="trendUp" [class.trend-down]="trendDown">{{ trendLabel }} vs last period</span>
+      </div>
+    </div>
+  </div>
+</mat-card>

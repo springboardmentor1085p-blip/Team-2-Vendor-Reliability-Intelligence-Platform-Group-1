@@ -1,0 +1,17 @@
+.breadcrumb-wrapper {
+  color: #4b5563;
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.breadcrumb-link {
+  color: #1d4ed8;
+  text-decoration: none;
+  text-transform: capitalize;
+}
+
+.breadcrumb-separator {
+  color: #9ca3af;
+}
