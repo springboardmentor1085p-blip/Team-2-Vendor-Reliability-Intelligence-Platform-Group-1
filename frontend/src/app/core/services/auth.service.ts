@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 import { LoginRequest } from '../models/login.model';
 import { RegisterRequest } from '../models/register.model';
@@ -14,12 +14,17 @@ export class AuthService {
 
   private http = inject(HttpClient);
 
-  private readonly API_URL = 'http://127.0.0.1:8000/auth';
+  private readonly API_URL =
+    'http://127.0.0.1:8000/auth';
 
   login(data: LoginRequest): Observable<Token> {
     return this.http.post<Token>(
       `${this.API_URL}/login`,
       data
+    ).pipe(
+      tap((response) => {
+        this.saveToken(response.access_token);
+      })
     );
   }
 
@@ -38,6 +43,7 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('access_token');
+    localStorage.removeItem('user');
   }
 
   saveToken(token: string): void {
@@ -54,7 +60,35 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return this.getToken() !== null;
+    const token = this.getToken();
+
+    return !!token;
   }
 
+  saveUser(user: User): void {
+    localStorage.setItem(
+      'user',
+      JSON.stringify(user)
+    );
+  }
+
+  getStoredUser(): User | null {
+    const user = localStorage.getItem('user');
+
+    if (!user) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(user) as User;
+    } catch {
+      localStorage.removeItem('user');
+      return null;
+    }
+  }
+
+  clearSession(): void {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('user');
+  }
 }

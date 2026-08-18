@@ -2,7 +2,6 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-
 import { Vendor } from '../../../core/models/vendor.model';
 import { VendorService } from '../../../core/services/vendor';
 
@@ -19,11 +18,10 @@ import { VendorService } from '../../../core/services/vendor';
 export class VendorForm implements OnInit {
 
   private vendorService = inject(VendorService);
-  private router = inject(Router);
+  public router = inject(Router);
   private route = inject(ActivatedRoute);
 
   isEdit = false;
-
   vendorId = 0;
 
   vendor: Vendor = {
@@ -36,11 +34,9 @@ export class VendorForm implements OnInit {
   };
 
   ngOnInit(): void {
-
     const id = this.route.snapshot.paramMap.get('id');
 
     if (id) {
-
       this.isEdit = true;
       this.vendorId = Number(id);
 
@@ -49,31 +45,22 @@ export class VendorForm implements OnInit {
         .subscribe(data => {
           this.vendor = data;
         });
-
     }
-
   }
 
   saveVendor(): void {
-
     if (this.isEdit) {
-
       this.vendorService
         .updateVendor(this.vendorId, this.vendor)
         .subscribe(() => {
           this.router.navigate(['/vendors']);
         });
-
     } else {
-
       this.vendorService
         .createVendor(this.vendor)
         .subscribe(() => {
           this.router.navigate(['/vendors']);
         });
-
     }
-
   }
-
 }

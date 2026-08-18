@@ -2,12 +2,12 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.crud.vendor import (
+    create_vendor,
+    delete_vendor,
+    get_all_vendors,
     get_vendor_by_email,
     get_vendor_by_id,
-    get_all_vendors,
-    create_vendor,
     update_vendor,
-    delete_vendor,
 )
 from app.models.vendor import Vendor
 from app.schemas.vendor import VendorCreate, VendorUpdate
@@ -23,13 +23,13 @@ def create_vendor_service(db: Session, vendor: VendorCreate):
         )
 
     new_vendor = Vendor(
-        vendor_name=vendor.vendor_name,
         company_name=vendor.company_name,
+        contact_person=vendor.contact_person,
         email=vendor.email,
         phone=vendor.phone,
         address=vendor.address,
         category=vendor.category,
-        status="Active",
+        status="Pending",
         is_active=True,
     )
 
@@ -43,7 +43,7 @@ def get_all_vendors_service(db: Session):
 def get_vendor_by_id_service(db: Session, vendor_id: int):
     vendor = get_vendor_by_id(db, vendor_id)
 
-    if not vendor:
+    if vendor is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Vendor not found",
@@ -59,7 +59,7 @@ def update_vendor_service(
 ):
     vendor = get_vendor_by_id(db, vendor_id)
 
-    if not vendor:
+    if vendor is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Vendor not found",
@@ -76,7 +76,7 @@ def update_vendor_service(
 def delete_vendor_service(db: Session, vendor_id: int):
     vendor = get_vendor_by_id(db, vendor_id)
 
-    if not vendor:
+    if vendor is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Vendor not found",
@@ -84,4 +84,6 @@ def delete_vendor_service(db: Session, vendor_id: int):
 
     delete_vendor(db, vendor)
 
-    return {"message": "Vendor deleted successfully"}
+    return {
+        "message": "Vendor deleted successfully"
+    }

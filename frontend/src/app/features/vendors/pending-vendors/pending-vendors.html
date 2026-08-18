@@ -1,68 +1,135 @@
-<div class="container">
+<div class="pending-page">
 
-    <h2>Pending Vendor Approvals</h2>
-
-    <div
-        class="empty"
-        *ngIf="!loading && vendors.length===0">
-
-        No Pending Vendors
-
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">PROCUREMENT / APPROVAL WORKFLOW</span>
+      <h1>Vendor Approvals</h1>
+      <p>Review supplier registrations before they become active procurement partners.</p>
     </div>
 
-    <table *ngIf="vendors.length>0">
+    <div class="pending-count">
+      <span>Pending Review</span>
+      <strong>{{ vendors.length }}</strong>
+    </div>
+  </header>
 
+  <section class="review-card">
+
+    <div class="card-toolbar">
+      <div>
+        <h2>Pending Vendor Queue</h2>
+        <p>Suppliers awaiting procurement verification and approval</p>
+      </div>
+
+      <button
+        type="button"
+        class="refresh-button"
+        (click)="loadPendingVendors()"
+        [disabled]="loading"
+      >
+        <span>↻</span>
+        {{ loading ? 'Refreshing...' : 'Refresh' }}
+      </button>
+    </div>
+
+    <div class="loading-state" *ngIf="loading">
+      <div class="loader"></div>
+      <span>Loading pending vendors...</span>
+    </div>
+
+    <div class="empty-state" *ngIf="!loading && vendors.length === 0">
+      <div class="empty-icon">✓</div>
+      <h3>No pending approvals</h3>
+      <p>All vendor registrations have been reviewed. New submissions will appear here.</p>
+    </div>
+
+    <div class="table-wrapper" *ngIf="!loading && vendors.length > 0">
+
+      <table>
         <thead>
-
-            <tr>
-
-                <th>ID</th>
-                <th>Vendor</th>
-                <th>Company</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Category</th>
-                <th>Actions</th>
-
-            </tr>
-
+          <tr>
+            <th>VENDOR</th>
+            <th>COMPANY</th>
+            <th>CONTACT</th>
+            <th>CATEGORY</th>
+            <th>STATUS</th>
+            <th class="actions-column">REVIEW</th>
+          </tr>
         </thead>
 
         <tbody>
+          <tr *ngFor="let vendor of vendors">
 
-            <tr *ngFor="let vendor of vendors">
+            <td>
+              <div class="vendor-cell">
+                <div class="vendor-avatar">
+                  {{ getInitials(vendor.vendor_name) }}
+                </div>
 
-                <td>{{vendor.id}}</td>
-                <td>{{vendor.vendor_name}}</td>
-                <td>{{vendor.company_name}}</td>
-                <td>{{vendor.email}}</td>
-                <td>{{vendor.phone}}</td>
-                <td>{{vendor.category}}</td>
+                <div>
+                  <div class="vendor-name">
+                    {{ vendor.vendor_name || 'Unnamed Vendor' }}
+                  </div>
+                  <div class="vendor-id">
+                    Vendor #{{ vendor.id }}
+                  </div>
+                </div>
+              </div>
+            </td>
 
-                <td>
+            <td>
+              <span class="company-name">
+                {{ vendor.company_name || '—' }}
+              </span>
+            </td>
 
-                    <button
-                        class="approve"
-                        (click)="approveVendor(vendor.id!)">
+            <td>
+              <div class="contact-cell">
+                <span>{{ vendor.email || '—' }}</span>
+                <small>{{ vendor.phone || 'No phone provided' }}</small>
+              </div>
+            </td>
 
-                        Approve
+            <td>
+              <span class="category">
+                {{ vendor.category || 'Uncategorized' }}
+              </span>
+            </td>
 
-                    </button>
+            <td>
+              <span class="status-pill">
+                <span class="status-dot"></span>
+                Pending
+              </span>
+            </td>
 
-                    <button
-                        class="reject"
-                        (click)="rejectVendor(vendor.id!)">
+            <td class="actions-column">
+              <div class="row-actions">
 
-                        Reject
+                <button
+                  type="button"
+                  class="approve"
+                  (click)="approveVendor(vendor.id!)"
+                >
+                  ✓ Approve
+                </button>
 
-                    </button>
+                <button
+                  type="button"
+                  class="reject"
+                  (click)="rejectVendor(vendor.id!)"
+                >
+                  Reject
+                </button>
 
-                </td>
+              </div>
+            </td>
 
-            </tr>
-
+          </tr>
         </tbody>
+      </table>
 
-    </table>
+    </div>
 
+  </section>
 </div>

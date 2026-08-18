@@ -7,18 +7,45 @@ from app.models.base import BaseModel
 class Procurement(BaseModel):
     __tablename__ = "procurements"
 
-    request_number = Column(String(50), unique=True, nullable=False)
-    title = Column(String(200), nullable=False)
+    request_number = Column(
+        String(50),
+        unique=True,
+        nullable=False
+    )
+
+    title = Column(
+        String(200),
+        nullable=False
+    )
+
     description = Column(String(500))
-    vendor_id = Column(ForeignKey("vendors.id"), nullable=False)
 
-    requested_by = Column(String(150), nullable=False)
-    approved_by = Column(String(150), nullable=True)
+    vendor_id = Column(
+        ForeignKey("vendors.id"),
+        nullable=False
+    )
 
-    request_date = Column(Date, nullable=False)
+    requested_by = Column(
+        String(150),
+        nullable=False
+    )
+
+    approved_by = Column(
+        String(150),
+        nullable=True
+    )
+
+    request_date = Column(
+        Date,
+        nullable=False
+    )
+
     expected_delivery = Column(Date)
 
-    total_amount = Column(Float, default=0.0)
+    total_amount = Column(
+        Float,
+        default=0.0
+    )
 
     status = Column(
         String(50),
@@ -26,6 +53,7 @@ class Procurement(BaseModel):
     )
 
     invoice_number = Column(String(100))
+
     remarks = Column(String(500))
 
     vendor = relationship("Vendor")

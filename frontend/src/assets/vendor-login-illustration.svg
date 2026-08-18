@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eef7ff"/>
+      <stop offset="1" stop-color="#d9ecff"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#f1f7ff"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="900" height="500" rx="30" fill="url(#bg)"/>
+
+  <circle cx="730" cy="90" r="120" fill="#8ec5ff" opacity=".18"/>
+  <circle cx="120" cy="410" r="130" fill="#ffb84d" opacity=".15"/>
+
+  <!-- dashboard -->
+  <rect x="115" y="70" width="670" height="360" rx="24"
+        fill="url(#card)" stroke="#c9def5" stroke-width="3"/>
+
+  <!-- header -->
+  <circle cx="155" cy="110" r="15" fill="#3b82f6"/>
+  <rect x="185" y="98" width="150" height="12" rx="6" fill="#294b72"/>
+  <rect x="185" y="119" width="100" height="8" rx="4" fill="#9bb5d2"/>
+
+  <!-- KPI cards -->
+  <rect x="150" y="155" width="175" height="90" rx="16" fill="#edf6ff"/>
+  <text x="170" y="180" font-family="Arial" font-size="14" fill="#52708f">Vendor Score</text>
+  <text x="170" y="218" font-family="Arial" font-size="30" font-weight="bold" fill="#2563eb">98.6%</text>
+
+  <rect x="345" y="155" width="175" height="90" rx="16" fill="#eefaf4"/>
+  <text x="365" y="180" font-family="Arial" font-size="14" fill="#52708f">Compliance</text>
+  <text x="365" y="218" font-family="Arial" font-size="28" font-weight="bold" fill="#16a36a">Verified</text>
+
+  <rect x="540" y="155" width="195" height="90" rx="16" fill="#fff7e8"/>
+  <text x="560" y="180" font-family="Arial" font-size="14" fill="#52708f">AI Risk</text>
+  <text x="560" y="218" font-family="Arial" font-size="28" font-weight="bold" fill="#e79a19">LOW</text>
+
+  <!-- chart -->
+  <rect x="150" y="270" width="350" height="120" rx="16" fill="#f8fbff"/>
+  <polyline points="175,355 225,325 270,340 320,300 370,315 420,280 470,295"
+            fill="none" stroke="#3b82f6" stroke-width="6"
+            stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="470" cy="295" r="8" fill="#3b82f6"/>
+
+  <!-- shield -->
+  <path d="M625 285 L685 305 L675 365 Q655 390 625 400 Q595 390 575 365 L565 305 Z"
+        fill="#dff3e9" stroke="#20a46b" stroke-width="5"/>
+  <path d="M600 340 L618 358 L652 325"
+        fill="none" stroke="#20a46b" stroke-width="8"
+        stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- small people/vendor nodes -->
+  <circle cx="90" cy="150" r="24" fill="#ffbd59"/>
+  <circle cx="810" cy="360" r="24" fill="#6caefc"/>
+  <line x1="90" y1="174" x2="150" y2="210" stroke="#9ab7d5" stroke-width="3"/>
+  <line x1="750" y1="330" x2="810" y2="360" stroke="#9ab7d5" stroke-width="3"/>
+</svg>

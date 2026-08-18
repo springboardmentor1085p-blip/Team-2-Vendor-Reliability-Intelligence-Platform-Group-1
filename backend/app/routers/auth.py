@@ -4,15 +4,19 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
 from app.models.user import User
+
 from app.schemas.user import (
     UserRegister,
     UserResponse,
     UserLogin,
+    GoogleLoginRequest,
     Token,
 )
+
 from app.services.auth_service import (
     register_user_service,
     login_user_service,
+    google_login_service,
 )
 
 router = APIRouter(
@@ -30,7 +34,10 @@ def register_user(
     user: UserRegister,
     db: Session = Depends(get_db),
 ):
-    return register_user_service(db, user)
+    return register_user_service(
+        db,
+        user,
+    )
 
 
 @router.post(
@@ -41,7 +48,24 @@ def login_user(
     user: UserLogin,
     db: Session = Depends(get_db),
 ):
-    return login_user_service(db, user)
+    return login_user_service(
+        db,
+        user,
+    )
+
+
+@router.post(
+    "/google",
+    response_model=Token,
+)
+def google_login(
+    request: GoogleLoginRequest,
+    db: Session = Depends(get_db),
+):
+    return google_login_service(
+        db,
+        request.credential,
+    )
 
 
 @router.get(

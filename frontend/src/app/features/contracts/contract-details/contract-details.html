@@ -1,64 +1,195 @@
-<div class="container mt-4">
+<div class="details-container">
 
-  <h2>Contract Details</h2>
+  <div class="details-header">
 
-  <div *ngIf="contract; else noData">
+    <a
+      routerLink="/contracts"
+      class="back-link"
+    >
+      &larr; Back to Contracts
+    </a>
 
-    <table class="table table-bordered">
+    <div
+      class="header-main"
+      *ngIf="contract"
+    >
 
-      <tr>
-        <th>ID</th>
-        <td>{{ contract.id }}</td>
-      </tr>
+      <div class="title-meta">
 
-      <tr>
-        <th>Contract Number</th>
-        <td>{{ contract.contract_number }}</td>
-      </tr>
+        <span class="eyebrow">
+          CONTRACT DETAILS
+        </span>
 
-      <tr>
-        <th>Vendor ID</th>
-        <td>{{ contract.vendor_id }}</td>
-      </tr>
+        <h1 class="contract-title">
+          {{ contract.contract_title }}
+        </h1>
 
-      <tr>
-        <th>Contract Title</th>
-        <td>{{ contract.contract_title }}</td>
-      </tr>
+        <span class="contract-subtitle">
+          {{ contract.contract_number }}
+        </span>
 
-      <tr>
-        <th>Start Date</th>
-        <td>{{ contract.start_date }}</td>
-      </tr>
+      </div>
 
-      <tr>
-        <th>End Date</th>
-        <td>{{ contract.end_date }}</td>
-      </tr>
+      <div class="action-buttons">
 
-      <tr>
-        <th>Contract Value</th>
-        <td>{{ contract.contract_value }}</td>
-      </tr>
+        <button
+          type="button"
+          class="btn btn-outline delete"
+          (click)="deleteContract()"
+        >
+          Delete
+        </button>
 
-      <tr>
-        <th>Status</th>
-        <td>{{ contract.status }}</td>
-      </tr>
+        <a
+          [routerLink]="[
+            '/contracts/edit',
+            contract.id
+          ]"
+          class="btn btn-primary"
+        >
+          Edit Contract
+        </a>
 
-      <tr>
-        <th>Terms & Conditions</th>
-        <td>{{ contract.terms_conditions }}</td>
-      </tr>
+      </div>
 
-    </table>
+    </div>
 
   </div>
 
-  <ng-template #noData>
-    <div class="alert alert-warning">
-      No contract details available.
+  <div
+    *ngIf="error"
+    class="alert-banner"
+  >
+    {{ errorMessage }}
+  </div>
+
+  <div
+    *ngIf="loading"
+    class="loading-box"
+  >
+    Loading contract details...
+  </div>
+
+  <div
+    class="details-grid"
+    *ngIf="!loading && contract"
+  >
+
+    <div class="card">
+
+      <div class="card-header">
+        <h2 class="card-title">
+          Agreement &amp; Financials
+        </h2>
+      </div>
+
+      <div class="card-body grid-2">
+
+        <div class="info-field">
+          <label>Status</label>
+
+          <div>
+            <span
+              class="status-pill"
+              [ngClass]="
+                'status-' +
+                (contract.status || 'active').toLowerCase()
+              "
+            >
+              {{ contract.status || 'Active' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="info-field">
+          <label>Vendor ID</label>
+          <div>
+            #{{ contract.vendor_id }}
+          </div>
+        </div>
+
+        <div class="info-field">
+          <label>Contract Value</label>
+
+          <div class="amount-value">
+            ${{ contract.contract_value | number:'1.2-2' }}
+          </div>
+        </div>
+
+        <div class="info-field">
+          <label>Duration</label>
+
+          <div>
+            {{ contract.start_date | date:'mediumDate' }}
+            &rarr;
+            {{ contract.end_date | date:'mediumDate' }}
+          </div>
+        </div>
+
+      </div>
+
     </div>
-  </ng-template>
+
+    <div class="card">
+
+      <div class="card-header">
+        <h2 class="card-title">
+          Contract Status
+        </h2>
+      </div>
+
+      <div class="card-body">
+
+        <div class="status-summary">
+
+          <span
+            class="status-pill large"
+            [ngClass]="
+              'status-' +
+              (contract.status || 'active').toLowerCase()
+            "
+          >
+            {{ contract.status || 'Active' }}
+          </span>
+
+          <p>
+            Contract lifecycle status
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="card full-width">
+
+      <div class="card-header">
+        <h2 class="card-title">
+          Terms &amp; Conditions
+        </h2>
+      </div>
+
+      <div class="card-body">
+
+        <p
+          class="terms-text"
+          *ngIf="contract.terms_conditions"
+        >
+          {{ contract.terms_conditions }}
+        </p>
+
+        <p
+          class="terms-empty"
+          *ngIf="!contract.terms_conditions"
+        >
+          No additional terms recorded.
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
 
 </div>

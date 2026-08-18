@@ -1,52 +1,179 @@
-<div class="container mt-4">
+<div class="module-container">
 
-  <h2>Contract List</h2>
+  <div class="module-header">
+    <div class="header-titles">
+      <span class="eyebrow">PROCUREMENT AGREEMENTS</span>
 
-  <table class="table table-bordered table-striped">
+      <h1 class="title">Contracts</h1>
 
-    <thead class="table-dark">
-      <tr>
-        <th>ID</th>
-        <th>Contract No</th>
-        <th>Vendor ID</th>
-        <th>Title</th>
-        <th>Start Date</th>
-        <th>End Date</th>
-        <th>Value</th>
-        <th>Status</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
+      <p class="subtitle">
+        Manage supplier contracts, expiry dates, and values.
+      </p>
+    </div>
 
-    <tbody>
+    <div class="header-actions">
+      <button
+        type="button"
+        class="btn btn-outline"
+        (click)="loadData()"
+        [disabled]="loading"
+      >
+        Refresh
+      </button>
 
-      <tr *ngFor="let contract of contracts">
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="navigateToCreate()"
+      >
+        + Add Contract
+      </button>
+    </div>
+  </div>
 
-        <td>{{ contract.id }}</td>
-        <td>{{ contract.contract_number }}</td>
-        <td>{{ contract.vendor_id }}</td>
-        <td>{{ contract.contract_title }}</td>
-        <td>{{ contract.start_date }}</td>
-        <td>{{ contract.end_date }}</td>
-        <td>{{ contract.contract_value }}</td>
-        <td>{{ contract.status }}</td>
+  <div *ngIf="error" class="alert-banner">
+    {{ errorMessage }}
+  </div>
 
-        <td>
+  <div class="filter-bar">
 
-          <button
-            class="btn btn-danger btn-sm"
-            (click)="deleteContract(contract.id!)">
+    <div class="search-box">
+      <input
+        type="text"
+        placeholder="Search by Contract #, Title, Vendor..."
+        [(ngModel)]="searchTerm"
+        (input)="applyFilters()"
+      />
+    </div>
 
-            Delete
+    <div class="filters">
+      <select
+        [(ngModel)]="statusFilter"
+        (change)="applyFilters()"
+      >
+        <option value="all">All Statuses</option>
+        <option value="draft">Draft</option>
+        <option value="active">Active</option>
+        <option value="under_review">Under Review</option>
+        <option value="expired">Expired</option>
+        <option value="terminated">Terminated</option>
+      </select>
+    </div>
 
-          </button>
+  </div>
 
-        </td>
+  <div class="table-card">
 
-      </tr>
+    <div *ngIf="loading" class="loading-state">
+      <span>Loading contracts...</span>
+    </div>
 
-    </tbody>
+    <div
+      *ngIf="!loading && filteredContracts.length === 0"
+      class="empty-state"
+    >
+      <p>No contracts found.</p>
+    </div>
 
-  </table>
+    <div
+      *ngIf="!loading && filteredContracts.length > 0"
+      class="table-responsive"
+    >
+      <table class="data-table">
+
+        <thead>
+          <tr>
+            <th>Contract #</th>
+            <th>Title</th>
+            <th>Vendor</th>
+            <th>Value</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Status</th>
+            <th class="actions-th">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr
+            *ngFor="let contract of filteredContracts"
+            class="clickable-row"
+            (click)="viewDetails(contract.id!)"
+          >
+
+            <td class="contract-number">
+              {{ contract.contract_number }}
+            </td>
+
+            <td class="contract-title">
+              {{ contract.contract_title }}
+            </td>
+
+            <td>
+              {{ getVendorName(contract) }}
+            </td>
+
+            <td class="amount">
+              ${{ contract.contract_value | number:'1.2-2' }}
+            </td>
+
+            <td>
+              {{ contract.start_date | date:'mediumDate' }}
+            </td>
+
+            <td>
+              <span>
+                {{ contract.end_date | date:'mediumDate' }}
+              </span>
+
+              <span
+                *ngIf="isExpiringSoon(contract.end_date)"
+                class="tag-expiring"
+              >
+                Expiring
+              </span>
+            </td>
+
+            <td>
+              <span
+                class="status-pill"
+                [ngClass]="'status-' + (contract.status || 'active').toLowerCase()"
+              >
+                {{ contract.status || 'Active' }}
+              </span>
+            </td>
+
+            <td
+              class="actions-td"
+              (click)="$event.stopPropagation()"
+            >
+
+              <button
+                type="button"
+                class="btn-sm"
+                (click)="viewDetails(contract.id!)"
+              >
+                View
+              </button>
+
+              <button
+                type="button"
+                class="btn-sm delete"
+                (click)="deleteContract($event, contract.id!)"
+              >
+                Delete
+              </button>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+    </div>
+
+  </div>
 
 </div>

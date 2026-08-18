@@ -1,35 +1,186 @@
-<div class="sidebar">
+<aside class="sidebar">
 
-    <a routerLink="/dashboard" routerLinkActive="active">
-        📊 Dashboard
-    </a>
+  <div class="sidebar-top">
 
-    <a routerLink="/vendors" routerLinkActive="active">
-        🏢 Vendors
-    </a>
+    <div class="workspace-label">
+      WORKSPACE
+    </div>
 
-    <a routerLink="/purchase-orders" routerLinkActive="active">
-        📦 Purchase Orders
-    </a>
+    <div class="section-label">
+      PROCUREMENT
+    </div>
 
-    <a routerLink="/contracts" routerLinkActive="active">
-        📄 Contracts
-    </a>
+    <nav class="navigation">
 
-    <a routerLink="/communications" routerLinkActive="active">
-        💬 Communications
-    </a>
+      <a
+        routerLink="/dashboard"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item"
+      >
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+        </span>
+        <span class="nav-text">Dashboard</span>
+      </a>
 
-    <a routerLink="/risk" routerLinkActive="active">
-        ⚠️ Risk Management
-    </a>
+      <a
+        routerLink="/vendors"
+        routerLinkActive="active"
+        class="nav-item"
+      >
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+        </span>
+        <span class="nav-text">Vendors</span>
+      </a>
 
-    <a routerLink="/reports" routerLinkActive="active">
-        📈 Reports
-    </a>
+      <a
+        routerLink="/purchase-orders"
+        routerLinkActive="active"
+        class="nav-item"
+      >
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+        </span>
+        <span class="nav-text">Purchase Orders</span>
+      </a>
 
-    <a routerLink="/notifications" routerLinkActive="active">
-        🔔 Notifications
-    </a>
+      <a
+        routerLink="/contracts"
+        routerLinkActive="active"
+        class="nav-item"
+      >
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+          </svg>
+        </span>
+        <span class="nav-text">Contracts</span>
+      </a>
 
-</div>
+      <a
+        routerLink="/communications"
+        routerLinkActive="active"
+        class="nav-item"
+      >
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </span>
+        <span class="nav-text">Communications</span>
+      </a>
+
+    </nav>
+
+    <div class="nav-divider"></div>
+
+    <div class="section-label">
+      INTELLIGENCE
+    </div>
+
+    <nav class="navigation">
+
+      <a
+        routerLink="/risk"
+        routerLinkActive="active"
+        class="nav-item"
+      >
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+        </span>
+        <span class="nav-text">Risk Management</span>
+      </a>
+
+      <a
+        routerLink="/reports"
+        routerLinkActive="active"
+        class="nav-item"
+      >
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+        </span>
+        <span class="nav-text">Reports & Analytics</span>
+      </a>
+
+      <a
+        routerLink="/notifications"
+        routerLinkActive="active"
+        class="nav-item"
+      >
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+        </span>
+        <span class="nav-text">Notifications</span>
+      </a>
+
+    </nav>
+
+  </div>
+
+  <div class="sidebar-bottom">
+
+    <div class="system-card">
+      <div class="system-dot"></div>
+
+      <div class="system-card-text">
+        <span class="system-title">
+          System operational
+        </span>
+
+        <span class="system-subtitle">
+          Vendor intelligence active
+        </span>
+      </div>
+    </div>
+
+    <div class="sidebar-version">
+      VRIP · Procurement Intelligence
+    </div>
+
+  </div>
+
+</aside>

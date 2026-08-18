@@ -7,20 +7,47 @@ from app.models.base import BaseModel
 class Contract(BaseModel):
     __tablename__ = "contracts"
 
-    contract_number = Column(String(50), unique=True, nullable=False)
+    vendor_id = Column(
+        ForeignKey("vendors.id"),
+        nullable=False
+    )
 
-    vendor_id = Column(ForeignKey("vendors.id"), nullable=False)
+    contract_number = Column(
+        String(100),
+        unique=True,
+        nullable=False
+    )
 
-    contract_title = Column(String(255), nullable=False)
+    start_date = Column(
+        Date,
+        nullable=False
+    )
 
-    start_date = Column(Date, nullable=False)
+    end_date = Column(
+        Date,
+        nullable=False
+    )
 
-    end_date = Column(Date, nullable=False)
+    status = Column(
+        String(50),
+        default="Active"
+    )
 
-    contract_value = Column(Float, default=0.0)
+    contract_name = Column(
+        String(150),
+        nullable=False
+    )
 
-    status = Column(String(50), default="Active")
+    contract_value = Column(
+        Float,
+        nullable=False
+    )
 
-    terms_conditions = Column(String(1000))
+    currency = Column(
+        String(10),
+        default="INR"
+    )
+
+    description = Column(String)
 
     vendor = relationship("Vendor")

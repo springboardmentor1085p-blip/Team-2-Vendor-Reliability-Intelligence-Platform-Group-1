@@ -18,6 +18,7 @@ from app.services.contract_service import (
     get_contract_by_id_service,
     update_contract_service,
     delete_contract_service,
+    get_expiring_contracts_service,
 )
 
 router = APIRouter(
@@ -48,6 +49,19 @@ def get_all_contracts(
     current_user: User = Depends(get_current_user),
 ):
     return get_all_contracts_service(db)
+
+
+@router.get(
+    "/expiring",
+    response_model=list[ContractResponse],
+)
+def get_expiring_contracts(
+    days: int = 30,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Return active contracts expiring within the next `days` days (default 30)."""
+    return get_expiring_contracts_service(db, days)
 
 
 @router.get(

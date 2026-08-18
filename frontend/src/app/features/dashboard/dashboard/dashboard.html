@@ -1,25 +1,284 @@
-<h1>Vendor Reliability Dashboard</h1>
+<div class="dashboard-container">
 
-<div class="cards">
-
-    <div class="card">
-        <h3>Total Vendors</h3>
-        <h1>{{totalVendors}}</h1>
+  <header class="dashboard-header">
+    <div>
+      <div class="eyebrow">PROCUREMENT INTELLIGENCE</div>
+      <h1>Vendor Reliability <span>Dashboard</span></h1>
+      <p>Monitor supplier performance, operational health, and procurement risk.</p>
     </div>
 
-    <div class="card">
-        <h3>Active Vendors</h3>
-        <h1>{{activeVendors}}</h1>
-    </div>
+    <div class="dashboard-actions">
+      <button class="btn btn-secondary" type="button" (click)="loadDashboard()" [disabled]="loading">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+        </svg>
+        {{ loading ? 'Refreshing...' : 'Refresh' }}
+      </button>
 
-    <div class="card">
-        <h3>Pending Vendors</h3>
-        <h1>{{pendingVendors}}</h1>
+      <button class="btn btn-primary" type="button" (click)="navigateTo('/vendors/add')">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Add Vendor
+      </button>
     </div>
+  </header>
 
-    <div class="card">
-        <h3>Reliability Score</h3>
-        <h1>{{reliabilityScore}}%</h1>
-    </div>
+  <div *ngIf="error" class="alert-banner">
+    <span class="alert-icon">!</span>
+    <span>Unable to synchronize vendor data. Showing the latest available view.</span>
+  </div>
+
+  <section class="kpi-grid">
+
+    <article class="kpi-card">
+      <div class="kpi-top">
+        <span>Vendor Portfolio</span>
+        <div class="kpi-icon blue">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          </svg>
+        </div>
+      </div>
+      <strong>{{ totalVendors }}</strong>
+      <small>Total registered vendors</small>
+    </article>
+
+    <article class="kpi-card">
+      <div class="kpi-top">
+        <span>Operational</span>
+        <div class="kpi-icon green">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+      </div>
+      <strong>{{ activeVendors }}</strong>
+      <small>Active vendors</small>
+    </article>
+
+    <article class="kpi-card">
+      <div class="kpi-top">
+        <span>Action Required</span>
+        <div class="kpi-icon amber">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 15 14"></polyline>
+          </svg>
+        </div>
+      </div>
+      <strong>{{ pendingVendors }}</strong>
+      <small>Awaiting approval</small>
+    </article>
+
+    <article class="kpi-card health-card">
+      <div class="kpi-top">
+        <span>Portfolio Health</span>
+        <div class="kpi-icon violet">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+          </svg>
+        </div>
+      </div>
+
+      <div class="health-value">
+        <strong>{{ activePercentage }}%</strong>
+        <svg viewBox="0 0 36 36">
+          <path class="ring-bg"
+            d="M18 2.5a15.5 15.5 0 1 1 0 31a15.5 15.5 0 1 1 0-31"/>
+          <path class="ring"
+            [style.strokeDasharray]="activePercentage + ' 100'"
+            d="M18 2.5a15.5 15.5 0 1 1 0 31a15.5 15.5 0 1 1 0-31"/>
+        </svg>
+      </div>
+
+      <small>Active portfolio ratio</small>
+    </article>
+
+  </section>
+
+  <section class="content-grid">
+
+    <article class="panel portfolio-panel">
+      <div class="panel-header">
+        <div>
+          <h2>Portfolio Overview</h2>
+          <p>Current vendor status distribution</p>
+        </div>
+        <span class="status-pill">
+          <i></i> Live
+        </span>
+      </div>
+
+      <div class="panel-content">
+
+        <div class="metric-row">
+          <div class="metric-label">
+            <span>Active Vendors</span>
+            <strong>{{ activePercentage }}%</strong>
+          </div>
+          <div class="progress">
+            <div class="progress-fill green" [style.width.%]="activePercentage"></div>
+          </div>
+        </div>
+
+        <div class="metric-row">
+          <div class="metric-label">
+            <span>Pending Approval</span>
+            <strong>{{ pendingPercentage }}%</strong>
+          </div>
+          <div class="progress">
+            <div class="progress-fill amber" [style.width.%]="pendingPercentage"></div>
+          </div>
+        </div>
+
+        <div class="portfolio-summary">
+          <div>
+            <strong>{{ activeVendors }}</strong>
+            <span>Active</span>
+          </div>
+          <div>
+            <strong>{{ pendingVendors }}</strong>
+            <span>Pending</span>
+          </div>
+          <div>
+            <strong>{{ totalVendors - activeVendors - pendingVendors < 0 ? 0 : totalVendors - activeVendors - pendingVendors }}</strong>
+            <span>Other</span>
+          </div>
+        </div>
+
+      </div>
+    </article>
+
+    <article class="panel">
+      <div class="panel-header">
+        <div>
+          <h2>Quick Actions</h2>
+          <p>Common procurement workflows</p>
+        </div>
+      </div>
+
+      <div class="action-list">
+
+        <button type="button" (click)="navigateTo('/vendors')">
+          <span class="action-icon blue">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+            </svg>
+          </span>
+          <span>
+            <strong>Manage Vendors</strong>
+            <small>Review supplier directory</small>
+          </span>
+          <b>›</b>
+        </button>
+
+        <button type="button" (click)="navigateTo('/purchase-orders')">
+          <span class="action-icon green">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+            </svg>
+          </span>
+          <span>
+            <strong>Purchase Orders</strong>
+            <small>Review procurement activity</small>
+          </span>
+          <b>›</b>
+        </button>
+
+        <button type="button" (click)="navigateTo('/risk')">
+          <span class="action-icon amber">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </span>
+          <span>
+            <strong>Risk Management</strong>
+            <small>Review supplier risk</small>
+          </span>
+          <b>›</b>
+        </button>
+
+      </div>
+    </article>
+
+  </section>
+
+  <section class="intelligence-grid">
+
+    <article class="panel intelligence-card">
+      <div class="panel-header">
+        <div>
+          <h2>Vendor Reliability</h2>
+          <p>Supplier performance intelligence</p>
+        </div>
+        <button type="button" class="view-link" (click)="navigateTo('/vendors')">
+          View vendors →
+        </button>
+      </div>
+
+      <div class="intelligence-body">
+        <div class="intelligence-icon blue">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <polyline points="3 17 9 11 13 15 21 7"></polyline>
+            <polyline points="14 7 21 7 21 14"></polyline>
+          </svg>
+        </div>
+        <div>
+          <strong>Reliability intelligence</strong>
+          <p>Track delivery, quality, compliance and communication performance across suppliers.</p>
+        </div>
+      </div>
+    </article>
+
+    <article class="panel intelligence-card">
+      <div class="panel-header">
+        <div>
+          <h2>Risk Management</h2>
+          <p>Supplier risk intelligence</p>
+        </div>
+        <button type="button" class="view-link" (click)="navigateTo('/risk')">
+          Open risk →
+        </button>
+      </div>
+
+      <div class="intelligence-body">
+        <div class="intelligence-icon amber">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            <path d="M12 8v4"></path>
+            <path d="M12 16h.01"></path>
+          </svg>
+        </div>
+        <div>
+          <strong>Continuous risk evaluation</strong>
+          <p>Identify suppliers requiring review and prioritize procurement decisions.</p>
+        </div>
+      </div>
+    </article>
+
+  </section>
+
+  <footer class="dashboard-footer">
+    <span><i></i> Vendor intelligence services operational</span>
+    <span>PostgreSQL data source</span>
+  </footer>
 
 </div>

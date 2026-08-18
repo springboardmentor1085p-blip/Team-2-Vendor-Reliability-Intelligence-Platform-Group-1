@@ -29,11 +29,11 @@
 
 <td>{{po.po_number}}</td>
 
-<td>{{po.procurement_id}}</td>
+<td>{{ po.procurement_id ?? po.po_number }}</td>
 
 <td>{{po.vendor_id}}</td>
 
-<td>{{po.total_amount}}</td>
+<td>{{ po.total_amount ?? po.amount }}</td>
 
 <td>{{po.status}}</td>
 

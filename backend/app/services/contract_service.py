@@ -5,6 +5,7 @@ from app.crud.contract import (
     get_contract_by_id,
     get_contract_by_number,
     get_all_contracts,
+    get_expiring_contracts,
     create_contract,
     update_contract,
     delete_contract,
@@ -105,3 +106,8 @@ def delete_contract_service(
     return {
         "message": "Contract deleted successfully"
     }
+
+
+def get_expiring_contracts_service(db: Session, days: int = 30):
+    """Return active contracts expiring within `days` days."""
+    return get_expiring_contracts(db, days)

@@ -5,26 +5,27 @@ import sys
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 
-# Add the backend directory to Python path
+# Add backend directory to Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-# Import SQLAlchemy Base
+# Import project settings and Base
+from app.core.config import settings
 from app.core.database import Base
 
-# Import all models here
-# As we add more models later, import them below
-# Example:
-# from app.models.vendor import Vendor
-from app.models.user import User
+# Import all models
+import app.models
 
 # Alembic Config object
 config = context.config
 
-# Configure Python logging
+# Use DATABASE_URL from .env
+config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+
+# Configure logging
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# Metadata for Alembic autogenerate
+# Metadata for autogeneration
 target_metadata = Base.metadata
 
 

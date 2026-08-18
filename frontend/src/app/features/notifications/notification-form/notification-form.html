@@ -1,0 +1,111 @@
+<div class="page">
+
+    <div class="header">
+
+        <div>
+
+            <h1>Create Notification</h1>
+
+            <p>Send notifications to vendors and users</p>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div class="grid">
+
+            <div class="field">
+
+                <label>Title</label>
+
+                <input
+                    type="text"
+                    [(ngModel)]="notification.title"
+                    name="title">
+
+            </div>
+
+            <div class="field">
+
+                <label>Recipient</label>
+
+                <input
+                    type="text"
+                    [(ngModel)]="notification.recipient"
+                    name="recipient">
+
+            </div>
+
+            <div class="field full">
+
+                <label>Message</label>
+
+                <textarea
+                    rows="6"
+                    [(ngModel)]="notification.message"
+                    name="message">
+
+                </textarea>
+
+            </div>
+
+            <div class="field">
+
+                <label>Notification Type</label>
+
+                <select
+                    [(ngModel)]="notification.notification_type"
+                    name="notification_type">
+
+                    <option value="">Select</option>
+                    <option>Email</option>
+                    <option>SMS</option>
+                    <option>System</option>
+
+                </select>
+
+            </div>
+
+            <div class="field">
+
+                <label>Status</label>
+
+                <select
+                    [(ngModel)]="notification.status"
+                    name="status">
+
+                    <option>Unread</option>
+                    <option>Read</option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+        <div class="buttons">
+
+            <button
+                class="cancel"
+                routerLink="/notifications">
+
+                Cancel
+
+            </button>
+
+            <button
+                class="save"
+                (click)="saveNotification()"
+                [disabled]="isSaving">
+
+                {{isSaving ? 'Saving...' : 'Save Notification'}}
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

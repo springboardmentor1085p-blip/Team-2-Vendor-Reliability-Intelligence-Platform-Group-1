@@ -1,10 +1,11 @@
-from pydantic import BaseModel, EmailStr
 from typing import Optional
+
+from pydantic import BaseModel, EmailStr
 
 
 class VendorCreate(BaseModel):
-    vendor_name: str
     company_name: str
+    contact_person: str
     email: EmailStr
     phone: str
     address: str
@@ -12,8 +13,8 @@ class VendorCreate(BaseModel):
 
 
 class VendorUpdate(BaseModel):
-    vendor_name: Optional[str] = None
     company_name: Optional[str] = None
+    contact_person: Optional[str] = None
     email: Optional[EmailStr] = None
     phone: Optional[str] = None
     address: Optional[str] = None
@@ -24,8 +25,8 @@ class VendorUpdate(BaseModel):
 
 class VendorResponse(BaseModel):
     id: int
-    vendor_name: str
     company_name: str
+    contact_person: str
     email: EmailStr
     phone: str
     address: str
@@ -35,3 +36,9 @@ class VendorResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class VendorApprovalResponse(BaseModel):
+    message: str
+    vendor_id: int
+    status: str

@@ -1,7 +1,6 @@
 from sqlalchemy.orm import Session
 
 from app.models.vendor import Vendor
-from app.schemas.vendor import VendorCreate, VendorUpdate
 
 
 def get_vendor_by_email(db: Session, email: str):

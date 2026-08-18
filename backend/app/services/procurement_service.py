@@ -105,3 +105,53 @@ def delete_procurement_service(
     return {
         "message": "Procurement deleted successfully"
     }
+
+
+def approve_procurement_service(
+    db: Session,
+    procurement_id: int,
+    approved_by: str,
+):
+    """Set procurement status to Approved and record approver."""
+    procurement = get_procurement_by_id(db, procurement_id)
+
+    if not procurement:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Procurement not found",
+        )
+
+    if procurement.status not in ("Pending", "pending"):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cannot approve procurement with status '{procurement.status}'",
+        )
+
+    procurement.status = "Approved"
+    procurement.approved_by = approved_by
+    return update_procurement(db, procurement)
+
+
+def reject_procurement_service(
+    db: Session,
+    procurement_id: int,
+    rejected_by: str,
+):
+    """Set procurement status to Cancelled and record who rejected it."""
+    procurement = get_procurement_by_id(db, procurement_id)
+
+    if not procurement:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Procurement not found",
+        )
+
+    if procurement.status not in ("Pending", "pending", "Approved"):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cannot reject procurement with status '{procurement.status}'",
+        )
+
+    procurement.status = "Cancelled"
+    procurement.approved_by = f"Rejected by {rejected_by}"
+    return update_procurement(db, procurement)

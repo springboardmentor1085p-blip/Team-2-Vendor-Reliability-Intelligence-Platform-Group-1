@@ -15,6 +15,8 @@ from app.services.procurement_service import (
     get_procurement_by_id_service,
     update_procurement_service,
     delete_procurement_service,
+    approve_procurement_service,
+    reject_procurement_service,
 )
 
 router = APIRouter(
@@ -85,3 +87,35 @@ def delete_procurement(
     current_user: User = Depends(get_current_user),
 ):
     return delete_procurement_service(db, procurement_id)
+
+
+# ------------------------------------------
+# Procurement Approval Workflow
+# ------------------------------------------
+
+@router.put(
+    "/{procurement_id}/approve",
+    response_model=ProcurementResponse,
+)
+def approve_procurement(
+    procurement_id: int,
+    approved_by: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Approve a pending procurement request."""
+    return approve_procurement_service(db, procurement_id, approved_by)
+
+
+@router.put(
+    "/{procurement_id}/reject",
+    response_model=ProcurementResponse,
+)
+def reject_procurement(
+    procurement_id: int,
+    rejected_by: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Reject a pending procurement request."""
+    return reject_procurement_service(db, procurement_id, rejected_by)

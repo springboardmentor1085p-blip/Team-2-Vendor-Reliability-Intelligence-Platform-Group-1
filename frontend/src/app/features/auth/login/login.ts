@@ -1,15 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-
-import { Auth } from '../../../core/services/auth';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -17,57 +10,93 @@ import { Auth } from '../../../core/services/auth';
   imports: [
     CommonModule,
     FormsModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule
+    RouterLink
   ],
   templateUrl: './login.html',
-  styleUrl: './login.scss'
+  styleUrls: ['./login.scss']
 })
-export class Login {
+export class LoginComponent {
 
-  private auth = inject(Auth);
-  private router = inject(Router);
+  email: string = '';
+  password: string = '';
 
-  email = '';
-  password = '';
-  hide = true;
-  loading = false;
-  error = '';
+  hide: boolean = true;
+  loading: boolean = false;
 
-  login() {
+  error: string | null = null;
+
+
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
+
+
+  /**
+   * Toggle password visibility.
+   */
+  togglePasswordVisibility(): void {
+    this.hide = !this.hide;
+  }
+
+
+  /**
+   * Login using the existing backend authentication flow.
+   *
+   * No backend/API architecture is changed here.
+   */
+  login(): void {
+
+    if (!this.email || !this.password) {
+
+      this.error =
+        'Please enter both your email address and password.';
+
+      return;
+    }
+
 
     this.loading = true;
-    this.error = '';
+    this.error = null;
 
-    this.auth.login({
-      email: this.email,
+
+    this.authService.login({
+      email: this.email.trim().toLowerCase(),
       password: this.password
     }).subscribe({
 
-      next: (res) => {
-
-        this.auth.saveToken(res.access_token);
+      next: (response: any) => {
 
         this.loading = false;
+
+
+        const token =
+          response?.access_token ??
+          response?.token;
+
+
+        if (token) {
+          this.authService.saveToken(token);
+        }
+
 
         this.router.navigate(['/dashboard']);
-
       },
 
-      error: (err) => {
+
+      error: (err: any) => {
 
         this.loading = false;
 
-        this.error =
-          err?.error?.detail || 'Invalid Email or Password';
 
+        this.error =
+          err?.error?.detail ||
+          err?.error?.message ||
+          err?.message ||
+          'Invalid email or password. Please try again.';
       }
 
     });
-
   }
 
 }

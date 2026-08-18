@@ -1,11 +1,45 @@
-.layout{
-    display:flex;
-    height:calc(100vh - 64px);
+:host {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 
-.content{
-    flex:1;
-    padding:20px;
-    background:#f5f5f5;
-    overflow:auto;
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #f5f7fb;
+}
+
+.app-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  background:
+    radial-gradient(
+      circle at 90% 0%,
+      rgba(45, 108, 240, 0.04),
+      transparent 28%
+    ),
+    #f5f7fb;
+}
+
+@media (max-width: 900px) {
+  .content {
+    overflow-x: hidden;
+  }
 }

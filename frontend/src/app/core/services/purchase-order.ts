@@ -1,17 +1,20 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
-import { PurchaseOrder } from '../models/purchase-order.model';
+import {
+  PurchaseOrder,
+  CreatePurchaseOrderDto,
+  UpdatePurchaseOrderDto
+} from '../models/purchase-order';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PurchaseOrderService {
-
   private http = inject(HttpClient);
 
-  private readonly API_URL = 'http://127.0.0.1:8000/purchase-orders';
+  private readonly API_URL =
+    'http://127.0.0.1:8000/purchase-orders';
 
   getAllPurchaseOrders(): Observable<PurchaseOrder[]> {
     return this.http.get<PurchaseOrder[]>(this.API_URL);
@@ -24,34 +27,27 @@ export class PurchaseOrderService {
   }
 
   createPurchaseOrder(
-    purchaseOrder: PurchaseOrder
+    data: CreatePurchaseOrderDto
   ): Observable<PurchaseOrder> {
-
     return this.http.post<PurchaseOrder>(
       this.API_URL,
-      purchaseOrder
+      data
     );
-
   }
 
   updatePurchaseOrder(
     id: number,
-    purchaseOrder: PurchaseOrder
+    data: UpdatePurchaseOrderDto
   ): Observable<PurchaseOrder> {
-
     return this.http.put<PurchaseOrder>(
       `${this.API_URL}/${id}`,
-      purchaseOrder
+      data
     );
-
   }
 
-  deletePurchaseOrder(id: number): Observable<any> {
-
-    return this.http.delete(
+  deletePurchaseOrder(id: number): Observable<void> {
+    return this.http.delete<void>(
       `${this.API_URL}/${id}`
     );
-
   }
-
 }

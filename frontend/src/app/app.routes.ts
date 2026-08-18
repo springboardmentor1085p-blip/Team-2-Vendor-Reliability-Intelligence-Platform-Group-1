@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 
 // Authentication
-import { Login } from './features/auth/login/login';
+import { LoginComponent } from './features/auth/login/login';
 
 // Layout
 import { MainLayout } from './layouts/main-layout/main-layout';
@@ -17,7 +17,7 @@ import { VendorList } from './features/vendors/vendor-list/vendor-list';
 import { VendorForm } from './features/vendors/vendor-form/vendor-form';
 import { PendingVendors } from './features/vendors/pending-vendors/pending-vendors';
 
-// Procurement
+// Purchase Orders
 import { PurchaseOrderList } from './features/procurement/purchase-order-list/purchase-order-list';
 import { PurchaseOrderForm } from './features/procurement/purchase-order-form/purchase-order-form';
 import { PurchaseOrderDetails } from './features/procurement/purchase-order-details/purchase-order-details';
@@ -46,145 +46,131 @@ import { NotificationList } from './features/notifications/notification-list/not
 
 export const routes: Routes = [
 
-  {
-    path: '',
-    redirectTo: 'login',
-    pathMatch: 'full'
-  },
-
+  // Login
   {
     path: 'login',
-    component: Login
+    component: LoginComponent
   },
 
+  // Protected Application
   {
     path: '',
     component: MainLayout,
     canActivate: [authGuard],
-
     children: [
 
+      // Dashboard
       {
         path: 'dashboard',
         component: Dashboard
       },
 
       // Vendors
-
       {
         path: 'vendors',
         component: VendorList
       },
-
       {
         path: 'vendors/add',
         component: VendorForm
       },
-
       {
         path: 'vendors/edit/:id',
         component: VendorForm
       },
-
       {
         path: 'vendors/pending',
         component: PendingVendors
       },
 
       // Purchase Orders
-
       {
         path: 'purchase-orders',
         component: PurchaseOrderList
       },
-
       {
         path: 'purchase-orders/add',
         component: PurchaseOrderForm
       },
-
       {
-        path: 'purchase-orders/details',
+        path: 'purchase-orders/edit/:id',
+        component: PurchaseOrderForm
+      },
+      {
+        path: 'purchase-orders/details/:id',
         component: PurchaseOrderDetails
       },
 
       // Contracts
-
       {
         path: 'contracts',
         component: ContractList
       },
-
       {
         path: 'contracts/add',
         component: ContractForm
       },
-
       {
-        path: 'contracts/details',
+        path: 'contracts/details/:id',
         component: ContractDetails
       },
 
       // Communications
-
       {
         path: 'communications',
         component: CommunicationList
       },
-
       {
         path: 'communications/add',
         component: CommunicationForm
       },
-
       {
-        path: 'communications/details',
+        path: 'communications/details/:id',
         component: CommunicationDetails
       },
 
       // Risk
-
       {
         path: 'risk',
         component: RiskDashboard
       },
-
       {
         path: 'risk/list',
         component: RiskList
       },
-
       {
-        path: 'risk/details',
+        path: 'risk/details/:id',
         component: RiskDetails
       },
 
       // Reports
-
       {
         path: 'reports',
         component: ReportDashboard
       },
-
       {
         path: 'reports/list',
         component: ReportList
       },
 
       // Notifications
-
       {
         path: 'notifications',
         component: NotificationList
       }
-
     ]
-
   },
 
+  // Default
+  {
+    path: '',
+    redirectTo: 'login',
+    pathMatch: 'full'
+  },
+
+  // Unknown
   {
     path: '**',
     redirectTo: 'login'
   }
-
 ];

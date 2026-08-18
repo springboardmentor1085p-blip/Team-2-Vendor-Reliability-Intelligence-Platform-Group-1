@@ -1,0 +1,123 @@
+<div class="page">
+
+    <div class="header">
+
+        <div>
+
+            <h1>Create Risk</h1>
+
+            <p>Add and monitor vendor risks</p>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div class="grid">
+
+            <div class="field">
+
+                <label>Vendor ID</label>
+
+                <input
+                    type="number"
+                    [(ngModel)]="risk.vendor_id"
+                    name="vendor_id">
+
+            </div>
+
+            <div class="field">
+
+                <label>Risk Type</label>
+
+                <input
+                    type="text"
+                    [(ngModel)]="risk.risk_type"
+                    name="risk_type">
+
+            </div>
+
+            <div class="field">
+
+                <label>Risk Level</label>
+
+                <select
+                    [(ngModel)]="risk.risk_level"
+                    name="risk_level">
+
+                    <option value="">Select</option>
+                    <option>High</option>
+                    <option>Medium</option>
+                    <option>Low</option>
+
+                </select>
+
+            </div>
+
+            <div class="field">
+
+                <label>Risk Score</label>
+
+                <input
+                    type="number"
+                    [(ngModel)]="risk.risk_score"
+                    name="risk_score">
+
+            </div>
+
+            <div class="field full">
+
+                <label>Description</label>
+
+                <textarea
+                    rows="5"
+                    [(ngModel)]="risk.description"
+                    name="description">
+
+                </textarea>
+
+            </div>
+
+            <div class="field">
+
+                <label>Status</label>
+
+                <select
+                    [(ngModel)]="risk.status"
+                    name="status">
+
+                    <option>Open</option>
+                    <option>Monitoring</option>
+                    <option>Resolved</option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+        <div class="buttons">
+
+            <button
+                class="cancel"
+                routerLink="/risk/list">
+
+                Cancel
+
+            </button>
+
+            <button
+                class="save"
+                (click)="saveRisk()"
+                [disabled]="isSaving">
+
+                {{isSaving ? 'Saving...' : 'Save Risk'}}
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

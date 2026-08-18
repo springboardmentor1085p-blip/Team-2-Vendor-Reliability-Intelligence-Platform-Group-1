@@ -1,0 +1,36 @@
+# Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Node / Angular
+node_modules/
+.angular/
+dist/
+coverage/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary / backup files
+*.backup
+*.bak
+
+# Project backups / recovery
+backup/
+recovery-login/
+frontend/ui-backup-20260818/
+frontend/ai-generated/
+
+# Temporary files
+backend/touch

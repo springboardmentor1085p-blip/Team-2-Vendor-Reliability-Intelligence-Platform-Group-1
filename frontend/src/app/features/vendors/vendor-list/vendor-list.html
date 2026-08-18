@@ -1,60 +1,191 @@
-<div class="vendor-container">
+<div class="vendor-page">
 
-    <div class="toolbar">
-
-        <h2>Vendor Management</h2>
-
-        <button (click)="addVendor()">
-            + Add Vendor
-        </button>
-
+  <header class="page-header">
+    <div class="page-title-group">
+      <span class="eyebrow">PROCUREMENT</span>
+      <h1>Vendor Management</h1>
+      <p>Manage your supplier directory, status and procurement relationships.</p>
     </div>
 
-    <table>
+    <button type="button" class="primary-button" (click)="addVendor()">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+      Add Vendor
+    </button>
+  </header>
 
+  <section class="summary-row" aria-label="Vendor summary">
+    <div class="summary-card">
+      <span>Total Vendors</span>
+      <strong>{{ vendors.length }}</strong>
+    </div>
+
+    <div class="summary-card">
+      <span>Active Vendors</span>
+      <strong>{{ activeCount }}</strong>
+    </div>
+
+    <div class="summary-card">
+      <span>Pending Review</span>
+      <strong>{{ pendingCount }}</strong>
+    </div>
+  </section>
+
+  <section class="vendor-card">
+
+    <div class="table-toolbar">
+      <div>
+        <h2>Supplier Directory</h2>
+        <p>{{ filteredVendors.length }} vendor{{ filteredVendors.length === 1 ? '' : 's' }} displayed</p>
+      </div>
+
+      <div class="toolbar-controls">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"></circle>
+            <line x1="16.5" y1="16.5" x2="21" y2="21"></line>
+          </svg>
+
+          <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            placeholder="Search vendors..."
+            aria-label="Search vendors"
+          />
+        </div>
+
+        <select
+          class="status-filter"
+          [(ngModel)]="statusFilter"
+          aria-label="Filter vendors by status"
+        >
+          <option value="all">All Status</option>
+          <option value="active">Active</option>
+          <option value="pending">Pending</option>
+          <option value="inactive">Inactive</option>
+          <option value="approved">Approved</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-wrapper" *ngIf="filteredVendors.length > 0">
+      <table>
         <thead>
-
-            <tr>
-                <th>ID</th>
-                <th>Vendor</th>
-                <th>Company</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Category</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-
+          <tr>
+            <th>VENDOR</th>
+            <th>COMPANY</th>
+            <th>CONTACT</th>
+            <th>CATEGORY</th>
+            <th>STATUS</th>
+            <th class="actions-column">ACTIONS</th>
+          </tr>
         </thead>
 
         <tbody>
+          <tr *ngFor="let vendor of filteredVendors">
+            <td>
+              <div class="vendor-cell">
+                <div class="vendor-avatar">
+                  {{ getInitials(vendor.vendor_name) }}
+                </div>
 
-            <tr *ngFor="let vendor of vendors">
+                <div>
+                  <div class="vendor-name">
+                    {{ vendor.vendor_name || 'Unnamed Vendor' }}
+                  </div>
+                  <div class="vendor-id">
+                    ID #{{ vendor.id }}
+                  </div>
+                </div>
+              </div>
+            </td>
 
-                <td>{{vendor.id}}</td>
-                <td>{{vendor.vendor_name}}</td>
-                <td>{{vendor.company_name}}</td>
-                <td>{{vendor.email}}</td>
-                <td>{{vendor.phone}}</td>
-                <td>{{vendor.category}}</td>
-                <td>{{vendor.status}}</td>
+            <td>
+              <span class="company-name">
+                {{ vendor.company_name || '—' }}
+              </span>
+            </td>
 
-                <td>
+            <td>
+              <div class="contact-cell">
+                <span>{{ vendor.email || '—' }}</span>
+                <small>{{ vendor.phone || 'No phone provided' }}</small>
+              </div>
+            </td>
 
-                    <button (click)="editVendor(vendor.id!)">
-                        Edit
-                    </button>
+            <td>
+              <span class="category-text">
+                {{ vendor.category || 'Uncategorized' }}
+              </span>
+            </td>
 
-                    <button (click)="deleteVendor(vendor.id!)">
-                        Delete
-                    </button>
+            <td>
+              <span
+                class="status-pill"
+                [ngClass]="getStatusClass(vendor.status)"
+              >
+                <span class="status-dot"></span>
+                {{ vendor.status || 'Unknown' }}
+              </span>
+            </td>
 
-                </td>
+            <td class="actions-column">
+              <div class="row-actions">
+                <button
+                  type="button"
+                  class="action-button edit"
+                  (click)="editVendor(vendor.id!)"
+                  aria-label="Edit vendor"
+                >
+                  Edit
+                </button>
 
-            </tr>
-
+                <button
+                  type="button"
+                  class="action-button delete"
+                  (click)="deleteVendor(vendor.id!)"
+                  aria-label="Delete vendor"
+                >
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
         </tbody>
+      </table>
+    </div>
 
-    </table>
+    <div class="empty-state" *ngIf="filteredVendors.length === 0">
+      <div class="empty-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <line x1="17" y1="11" x2="22" y2="11"></line>
+        </svg>
+      </div>
+
+      <h3>{{ vendors.length === 0 ? 'No vendors registered' : 'No vendors found' }}</h3>
+
+      <p>
+        {{
+          vendors.length === 0
+            ? 'Start building your supplier directory by adding your first vendor.'
+            : 'Try adjusting your search or status filter.'
+        }}
+      </p>
+
+      <button
+        *ngIf="vendors.length === 0"
+        type="button"
+        class="primary-button empty-action"
+        (click)="addVendor()"
+      >
+        Add First Vendor
+      </button>
+    </div>
+
+  </section>
 
 </div>

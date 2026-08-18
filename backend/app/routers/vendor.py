@@ -32,9 +32,9 @@ router = APIRouter(
 )
 
 
-# ----------------------------
+# ----------------------------------
 # Vendor CRUD APIs
-# ----------------------------
+# ----------------------------------
 
 @router.post(
     "",
@@ -60,6 +60,23 @@ def get_all_vendors(
     return get_all_vendors_service(db)
 
 
+# -----------------------------
+# Static route FIRST
+# -----------------------------
+@router.get(
+    "/pending",
+    response_model=list[VendorResponse],
+)
+def get_pending_vendors(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return get_pending_vendors_service(db)
+
+
+# -----------------------------
+# Dynamic route AFTER static
+# -----------------------------
 @router.get(
     "/{vendor_id}",
     response_model=VendorResponse,
@@ -96,20 +113,9 @@ def delete_vendor(
     return delete_vendor_service(db, vendor_id)
 
 
-# ----------------------------
+# ----------------------------------
 # Vendor Approval Workflow APIs
-# ----------------------------
-
-@router.get(
-    "/pending",
-    response_model=list[VendorResponse],
-)
-def get_pending_vendors(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
-):
-    return get_pending_vendors_service(db)
-
+# ----------------------------------
 
 @router.put(
     "/{vendor_id}/approve",

@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { PurchaseOrder } from '../../../core/models/purchase-order.model';
+import { PurchaseOrder } from '../../../core/models/purchase-order';
 import { PurchaseOrderService } from '../../../core/services/purchase-order';
 
 @Component({
@@ -29,7 +29,7 @@ export class PurchaseOrderList implements OnInit {
 
         next: (data) => {
 
-          this.purchaseOrders = data;
+          this.purchaseOrders = data as PurchaseOrder[];
 
         },
 

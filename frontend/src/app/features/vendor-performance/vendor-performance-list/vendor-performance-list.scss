@@ -1,0 +1,65 @@
+.page {
+  padding: 24px;
+  background: #f5f7fa;
+  min-height: calc(100vh - 64px);
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.search-field {
+  width: 350px;
+  margin: 20px 0;
+}
+
+.full-width {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+table {
+  background: white;
+}
+
+.mat-mdc-header-row {
+  background: #1976d2;
+}
+
+.mat-mdc-header-cell {
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.mat-mdc-row:hover {
+  background: #f5f9ff;
+  transition: 0.2s ease;
+}
+
+.mat-column-actions {
+  width: 140px;
+  text-align: center;
+}
+
+.mat-column-id {
+  width: 80px;
+}
+
+.mat-column-score {
+  width: 120px;
+}
+
+.mat-mdc-paginator {
+  margin-top: 12px;
+  border-radius: 0 0 12px 12px;
+}
+
+mat-chip {
+  font-weight: 600;
+}
+
+button[mat-icon-button] {
+  margin-right: 6px;
+}

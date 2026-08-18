@@ -4,3 +4,6 @@ from app.models.procurement import Procurement
 from app.models.purchase_order import PurchaseOrder
 from app.models.contract import Contract
 from app.models.communication import Communication
+from app.models.risk import Risk
+from app.models.vendor_performance import VendorPerformance
+from app.models.report import Report
